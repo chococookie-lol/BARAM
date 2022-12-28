@@ -1,10 +1,10 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { MatchesService } from './matches.service';
 
-@Controller('/matches')
+@Controller('matches')
 export class MatchesController {
   constructor(private readonly matchesService: MatchesService) {}
-  @Get(':matchId')
+  @Get('/:matchId')
   async findOne(@Param('matchId') matchId: number) {
     return await this.matchesService.findOne(matchId);
   }
