@@ -54,4 +54,11 @@ export class SummonersService {
       ],
     };
   }
+
+  async updateMatches(userName: string, after?: number) {
+    return {
+      userName,
+      after,
+    };
+  }
 }
