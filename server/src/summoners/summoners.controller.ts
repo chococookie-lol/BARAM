@@ -14,4 +14,9 @@ export class SummonersController {
   async update(@Param('userName') userName: string) {
     return await this.summonersService.update(userName);
   }
+
+  @Get('/:userName/matches')
+  async findAllMatches(@Param('userName') userName: string) {
+    return this.summonersService.findAllMatches(userName);
+  }
 }

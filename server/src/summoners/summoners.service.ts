@@ -38,4 +38,20 @@ export class SummonersService {
   async update(userName: string) {
     return { userName };
   }
+
+  async findAllMatches(userName: string) {
+    return {
+      userName,
+      matchIds: [
+        '63aaa89b1117f13437f6ab4f',
+        '63aaa89b1117f13437f6ab4f',
+        '63aaa89b1117f13437f6ab4f',
+        '63aaa89b1117f13437f6ab4f',
+        '63aaa89b1117f13437f6ab4f',
+        '63aaa89b1117f13437f6ab4f',
+        '63aaa89b1117f13437f6ab4f',
+        '63aaa89b1117f13437f6ab4f',
+      ],
+    };
+  }
 }
