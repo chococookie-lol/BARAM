@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import { SummonersService } from './summoners.service';
 
 @Controller('summoners')
@@ -8,5 +8,10 @@ export class SummonersController {
   @Get(':userName')
   async findOne(@Param('userName') userName: string) {
     return await this.summonersService.findOne(userName);
+  }
+
+  @Post(':userName')
+  async update(@Param('userName') userName: string) {
+    return await this.summonersService.update(userName);
   }
 }

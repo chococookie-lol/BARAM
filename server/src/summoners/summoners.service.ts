@@ -34,4 +34,8 @@ export class SummonersService {
       lastModified: 1661939191682,
     };
   }
+
+  async update(userName: string) {
+    return { userName };
+  }
 }
