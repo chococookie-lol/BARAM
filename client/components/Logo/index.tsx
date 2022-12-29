@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useGlobalTheme } from '../styles/GlobalThemeContext';
+import { useGlobalTheme } from '../../styles/GlobalThemeContext';
 import LogoSvg from '/assets/logo.svg';
 
 function Logo() {
