@@ -1,3 +1,9 @@
+import Logo from '../components/logo';
+
 export default function Home() {
-  return <div>Hello World!</div>;
+  return (
+    <div>
+      <Logo />
+    </div>
+  );
 }
