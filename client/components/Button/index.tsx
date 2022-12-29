@@ -2,13 +2,19 @@ import { css } from '@emotion/react';
 import { useGlobalTheme } from '../../styles/GlobalThemeContext';
 
 interface ButtonProps {
-  text: string;
+  children: string;
+  width: string;
   onClick: () => void;
 }
 
 const style = {
-  button: (backgroundColor: string = 'black', foregroundColor: string = 'white') => css`
-    width: 80px;
+  button: (
+    backgroundColor: string = 'black',
+    foregroundColor: string = 'white',
+    width: string = '80px',
+  ) => css`
+    min-width: 80px;
+    width: ${width};
     height: 40px;
     border-radius: 10px;
     background-color: ${backgroundColor};
@@ -25,12 +31,15 @@ const style = {
   `,
 };
 
-export default function Button({ text, onClick }: ButtonProps) {
+export default function Button({ children, width, onClick }: ButtonProps) {
   const context = useGlobalTheme();
 
   return (
-    <div css={style.button(context.theme.accent1, context.theme.foreground)} onClick={onClick}>
-      {text}
+    <div
+      css={style.button(context.theme.accent1, context.theme.foreground, width)}
+      onClick={onClick}
+    >
+      {children}
     </div>
   );
 }
