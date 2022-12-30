@@ -18,7 +18,7 @@ function Doughnut({ val, label, title, size = 100, color }: DoughnutProps) {
   const [hover, setHover] = useState<number | null>(null);
   return (
     <div css={style(size)}>
-      <a>{hover ? label[hover] : title}</a>
+      <a>{hover === null ? title : label[hover]}</a>
       <svg
         width={size}
         height={size}
