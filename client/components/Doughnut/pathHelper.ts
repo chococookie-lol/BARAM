@@ -4,7 +4,7 @@ function degreeToCoord(degree: number, radius: number, viewBoxSize: number): str
   return `${x * radius + viewBoxSize / 2} ${y * -radius + viewBoxSize / 2}`;
 }
 
-export interface PieChartPath {
+export interface DoughnutPath {
   rotation: number;
   path: string;
 }
@@ -14,9 +14,9 @@ export function generatePath(
   radius: number,
   holeRadius: number,
   viewBoxSize: number,
-): PieChartPath[] {
+): DoughnutPath[] {
   const sum = val.reduce((res, v) => res + v, 0);
-  const paths: PieChartPath[] = [];
+  const paths: DoughnutPath[] = [];
   let degreeSum = 0;
   val.forEach((v) => {
     const percent = v / sum;

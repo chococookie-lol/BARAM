@@ -1,9 +1,8 @@
-import { css } from '@emotion/react';
 import { useState } from 'react';
 import { generatePath } from './pathHelper';
 import { style } from './style';
 
-interface PieProps {
+interface DoughnutProps {
   val: number[];
   title: string;
   label: string[];
@@ -11,15 +10,15 @@ interface PieProps {
   size?: number;
 }
 
-function Doughnut({ val, label, title, size = 100, color }: PieProps) {
+function Doughnut({ val, label, title, size = 100, color }: DoughnutProps) {
   const viewBoxSize = 100;
   const radius = 44;
   const holeRadius = 30;
   const paths = generatePath(val, radius, holeRadius, viewBoxSize);
-  const [hover, setHover] = useState(null);
+  const [hover, setHover] = useState<number | null>(null);
   return (
     <div css={style(size)}>
-      <a>{hover == null ? title : label[hover]}</a>
+      <a>{hover ? label[hover] : title}</a>
       <svg
         width={size}
         height={size}
