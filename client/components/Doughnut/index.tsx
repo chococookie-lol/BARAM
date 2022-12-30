@@ -16,10 +16,10 @@ function Doughnut({ val, label, title, size = 100, color }: PieProps) {
   const radius = 44;
   const holeRadius = 30;
   const paths = generatePath(val, radius, holeRadius, viewBoxSize);
-  const [hover, setHover] = useState(-1);
+  const [hover, setHover] = useState(null);
   return (
     <div css={style(size)}>
-      <a>{hover == -1 ? title : label[hover]}</a>
+      <a>{hover == null ? title : label[hover]}</a>
       <svg
         width={size}
         height={size}
@@ -30,7 +30,7 @@ function Doughnut({ val, label, title, size = 100, color }: PieProps) {
           return (
             <path
               onMouseOver={() => setHover(i)}
-              onMouseOut={() => setHover(-1)}
+              onMouseOut={() => setHover(null)}
               key={i}
               fill={color[i]}
               d={e.path}
