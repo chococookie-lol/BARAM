@@ -1,5 +1,5 @@
 export const lightTheme = {
-  background: '#213123',
+  background: '#37393A',
   foreground: '#FFFFFF',
   accent1: '#9D8DF1',
   accent2: '#B8CDF8',
