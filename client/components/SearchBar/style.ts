@@ -15,7 +15,8 @@ export const style = {
     position: relative;
     left: 14px;
     font-size: 16px;
-    width: 70%;
+    width: calc(100% - 70px);
+    height: 55px;
   `,
   flex: css`
     height: 100%;
