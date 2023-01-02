@@ -4,16 +4,24 @@ import { style } from './style';
 
 interface PercentageStatisticsProps {
   dealtPercent: number;
+  dealtAmount: number;
   healPercent: number;
+  healAmount: number;
   damagedPercent: number;
+  damagedAmount: number;
   deathPercent: number;
+  deathAmount: number;
 }
 
 export default function PercentageStatistics({
   dealtPercent,
+  dealtAmount,
   healPercent,
+  healAmount,
   damagedPercent,
+  damagedAmount,
   deathPercent,
+  deathAmount,
 }: PercentageStatisticsProps) {
   const { theme } = useGlobalTheme();
 
@@ -25,7 +33,8 @@ export default function PercentageStatistics({
           backgroundColor={theme.foreground}
           foregroundColor={theme.accent1}
           textColor={theme.background}
-          value={dealtPercent}
+          percent={dealtPercent}
+          value={dealtAmount}
         />
       </div>
       <div css={style.slot}>
@@ -34,7 +43,8 @@ export default function PercentageStatistics({
           backgroundColor={theme.foreground}
           foregroundColor={theme.accent1}
           textColor={theme.background}
-          value={healPercent}
+          percent={healPercent}
+          value={healAmount}
         />
       </div>
       <div css={style.slot}>
@@ -43,7 +53,8 @@ export default function PercentageStatistics({
           backgroundColor={theme.foreground}
           foregroundColor={theme.accent1}
           textColor={theme.background}
-          value={damagedPercent}
+          percent={damagedPercent}
+          value={damagedAmount}
         />
       </div>
       <div css={style.slot}>
@@ -52,7 +63,8 @@ export default function PercentageStatistics({
           backgroundColor={theme.foreground}
           foregroundColor={theme.red3}
           textColor={theme.background}
-          value={deathPercent}
+          percent={deathPercent}
+          value={deathAmount}
         />
       </div>
     </div>
