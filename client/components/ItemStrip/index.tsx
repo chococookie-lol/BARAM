@@ -17,18 +17,16 @@ function ItemStrip({ items, version, width, height, padding = 3 }: ItemStripProp
         display: flex;
       `}
     >
-      {items.map((e, i) => {
-        return (
-          <div
-            key={i}
-            css={css`
-              padding-left: ${padding}px;
-            `}
-          >
-            <ItemIcon id={e ? e : nullItem} version={version} width={width} height={height} />
-          </div>
-        );
-      })}
+      {items.map((e, i) => (
+        <div
+          key={i}
+          css={css`
+            padding-left: ${padding}px;
+          `}
+        >
+          <ItemIcon id={e ? e : nullItem} version={version} width={width} height={height} />
+        </div>
+      ))}
     </div>
   );
 }
