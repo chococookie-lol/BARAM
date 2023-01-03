@@ -57,6 +57,12 @@ export const style = {
     border-radius: 80px;
     margin: auto;
   `,
+  emptyChallenge: css`
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    filter: brightness(0.35);
+  `,
   color: (color: string) => css`
     color: ${color};
   `,
