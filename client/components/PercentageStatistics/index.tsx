@@ -2,6 +2,11 @@ import { useGlobalTheme } from '../../styles/GlobalThemeContext';
 import Percentage from '../Percentage';
 import { style } from './style';
 
+interface ColorProps {
+  background: string;
+  foreground: string;
+}
+
 interface PercentageStatisticsProps {
   dealtPercent: number;
   dealtAmount: number;
@@ -11,6 +16,7 @@ interface PercentageStatisticsProps {
   damagedAmount: number;
   deathPercent: number;
   deathAmount: number;
+  color?: ColorProps;
 }
 
 export default function PercentageStatistics({
@@ -22,47 +28,50 @@ export default function PercentageStatistics({
   damagedAmount,
   deathPercent,
   deathAmount,
+  color,
 }: PercentageStatisticsProps) {
   const { theme } = useGlobalTheme();
+  const foreground = color?.foreground ?? theme.foreground;
+  const background = color?.background ?? theme.background;
 
   return (
     <div css={style.container}>
       <div css={style.slot}>
-        <span css={style.span}>딜량</span>
+        <span css={style.span(foreground)}>딜량</span>
         <Percentage
-          backgroundColor={theme.foreground}
+          backgroundColor={foreground}
           foregroundColor={theme.accent1}
-          textColor={theme.background}
+          textColor={background}
           percent={dealtPercent}
           value={dealtAmount}
         />
       </div>
       <div css={style.slot}>
-        <span css={style.span}>힐량</span>
+        <span css={style.span(foreground)}>힐량</span>
         <Percentage
-          backgroundColor={theme.foreground}
+          backgroundColor={foreground}
           foregroundColor={theme.accent1}
-          textColor={theme.background}
+          textColor={background}
           percent={healPercent}
           value={healAmount}
         />
       </div>
       <div css={style.slot}>
-        <span css={style.span}>탱킹</span>
+        <span css={style.span(foreground)}>탱킹</span>
         <Percentage
-          backgroundColor={theme.foreground}
+          backgroundColor={foreground}
           foregroundColor={theme.accent1}
-          textColor={theme.background}
+          textColor={background}
           percent={damagedPercent}
           value={damagedAmount}
         />
       </div>
       <div css={style.slot}>
-        <span css={style.span}>데스</span>
+        <span css={style.span(foreground)}>데스</span>
         <Percentage
-          backgroundColor={theme.foreground}
+          backgroundColor={foreground}
           foregroundColor={theme.red3}
-          textColor={theme.background}
+          textColor={background}
           percent={deathPercent}
           value={deathAmount}
         />
