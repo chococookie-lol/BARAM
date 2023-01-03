@@ -5,10 +5,8 @@ import SummonerProfilePic from '../SummonerProfilePic';
 import { style } from './style';
 
 export default function SummonerProfileCard() {
-  const { theme } = useGlobalTheme();
-
   return (
-    <div css={[style.container, style.backgroundColor(theme.foreground)]}>
+    <div css={[style.container, style.backgroundColor('#37393A')]}>
       <div css={style.summonerDetailContainer}>
         <div css={style.summonerProfileContaier}>
           <SummonerProfilePic version={'12.13.1'} id={5131} width={100} height={100} />
@@ -16,8 +14,8 @@ export default function SummonerProfileCard() {
         </div>
         <div css={style.summonerDetail}>
           <div>
-            <p css={[style.color(theme.background), style.resetMargin, style.bold]}>소환사 이름</p>
-            <p css={[style.color(theme.background), style.resetMargin, style.fontSize('12px')]}>
+            <p css={[style.color('white'), style.resetMargin, style.bold]}>소환사 이름</p>
+            <p css={[style.color('white'), style.resetMargin, style.fontSize('12px')]}>
               최근 업데이트: 어제
             </p>
           </div>
