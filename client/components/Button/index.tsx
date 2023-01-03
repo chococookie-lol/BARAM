@@ -36,7 +36,7 @@ export default function Button({ children, width, onClick }: ButtonProps) {
 
   return (
     <div
-      css={style.button(context.theme.accent1, context.theme.foreground, width)}
+      css={style.button(context.theme.accent1, context.theme.background, width)}
       onClick={onClick}
     >
       {children}
