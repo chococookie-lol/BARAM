@@ -32,7 +32,8 @@ function WinRate() {
         val={[12, 8]}
         color={[theme.blue2, theme.red2]}
         title={`${((12 / (12 + 8)) * 100).toFixed(0)}%`}
-        size={100}
+        size={110}
+        textColor={theme.background}
       />
     </div>
   );
@@ -76,7 +77,8 @@ function CampStatistic() {
         val={[11, 9]}
         color={[theme.blue2, theme.red2]}
         title={`블루 ${((11 / (11 + 9)) * 100).toFixed(0)}%`}
-        size={100}
+        size={110}
+        textColor={theme.background}
       />
     </div>
   );
@@ -102,6 +104,7 @@ function GameContribution() {
             damagedAmount={23940}
             deathPercent={0.3}
             deathAmount={2394}
+            color={{ foreground: theme.background, background: theme.foreground }}
           />
         </div>
       </div>
