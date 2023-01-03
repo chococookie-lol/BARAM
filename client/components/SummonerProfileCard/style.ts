@@ -39,7 +39,6 @@ export const style = {
     padding: 0 15px;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: space-around;
   `,
   challengeContainer: css`
