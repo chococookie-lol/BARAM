@@ -11,7 +11,7 @@ export const lightTheme = {
   red1: '#D31A44',
   red2: '#E84056',
   red3: '#FF6C80',
-  red4: 'FFF1F2',
+  red4: '#FFF1F2',
   neutral: '#F8F8F8',
 };
 
