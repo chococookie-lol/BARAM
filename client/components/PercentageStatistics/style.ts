@@ -10,7 +10,8 @@ export const style = {
     display: flex;
     width: 158px;
   `,
-  span: css`
+  span: (color: string) => css`
     padding: 0 5px;
+    color: ${color};
   `,
 };
