@@ -1,18 +1,20 @@
+import { GLOBAL_COLOR } from '../utils/color';
+
 export const lightTheme = {
-  background: '#FFFFFF',
-  foreground: '#37393A',
-  accent1: '#9D8DF1',
-  accent2: '#B8CDF8',
-  accent3: '#EAE7FF',
-  blue1: '#4171D5',
-  blue2: '#5383E7',
-  blue3: '#81ACFE',
-  blue4: '#ECF2FE',
-  red1: '#D31A44',
-  red2: '#E84056',
-  red3: '#FF6C80',
-  red4: '#FFF1F2',
-  neutral: '#F8F8F8',
+  background: GLOBAL_COLOR.white,
+  foreground: GLOBAL_COLOR.onyx,
+  accent1: GLOBAL_COLOR.mediumPurple,
+  accent2: GLOBAL_COLOR.lightSteelBlue,
+  accent3: GLOBAL_COLOR.lightPurple,
+  blue1: GLOBAL_COLOR.blue1,
+  blue2: GLOBAL_COLOR.blue2,
+  blue3: GLOBAL_COLOR.blue3,
+  blue4: GLOBAL_COLOR.blue4,
+  red1: GLOBAL_COLOR.red1,
+  red2: GLOBAL_COLOR.red2,
+  red3: GLOBAL_COLOR.red3,
+  red4: GLOBAL_COLOR.red4,
+  neutral: GLOBAL_COLOR.neutral,
 };
 
 export type Theme = typeof lightTheme;
