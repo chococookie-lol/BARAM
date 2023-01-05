@@ -44,6 +44,10 @@ export default function SearchPage() {
   const [summonerName, setSummonerName] = useState<string | null>(null);
   const [summonerProfile, setSummonerProfile] = useState<SummonerProfile | null>(null);
 
+  const handleSearch = () => {
+    router.push(`/summoners/${searchText}`);
+  };
+
   useEffect(() => {
     const query = router.query;
     if (typeof query.summonerName === 'string') {
@@ -69,7 +73,7 @@ export default function SearchPage() {
       <>
         <header css={style.header}>
           <Logo width={221} />
-          <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={() => {}} />
+          <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={handleSearch} />
         </header>
         <p css={style.textAlignCenter}>Loading...</p>
       </>
@@ -80,7 +84,7 @@ export default function SearchPage() {
     <>
       <header css={style.header}>
         <Logo width={221} />
-        <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={() => {}} />
+        <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={handleSearch} />
       </header>
       <div css={style.profile}>
         <SummonerProfileCard
