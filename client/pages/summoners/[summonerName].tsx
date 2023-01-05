@@ -64,17 +64,13 @@ export default function SearchPage() {
     })();
   }, [summonerName]);
 
-  const Header = () => (
-    <header css={style.header}>
-      <Logo width={221} />
-      <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={() => {}} />
-    </header>
-  );
-
   if (!summonerName || !summonerProfile) {
     return (
       <>
-        <Header />
+        <header css={style.header}>
+          <Logo width={221} />
+          <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={() => {}} />
+        </header>
         <p css={style.textAlignCenter}>Loading...</p>
       </>
     );
@@ -82,7 +78,10 @@ export default function SearchPage() {
 
   return (
     <>
-      <Header />
+      <header css={style.header}>
+        <Logo width={221} />
+        <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={() => {}} />
+      </header>
       <div css={style.profile}>
         <SummonerProfileCard
           profileIconId={summonerProfile.profileIconId}
