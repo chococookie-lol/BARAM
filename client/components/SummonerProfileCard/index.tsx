@@ -3,12 +3,6 @@ import ChallengeIcon from '../ChallengeIcon';
 import SummonerProfilePic from '../SummonerProfilePic';
 import { style } from './style';
 
-interface Challenge {
-  id: number;
-  tier: string;
-  value: number;
-}
-
 interface SummonerProfileCardProps {
   profileIconId: number;
   summonerName: string;
@@ -52,8 +46,8 @@ export default function SummonerProfileCard({
           {challenges.map((challenge, idx) => (
             <ChallengeIcon
               key={`challenge-${idx}`}
-              id={challenge.id}
-              tier={challenge.tier}
+              id={challenge.challengeId}
+              tier={challenge.level}
               label={'도전과제'}
               value={challenge.value}
               width={50}
