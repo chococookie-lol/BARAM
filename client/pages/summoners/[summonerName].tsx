@@ -45,6 +45,8 @@ export default function SearchPage() {
   const [summonerProfile, setSummonerProfile] = useState<SummonerProfile | null>(null);
 
   const handleSearch = () => {
+    if (searchText === '') return;
+
     router.push(`/summoners/${searchText}`);
   };
 
