@@ -16,6 +16,7 @@ interface PercentageStatisticsProps {
   damagedAmount: number;
   deathPercent: number;
   deathAmount: number;
+  padding?: number;
   color?: ColorProps;
 }
 
@@ -28,6 +29,7 @@ export default function PercentageStatistics({
   damagedAmount,
   deathPercent,
   deathAmount,
+  padding = 1,
   color,
 }: PercentageStatisticsProps) {
   const { theme } = useGlobalTheme();
@@ -35,9 +37,9 @@ export default function PercentageStatistics({
   const background = color?.background ?? theme.background;
 
   return (
-    <div css={style.container}>
-      <div css={style.slot}>
-        <span css={style.span(foreground)}>딜량</span>
+    <div css={style.container(padding)}>
+      <div css={style.slot(foreground, padding)}>
+        <p>딜량</p>
         <Percentage
           backgroundColor={foreground}
           foregroundColor={theme.accent1}
@@ -46,8 +48,8 @@ export default function PercentageStatistics({
           value={dealtAmount}
         />
       </div>
-      <div css={style.slot}>
-        <span css={style.span(foreground)}>힐량</span>
+      <div css={style.slot(foreground, padding)}>
+        <p>힐량</p>
         <Percentage
           backgroundColor={foreground}
           foregroundColor={theme.accent1}
@@ -56,8 +58,8 @@ export default function PercentageStatistics({
           value={healAmount}
         />
       </div>
-      <div css={style.slot}>
-        <span css={style.span(foreground)}>탱킹</span>
+      <div css={style.slot(foreground, padding)}>
+        <p>탱킹</p>
         <Percentage
           backgroundColor={foreground}
           foregroundColor={theme.accent1}
@@ -66,8 +68,8 @@ export default function PercentageStatistics({
           value={damagedAmount}
         />
       </div>
-      <div css={style.slot}>
-        <span css={style.span(foreground)}>데스</span>
+      <div css={style.slot(foreground, padding)}>
+        <p>데스</p>
         <Percentage
           backgroundColor={foreground}
           foregroundColor={theme.red3}
