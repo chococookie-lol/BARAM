@@ -7,25 +7,39 @@ interface ItemStripProps {
   width: number;
   height: number;
   padding?: number;
+  direction?: 'vertical' | 'horizontal';
 }
 
-function ItemStrip({ items, version, width, height, padding = 3 }: ItemStripProps) {
+const style = {
+  horizontal: (padding: number) => css`
+    margin-left: -${padding}px;
+    & > * {
+      display: inline-block;
+      margin-left: ${padding}px;
+    }
+  `,
+  vertical: (padding: number) => css`
+    margin-top: -${padding}px;
+    & > * {
+      display: block;
+      margin-top: ${padding}px;
+    }
+  `,
+};
+
+function ItemStrip({
+  items,
+  version,
+  width,
+  height,
+  padding = 3,
+  direction = 'horizontal',
+}: ItemStripProps) {
   const nullItem = 7050;
   return (
-    <div
-      css={css`
-        display: flex;
-      `}
-    >
+    <div css={style[direction](padding)}>
       {items.map((e, i) => (
-        <div
-          key={i}
-          css={css`
-            padding-left: ${padding}px;
-          `}
-        >
-          <ItemIcon id={e ? e : nullItem} version={version} width={width} height={height} />
-        </div>
+        <ItemIcon key={i} id={e ? e : nullItem} version={version} width={width} height={height} />
       ))}
     </div>
   );
