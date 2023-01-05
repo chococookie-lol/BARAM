@@ -9,14 +9,11 @@ interface RuneIconProps {
 }
 
 function RuneIcon({ name, category = undefined, width, height }: RuneIconProps) {
-  console.log(category);
-  const padding = category ? 0 : 20;
   const baseUrl = 'https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/';
   const src = category ? `${baseUrl}${category}/${name}/${name}.png` : `${baseUrl}${name}.png`;
-  const type = category ? 'primary' : 'secondary';
   return (
-    <div css={style[type](width, height)}>
-      <Image src={src} width={width - padding} height={height - padding} alt={name} />
+    <div css={style(width, height)}>
+      <Image src={src} width={width} height={height} alt={name} />
     </div>
   );
 }
