@@ -1,11 +1,11 @@
 import { css } from '@emotion/react';
-import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Logo from '../../components/Logo';
 import SearchBar from '../../components/SearchBar';
 import SummonerProfileCard from '../../components/SummonerProfileCard';
 import SummonerStatCard from '../../components/SummonerStatCard';
+import { getMatch, getSummonerMatchIds, getSummonerProfile } from '../../utils/api';
 
 const style = {
   header: css`
@@ -43,6 +43,8 @@ export default function SearchPage() {
   const [searchText, setSearchText] = useState<string>('');
   const [summonerName, setSummonerName] = useState<string | null>(null);
   const [summonerProfile, setSummonerProfile] = useState<SummonerProfile | null>(null);
+  const [matchIds, setMatchIds] = useState<SummonerMatchIds>([]);
+  const [matches, setMatches] = useState<Match[]>([]);
 
   const handleSearch = () => {
     if (searchText === '') return;
@@ -61,14 +63,26 @@ export default function SearchPage() {
     if (summonerName === null) return;
 
     (async () => {
-      const serverUrl = process.env.NEXT_PUBLIC_API_PATH;
-
-      if (!serverUrl) return;
-
-      const profile = await (await axios.get(`${serverUrl}/summoners/${summonerName}`)).data;
-      setSummonerProfile(profile);
+      try {
+        setSummonerProfile(await getSummonerProfile(summonerName));
+        setMatchIds((await getSummonerMatchIds(summonerName)).matchIds);
+      } catch (e) {
+        console.error(e);
+      }
     })();
   }, [summonerName]);
+
+  useEffect(() => {
+    const promises = matchIds.map((matchId) => getMatch(matchId));
+
+    (async () => {
+      try {
+        setMatches(await Promise.all(promises));
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, [matchIds]);
 
   if (!summonerName || !summonerProfile) {
     return (
@@ -113,6 +127,7 @@ export default function SearchPage() {
           }}
         />
       </div>
+      <main>{JSON.stringify(matches)}</main>
     </>
   );
 }
