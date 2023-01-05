@@ -6,6 +6,8 @@ interface Challenge {
   achievedTime: number;
 }
 
+type SummonerProfileResponse = SummonerProfile;
+
 interface SummonerProfile {
   userName: string;
   level: number;
@@ -13,4 +15,11 @@ interface SummonerProfile {
   profileIconId: number;
   challenges: Challenge[];
   lastModified: number;
+}
+
+type SummonerMatchIds = string[];
+
+interface SummonerMatchIdsResponse {
+  summonerName: string;
+  matchIds: SummonerMatchIds;
 }
