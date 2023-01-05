@@ -23,3 +23,9 @@ export const getSummonerMatchIds = async (
     await defaultAxiosInstance.get(`/summoners/${summonerName}/matches`)
   ).data;
 };
+
+export const getMatch = async (matchId: string): Promise<MatchResponse> => {
+  return await (
+    await defaultAxiosInstance.get(`/matches/${matchId}`)
+  ).data;
+};
