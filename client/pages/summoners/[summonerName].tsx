@@ -127,7 +127,7 @@ export default function SearchPage() {
           }}
         />
       </div>
-      <main>{JSON.stringify(matches)}</main>
+      <main></main>
     </>
   );
 }
