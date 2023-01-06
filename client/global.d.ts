@@ -12,6 +12,7 @@ interface SummonerProfile {
   userName: string;
   level: number;
   id: string;
+  puuid: string;
   profileIconId: number;
   challenges: Challenge[];
   lastModified: number;

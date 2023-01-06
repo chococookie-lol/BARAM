@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import GameSlot from '../../components/GameSlot';
 import Logo from '../../components/Logo';
 import SearchBar from '../../components/SearchBar';
 import SummonerProfileCard from '../../components/SummonerProfileCard';
@@ -35,6 +36,15 @@ const style = {
   `,
   textAlignCenter: css`
     text-align: center;
+  `,
+  main: css`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    & > * {
+      margin: 10px 0;
+    }
   `,
 };
 
@@ -127,7 +137,15 @@ export default function SearchPage() {
           }}
         />
       </div>
-      <main></main>
+      <main css={style.main}>
+        {matches.map((match, idx) => (
+          <GameSlot
+            key={`gameSlot-${match.info.gameId}-${idx}`}
+            matchData={match}
+            puuid={summonerProfile.puuid}
+          />
+        ))}
+      </main>
     </>
   );
 }
