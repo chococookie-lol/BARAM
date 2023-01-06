@@ -7,6 +7,12 @@ import SearchBar from '../../components/SearchBar';
 import SummonerProfileCard from '../../components/SummonerProfileCard';
 import SummonerStatCard from '../../components/SummonerStatCard';
 import { getMatch, getSummonerMatchIds, getSummonerProfile } from '../../utils/api';
+import {
+  getMatchStatistic,
+  getTotalMatchStatistics,
+  MatchStatistic,
+  TotalStatistic,
+} from '../../utils/matchStatistic';
 
 const style = {
   header: css`
@@ -55,6 +61,10 @@ export default function SearchPage() {
   const [summonerProfile, setSummonerProfile] = useState<SummonerProfile | null>(null);
   const [matchIds, setMatchIds] = useState<SummonerMatchIds>([]);
   const [matches, setMatches] = useState<Match[]>([]);
+  const [matchStatistics, setMatchStatistics] = useState<{ [key: string]: MatchStatistic } | null>(
+    null,
+  );
+  const [totalStatistics, setTotalStatistics] = useState<TotalStatistic | null>(null);
 
   const handleSearch = () => {
     if (searchText === '') return;
@@ -94,7 +104,29 @@ export default function SearchPage() {
     })();
   }, [matchIds]);
 
-  if (!summonerName || !summonerProfile) {
+  useEffect(() => {
+    if (!summonerProfile) return;
+    if (matches.length === 0) return;
+
+    setMatchStatistics(
+      matches.reduce((acc, match) => {
+        const newAcc: { [index: string]: MatchStatistic } = { ...acc };
+        if (newAcc[match.metadata.matchId]) return newAcc;
+
+        newAcc[match.metadata.matchId] = getMatchStatistic(match, summonerProfile?.puuid);
+        return newAcc;
+      }, {}),
+    );
+  }, [matches, summonerProfile]);
+
+  useEffect(() => {
+    if (matchStatistics) {
+      console.log(matchStatistics);
+      setTotalStatistics(getTotalMatchStatistics(matchStatistics));
+    }
+  }, [matchStatistics]);
+
+  if (!summonerName || !summonerProfile || !totalStatistics) {
     return (
       <>
         <header css={style.header}>
@@ -105,6 +137,8 @@ export default function SearchPage() {
       </>
     );
   }
+
+  const { winRate, kda, camp, gameContribution } = totalStatistics;
 
   return (
     <>
@@ -121,20 +155,10 @@ export default function SearchPage() {
           challenges={summonerProfile.challenges}
         />
         <SummonerStatCard
-          winRate={{ win: 11, lose: 9 }}
-          kda={{ kill: 11, death: 9, assist: 14, killContribution: 0.4 }}
-          camp={{ blue: 8, red: 12 }}
-          gameContribution={{
-            dealt: 0.4,
-            dealtAmount: 3214,
-            heal: 0.1,
-            healAmount: 123,
-            death: 0.3,
-            deathAmount: 6,
-            damaged: 0.4,
-            damagedAmount: 1234,
-            place: 3,
-          }}
+          winRate={winRate}
+          kda={kda}
+          camp={camp}
+          gameContribution={gameContribution}
         />
       </div>
       <main css={style.main}>

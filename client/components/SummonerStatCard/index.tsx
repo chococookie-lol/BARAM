@@ -9,9 +9,9 @@ interface WinRateProps {
 }
 
 interface KDAProps {
-  kill: number;
-  death: number;
-  assist: number;
+  kills: number;
+  deaths: number;
+  assists: number;
   killContribution: number;
 }
 
@@ -53,9 +53,9 @@ export default function SummonerStatCard({
       <div css={style.flexBox}>
         <WinRate win={winRate.win} lose={winRate.lose} />
         <KDA
-          kill={kda.kill}
-          death={kda.death}
-          assist={kda.assist}
+          kills={kda.kills}
+          deaths={kda.deaths}
+          assists={kda.assists}
           killContribution={kda.killContribution}
         />
         <CampStatistic blue={camp.blue} red={camp.red} />
@@ -95,7 +95,7 @@ function WinRate({ win, lose }: WinRateProps) {
   );
 }
 
-function KDA({ kill, assist, death, killContribution }: KDAProps) {
+function KDA({ kills, assists, deaths, killContribution }: KDAProps) {
   const { theme } = useGlobalTheme();
 
   return (
@@ -105,14 +105,14 @@ function KDA({ kill, assist, death, killContribution }: KDAProps) {
       </span>
       <div css={style.kda}>
         <p css={[style.color(theme.background), style.resetMargin]}>
-          {kill}&nbsp;
+          {kills}&nbsp;
           <span css={style.color(theme.neutral)}>/</span>
-          <span css={style.color(theme.red2)}>&nbsp;{death}&nbsp;</span>
+          <span css={style.color(theme.red2)}>&nbsp;{deaths}&nbsp;</span>
           <span css={style.color(theme.neutral)}>/</span>
-          &nbsp;{assist}
+          &nbsp;{assists}
         </p>
         <p css={[style.color(theme.background), style.fontSize('20px'), style.resetMargin]}>
-          {((kill + assist) / death).toFixed(2)} : 1
+          {((kills + assists) / deaths).toFixed(2)} : 1
         </p>
         <p css={[style.color(theme.red2), style.fontSize('14px'), style.resetMargin]}>
           킬관여 {(killContribution * 100).toFixed(1)}%
