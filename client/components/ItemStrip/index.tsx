@@ -3,7 +3,6 @@ import ItemIcon from '../ItemIcon';
 
 interface ItemStripProps {
   items: number[];
-  version: string;
   width: number;
   height: number;
   padding?: number;
@@ -29,7 +28,6 @@ const style = {
 
 function ItemStrip({
   items,
-  version,
   width,
   height,
   padding = 3,
@@ -39,7 +37,7 @@ function ItemStrip({
   return (
     <div css={style[direction](padding)}>
       {items.map((e, i) => (
-        <ItemIcon key={i} id={e ? e : nullItem} version={version} width={width} height={height} />
+        <ItemIcon key={i} id={e ? e : nullItem} width={width} height={height} />
       ))}
     </div>
   );
