@@ -1,26 +1,32 @@
 import axios from 'axios';
 
-const version = '12.23.1';
-const region = 'ko_KR';
-
 export const ddragonAxiosInstance = axios.create({
-  baseURL: `https://ddragon.leagueoflegends.com/cdn/${version}/data/${region}`,
+  baseURL: 'https://ddragon.leagueoflegends.com/cdn/',
 });
 
-export const getChampionDdragon = async (): Promise<ChampionDdragonResponse> => {
+export const getChampionDdragon = async (
+  version: string,
+  region: string,
+): Promise<ChampionDdragonResponse> => {
   return await (
-    await ddragonAxiosInstance.get('/champion.json')
+    await ddragonAxiosInstance.get(`${version}/data/${region}/champion.json`)
   ).data;
 };
 
-export const getRuneDdragon = async (): Promise<RuneDdragonResponse> => {
+export const getRuneDdragon = async (
+  version: string,
+  region: string,
+): Promise<RuneDdragonResponse> => {
   return await (
-    await ddragonAxiosInstance.get('/runesReforged.json')
+    await ddragonAxiosInstance.get(`${version}/data/${region}/runesReforged.json`)
   ).data;
 };
 
-export const getSummonerDdragon = async (): Promise<SummonerDdragonResponse> => {
+export const getSummonerDdragon = async (
+  version: string,
+  region: string,
+): Promise<SummonerDdragonResponse> => {
   return await (
-    await ddragonAxiosInstance.get('/summoner.json')
+    await ddragonAxiosInstance.get(`${version}/data/${region}/summoner.json`)
   ).data;
 };
