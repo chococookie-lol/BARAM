@@ -1,17 +1,23 @@
 import { css } from '@emotion/react';
 
 export const style = {
-  container: css`
-    display: flex;
-    flex-direction: column;
+  container: (padding: number) => css`
+    position: relative;
+    display: block;
     width: 158px;
+    margin-top: -${padding}px;
   `,
-  slot: css`
-    display: flex;
-    width: 158px;
-  `,
-  span: (color: string) => css`
-    padding: 0 5px;
-    color: ${color};
+  slot: (color: string, padding: number) => css`
+    position: relative;
+    & > * {
+      float: left;
+      margin-top: ${padding}px;
+    }
+    & > p {
+      margin-block: 0;
+      margin-top: ${padding}px;
+      line-height: 16px;
+      color: ${color};
+    }
   `,
 };
