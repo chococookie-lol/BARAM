@@ -115,7 +115,7 @@ function KDA({ kill, assist, death, killContribution }: KDAProps) {
           {((kill + assist) / death).toFixed(2)} : 1
         </p>
         <p css={[style.color(theme.red2), style.fontSize('14px'), style.resetMargin]}>
-          킬관여 {killContribution * 100}%
+          킬관여 {(killContribution * 100).toFixed(1)}%
         </p>
       </div>
     </div>
