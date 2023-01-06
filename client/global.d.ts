@@ -400,12 +400,14 @@ interface ChampionDdragonResponse {
   data: Champions;
 }
 
-interface RuneDdragonResponse {
+type RuneDdragonResponse = RuneStyle[];
+
+interface RuneStyle {
   id: number;
   key: string;
   icon: string;
   name: string;
-  slots: Runes;
+  slots: Slot[];
 }
 
 interface Slot {
@@ -453,5 +455,4 @@ interface Spell {
 }
 
 type Champions = { [key: string]: Champion };
-type Runes = Slot[];
 type Spells = { [key: string]: Spell };

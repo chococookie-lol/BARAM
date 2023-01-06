@@ -18,10 +18,10 @@ export const ddragonChampions = selector<Champions>({
   },
 });
 
-export const ddragonRunes = selector<Runes>({
+export const ddragonRunes = selector<RuneStyle[]>({
   key: 'ddragonRunes',
   get: async ({ get }) => {
-    return (await getRuneDdragon(get(ddragonVersion), get(ddragonRegion))).slots;
+    return await getRuneDdragon(get(ddragonVersion), get(ddragonRegion));
   },
 });
 
