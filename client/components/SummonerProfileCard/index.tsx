@@ -49,7 +49,6 @@ export default function SummonerProfileCard({
               key={`challenge-${idx}`}
               id={challenge.challengeId}
               tier={challenge.level}
-              label={'도전과제'}
               value={challenge.value}
               width={50}
               height={50}
