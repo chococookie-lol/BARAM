@@ -12,17 +12,17 @@ interface SpellStripProps {
 
 const style = {
   vertical: (padding: number) => css`
-    display: block;
-    font-size: 0;
-    div {
-      padding-top: ${padding}px;
+    margin-top: -${padding}px;
+    & > * {
+      display: block;
+      margin-top: ${padding}px;
     }
   `,
   horizontal: (padding: number) => css`
-    display: flex;
-    font-size: 0;
-    div {
-      padding-left: ${padding}px;
+    margin-left: -${padding}px;
+    & > * {
+      display: inline-block;
+      margin-left: ${padding}px;
     }
   `,
 };
@@ -39,9 +39,13 @@ function SpellStrip({
   return (
     <div css={style[direction](padding)}>
       {spells.map((e, i) => (
-        <div key={i}>
-          <SpellIcon name={e ? e : nullSpell} version={version} width={width} height={height} />
-        </div>
+        <SpellIcon
+          key={i}
+          name={e ? e : nullSpell}
+          version={version}
+          width={width}
+          height={height}
+        />
       ))}
     </div>
   );
