@@ -1,10 +1,6 @@
 import { atom, selector } from 'recoil';
 import { getChampionDdragon, getRuneDdragon, getSummonerDdragon } from '../utils/ddragon';
 
-type Champions = { [key: string]: Champion };
-type Runes = Slot[];
-type Spells = { [key: string]: Spell };
-
 export const ddragonVersion = atom<string>({
   key: 'ddragonVersion',
   default: '12.23.1',

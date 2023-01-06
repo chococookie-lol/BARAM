@@ -397,7 +397,7 @@ interface ChampionDdragonResponse {
   type: string;
   format: string;
   version: string;
-  data: { [key: string]: Champion };
+  data: Champions;
 }
 
 interface RuneDdragonResponse {
@@ -405,7 +405,7 @@ interface RuneDdragonResponse {
   key: string;
   icon: string;
   name: string;
-  slots: Slot[];
+  slots: Runes;
 }
 
 interface Slot {
@@ -424,7 +424,7 @@ interface Rune {
 interface SummonerDdragonResponse {
   type: string;
   version: string;
-  data: { [key: string]: Spell };
+  data: Spells;
 }
 
 interface Spell {
@@ -451,3 +451,7 @@ interface Spell {
   image: Image;
   resource: string;
 }
+
+type Champions = { [key: string]: Champion };
+type Runes = Slot[];
+type Spells = { [key: string]: Spell };
