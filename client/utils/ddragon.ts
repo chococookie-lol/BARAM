@@ -30,3 +30,21 @@ export const getSummonerDdragon = async (
     await ddragonAxiosInstance.get(`${version}/data/${region}/summoner.json`)
   ).data;
 };
+
+export function runeStyleIdToIcon(runeStyles: RuneStyle[], style: number): string {
+  return runeStyles.find((e) => e.id === style)?.icon || 'perk-images/Styles/RunesIcon.png';
+}
+
+export function runeIdToIcon(runeStyles: RuneStyle[], style: number, id: number): string {
+  return (
+    runeStyles.find((e) => e.id === style)?.slots[0].runes.find((e) => e.id === id)?.icon ||
+    'perk-images/Styles/RunesIcon.png'
+  );
+}
+
+export function spellIdToIcon(spells: Spells, id: number): string {
+  return spells[
+    Object.keys(spells).find((k) => spells[k].key === id.toString()) ||
+      'Summoner_UltBookPlaceholder'
+  ].image.full;
+}
