@@ -11,7 +11,7 @@ import { style } from './style';
 
 interface RuneIconProps {
   styleId: number;
-  runeId: number | undefined;
+  runeId?: number;
   width: number;
   height: number;
 }
