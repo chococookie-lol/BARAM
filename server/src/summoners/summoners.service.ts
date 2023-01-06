@@ -7,6 +7,7 @@ export class SummonersService {
       userName,
       level: 123,
       id: '63aaa89b1117f13437f6ab4f',
+      puuid: 'xF6UfEzvrs89bWB3PhtBLKt74bthXbc2QQGY-8YlgcSvmvVw0SOjvM5zMXT6YpSMhsST65BMj0jFlw',
       profileIconId: 1,
       challenges: [
         {
