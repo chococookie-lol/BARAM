@@ -2,8 +2,7 @@ import { css } from '@emotion/react';
 import SpellIcon from '../SpellIcon';
 
 interface SpellStripProps {
-  spells: string[];
-  version: string;
+  spells: number[];
   width: number;
   height: number;
   padding?: number;
@@ -29,23 +28,16 @@ const style = {
 
 function SpellStrip({
   spells,
-  version,
   width,
   height,
   padding = 3,
   direction = 'horizontal',
 }: SpellStripProps) {
-  const nullSpell = 'Summoner_UltBookPlaceholder';
+  const nullSpell = 54;
   return (
     <div css={style[direction](padding)}>
       {spells.map((e, i) => (
-        <SpellIcon
-          key={i}
-          name={e ? e : nullSpell}
-          version={version}
-          width={width}
-          height={height}
-        />
+        <SpellIcon key={i} id={e ? e : nullSpell} width={width} height={height} />
       ))}
     </div>
   );
