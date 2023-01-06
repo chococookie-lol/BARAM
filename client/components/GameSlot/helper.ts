@@ -1,28 +1,6 @@
-export function spellIdToName(id: number) {
-  //TODO: implement this
-  return 'SummonerFlash';
-}
-
 export function secondsToString(seconds: number) {
   const minutes = Math.floor(seconds / 60);
   return `${minutes}분 ${seconds % 60}초`;
-}
-
-export function styleToRuneCategory(
-  style: number,
-): 'Precision' | 'Domination' | 'Inspiration' | 'Resolve' | 'Sorcery' {
-  //TODO: implement this
-  return 'Precision';
-}
-
-export function perkToRuneName(perk: number) {
-  //TODO: implement this
-  return 'Conqueror';
-}
-
-export function styleToRuneName(style: number) {
-  //TODO: implement this
-  return '7203_Whimsy';
 }
 
 interface TeamTotal {
