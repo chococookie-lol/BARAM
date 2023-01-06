@@ -20,28 +20,9 @@ import { style } from './style';
 interface GameSlotProps {
   matchData: Match;
   puuid: string;
-  dealAverage: number;
-  dealMax: number;
-  deathAverage: number;
-  deathMax: number;
-  goldAverage: number;
-  goldMax: number;
-  csAverage: number;
-  csMax: number;
 }
 
-function GameSlot({
-  matchData,
-  puuid,
-  dealAverage,
-  dealMax,
-  goldAverage,
-  goldMax,
-  deathAverage,
-  deathMax,
-  csAverage,
-  csMax,
-}: GameSlotProps) {
+function GameSlot({ matchData, puuid }: GameSlotProps) {
   const { info } = matchData;
   const { participants, gameDuration } = info;
   const version = '12.23.1';
@@ -65,6 +46,22 @@ function GameSlot({
   const k = me.kills;
   const d = me.deaths;
   const a = me.assists;
+
+  const {
+    totalTank,
+    totalDeal,
+    totalDeath,
+    totalHeal,
+    dealAverage,
+    dealMax,
+    goldAverage,
+    goldMax,
+    deathAverage,
+    deathMax,
+    csAverage,
+    csMax,
+  } = totalValueHelper(info.participants)[team];
+
   const dealMaxOffset = Math.abs(dealMax - dealAverage);
   const dealValue = me.totalDamageDealtToChampions;
   const goldMaxOffset = Math.abs(goldMax - goldAverage);
@@ -78,8 +75,6 @@ function GameSlot({
   const dealMagic = me.magicDamageDealtToChampions;
   const dealPhysical = me.physicalDamageDealtToChampions;
   const dealTrue = me.trueDamageDealtToChampions;
-  const teamTotal = totalValueHelper(info.participants);
-  const { totalTank, totalDeal, totalDeath, totalHeal } = teamTotal[team];
 
   const kda = ((k + a) / d).toFixed(2);
 
