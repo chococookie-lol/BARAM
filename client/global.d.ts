@@ -408,10 +408,10 @@ interface RuneStyle {
   key: string;
   icon: string;
   name: string;
-  slots: Slot[];
+  slots: RuneSlot[];
 }
 
-interface Slot {
+interface RuneSlot {
   runes: Rune[];
 }
 
