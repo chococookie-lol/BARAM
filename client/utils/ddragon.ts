@@ -4,7 +4,7 @@ const version = '12.23.1';
 const region = 'ko_KR';
 
 export const ddragonAxiosInstance = axios.create({
-  baseURL: `https://ddragon.leagueoflegends.com/cdn/${version}/${region}`,
+  baseURL: `https://ddragon.leagueoflegends.com/cdn/${version}/data/${region}`,
 });
 
 export const getChampionDdragon = async (): Promise<ChampionDdragonResponse> => {
