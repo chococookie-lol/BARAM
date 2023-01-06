@@ -1,3 +1,4 @@
+import { convertEpochToRelativeTime } from '../../utils/time';
 import Button from '../Button';
 import ChallengeIcon from '../ChallengeIcon';
 import SummonerProfilePic from '../SummonerProfilePic';
@@ -33,7 +34,7 @@ export default function SummonerProfileCard({
           <div>
             <p css={[style.color('white'), style.resetMargin, style.bold]}>{summonerName}</p>
             <p css={[style.color('white'), style.resetMargin, style.fontSize('12px')]}>
-              최근 업데이트: {modifiedAt}
+              최근 업데이트: {convertEpochToRelativeTime(modifiedAt)}
             </p>
           </div>
           <Button width="80px" onClick={() => {}}>
