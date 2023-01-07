@@ -1,19 +1,34 @@
 import Image from 'next/image';
+import { useRecoilValueLoadable } from 'recoil';
+import { ddragonRunes } from '../../states/ddragon';
+import {
+  DDRAGON_BASE_URL,
+  DEAFULT_PLACEHOLDER,
+  runeIdToIcon,
+  runeStyleIdToIcon,
+} from '../../utils/ddragon';
 import { style } from './style';
 
 interface RuneIconProps {
-  name: string;
-  category?: 'Domination' | 'Inspiration' | 'Precision' | 'Resolve' | 'Sorcery' | undefined;
+  styleId: number;
+  runeId?: number;
   width: number;
   height: number;
 }
 
-function RuneIcon({ name, category = undefined, width, height }: RuneIconProps) {
-  const baseUrl = 'https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/';
-  const src = category ? `${baseUrl}${category}/${name}/${name}.png` : `${baseUrl}${name}.png`;
+function RuneIcon({ styleId, runeId, width, height }: RuneIconProps) {
+  const runes = useRecoilValueLoadable(ddragonRunes);
+  const src =
+    runes.state === 'hasValue'
+      ? `${DDRAGON_BASE_URL}img/${
+          runeId
+            ? runeIdToIcon(runes.contents, styleId, runeId)
+            : runeStyleIdToIcon(runes.contents, styleId)
+        }`
+      : DEAFULT_PLACEHOLDER;
   return (
     <div css={style(width, height)}>
-      <Image src={src} width={width} height={height} alt={name} />
+      <Image src={src} width={width} height={height} alt={'rune'} />
     </div>
   );
 }

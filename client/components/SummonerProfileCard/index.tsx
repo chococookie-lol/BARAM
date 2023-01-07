@@ -27,7 +27,7 @@ export default function SummonerProfileCard({
     <div css={[style.container, style.backgroundColor('#37393A')]}>
       <div css={style.summonerDetailContainer}>
         <div css={style.summonerProfileContaier}>
-          <SummonerProfilePic version={'12.13.1'} id={profileIconId} width={100} height={100} />
+          <SummonerProfilePic id={profileIconId} width={100} height={100} />
           <span css={style.level}>{summonerLevel}</span>
         </div>
         <div css={style.summonerDetail}>
@@ -49,7 +49,6 @@ export default function SummonerProfileCard({
               key={`challenge-${idx}`}
               id={challenge.challengeId}
               tier={challenge.level}
-              label={'도전과제'}
               value={challenge.value}
               width={50}
               height={50}

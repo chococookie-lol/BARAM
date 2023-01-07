@@ -1,23 +1,23 @@
 import { css } from '@emotion/react';
 import Image from 'next/image';
+import { DDRAGON_BASE_URL } from '../../utils/ddragon';
 
 interface ChallengIconProps {
   id: number;
   tier: string;
-  label: string;
   value: number;
   width: number;
   height: number;
 }
 
-function ChallengeIcon({ id, tier, label, value, width, height }: ChallengIconProps) {
+function ChallengeIcon({ id, tier, value, width, height }: ChallengIconProps) {
   return (
     <Image
       css={css`
         border-radius: 50%;
       `}
-      src={`https://ddragon.leagueoflegends.com/cdn/img/challenges-images/${id}-${tier}.png`}
-      alt={`${label} : ${value}`}
+      src={`${DDRAGON_BASE_URL}img/challenges-images/${id}-${tier}.png`}
+      alt={`${id} : ${value}`}
       height={height}
       width={width}
     />

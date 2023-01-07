@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+export const DDRAGON_BASE_URL = 'https://ddragon.leagueoflegends.com/cdn/';
+export const DEAFULT_PLACEHOLDER = '';
+
 export const ddragonAxiosInstance = axios.create({
-  baseURL: 'https://ddragon.leagueoflegends.com/cdn/',
+  baseURL: DDRAGON_BASE_URL,
 });
 
 export const getChampionDdragon = async (
