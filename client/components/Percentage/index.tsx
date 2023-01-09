@@ -16,13 +16,12 @@ export default function Percentage({
   percent,
   value,
 }: PercentageProps) {
-  const displayPercent = percent * 100;
-  const padding = 10;
-  const [displayText, setDisplayText] = useState<string>(`${displayPercent}%`);
-
-  if (displayPercent < 0) {
+  if (value < 0) {
     throw new Error('value must be positive');
   }
+  const displayPercent = Math.round(percent * 10000) / 100;
+  const padding = 10;
+  const [displayText, setDisplayText] = useState<string>(`${displayPercent}%`);
 
   return (
     <div
