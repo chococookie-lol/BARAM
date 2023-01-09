@@ -17,29 +17,11 @@ export function getMatchStatistic(match: Match, puuid: string) {
     red: teamId === 100 ? 0 : 1,
   };
 
-  const myContribution = {
-    dealt: me.totalDamageDealtToChampions,
-    damaged: me.totalDamageTaken,
-    heal: me.totalHeal,
-  };
+  const myContribution = me.contribution;
 
-  const totalContribution = match.info.participants.reduce(
-    (acc, participant) => {
-      acc.dealt += participant.totalDamageDealtToChampions;
-      acc.damaged += participant.totalDamageTaken;
-      acc.heal += participant.totalHeal;
-      return acc;
-    },
-    {
-      dealt: 0,
-      damaged: 0,
-      heal: 0,
-      deaths: 0,
-    },
-  );
+  const totalContribution = match.info.teams.find((team) => team.teamId === teamId)?.contribution;
 
-  totalContribution.deaths +=
-    match.info.teams.find((team) => team.teamId !== teamId)?.objectives.champion.kills ?? 0;
+  if (!totalContribution) throw new Error('Match 데이터 오류');
 
   return {
     win,
@@ -100,7 +82,7 @@ export function getTotalMatchStatistics(matchStatistic: { [index: string]: Match
     gameContribution.damagedAmount += matchStatistic[matchId].myContribution.damaged;
     gameContribution.heal += matchStatistic[matchId].totalContribution.heal;
     gameContribution.healAmount += matchStatistic[matchId].myContribution.heal;
-    gameContribution.death += matchStatistic[matchId].totalContribution.deaths;
+    gameContribution.death += matchStatistic[matchId].totalContribution.death;
     gameContribution.deathAmount += matchStatistic[matchId].deaths;
   }
 
