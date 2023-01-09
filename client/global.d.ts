@@ -12,6 +12,7 @@ interface SummonerProfile {
   userName: string;
   level: number;
   id: string;
+  puuid: string;
   profileIconId: number;
   challenges: Challenge[];
   lastModified: number;
@@ -338,3 +339,121 @@ interface Metadata {
   matchId: string;
   participants: string[];
 }
+
+interface Champion {
+  version: string;
+  id: string;
+  key: string;
+  name: string;
+  title: string;
+  blurb: string;
+  info: Info;
+  image: Image;
+  tags: string[];
+  partype: string;
+  stats: Stat;
+}
+
+interface Image {
+  full: string;
+  sprite: string;
+  group: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+interface Info {
+  attack: number;
+  defense: number;
+  magic: number;
+  difficulty: number;
+}
+
+interface Stat {
+  hp: number;
+  hpperlevel: number;
+  mp: number;
+  mpperlevel: number;
+  movespeed: number;
+  armor: number;
+  armorperlevel: number;
+  spellblock: number;
+  spellblockperlevel: number;
+  attackrange: number;
+  hpregen: number;
+  hpregenperlevel: number;
+  mpregen: number;
+  mpregenperlevel: number;
+  crit: number;
+  critperlevel: number;
+  attackdamage: number;
+  attackdamageperlevel: number;
+  attackspeedperlevel: number;
+  attackspeed: number;
+}
+
+interface ChampionDdragonResponse {
+  type: string;
+  format: string;
+  version: string;
+  data: Champions;
+}
+
+type RuneDdragonResponse = RuneStyle[];
+
+interface RuneStyle {
+  id: number;
+  key: string;
+  icon: string;
+  name: string;
+  slots: RuneSlot[];
+}
+
+interface RuneSlot {
+  runes: Rune[];
+}
+
+interface Rune {
+  id: number;
+  key: string;
+  icon: string;
+  name: string;
+  shortDesc: string;
+  longDesc: string;
+}
+
+interface SummonerDdragonResponse {
+  type: string;
+  version: string;
+  data: Spells;
+}
+
+interface Spell {
+  id: string;
+  name: string;
+  description: string;
+  tooltip: string;
+  maxrank: number;
+  cooldown: number[];
+  cooldownBurn: string;
+  cost: number[];
+  costBurn: string;
+  datavalues: {};
+  effect: Array<number[] | null>;
+  effectBurn: Array<null | string>;
+  vars: any[];
+  key: string;
+  summonerLevel: number;
+  modes: string[];
+  costType: string;
+  maxammo: string;
+  range: number[];
+  rangeBurn: string;
+  image: Image;
+  resource: string;
+}
+
+type Champions = { [key: string]: Champion };
+type Spells = { [key: string]: Spell };
