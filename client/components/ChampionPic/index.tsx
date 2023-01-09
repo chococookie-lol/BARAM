@@ -1,9 +1,11 @@
 import Image from 'next/image';
 import { css } from '@emotion/react';
+import { useRecoilValueLoadable } from 'recoil';
+import { ddragonVersion } from '../../states/ddragon';
+import { DDRAGON_BASE_URL, DEAFULT_PLACEHOLDER } from '../../utils/ddragon';
 
 interface ChampionPicProps {
   championName: string;
-  version: string;
   width: number;
   height: number;
   shape?: 'rectangle' | 'round';
@@ -16,16 +18,13 @@ const style = {
   `,
 };
 
-function ChampionPic({ championName, version, width, height, shape = 'round' }: ChampionPicProps) {
-  return (
-    <Image
-      css={style[shape]}
-      src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${championName}.png`}
-      width={width}
-      height={height}
-      alt={championName}
-    />
-  );
+function ChampionPic({ championName, width, height, shape = 'round' }: ChampionPicProps) {
+  const version = useRecoilValueLoadable(ddragonVersion);
+  const src =
+    version.state === 'hasValue'
+      ? `${DDRAGON_BASE_URL}${version.contents}/img/champion/${championName}.png`
+      : DEAFULT_PLACEHOLDER;
+  return <Image css={style[shape]} src={src} width={width} height={height} alt={championName} />;
 }
 
 export default ChampionPic;
