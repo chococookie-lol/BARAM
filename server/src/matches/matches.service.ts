@@ -3006,19 +3006,20 @@ export class MatchesService {
       red: {},
     };
 
-    const excepts = ['killParticipation', 'death'];
+    const totalExcepts = ['killParticipation', 'death'];
+    const averageExcepts = ['killParticipation'];
 
     mock.info.participants.forEach((participant) => {
       const target = participant.teamId === 100 ? totalContribution.blue : totalContribution.red;
 
       for (const key of Object.keys(participant['contribution'])) {
-        if (excepts.findIndex((val) => val === key) !== -1) continue;
-        if (!target[key]) target[key] = 0;
-        target[key] += participant['contribution'][key];
         target[`${key}Max`] = Math.max(
           participant['contribution'][key],
           target[`${key}Max`] ? target[`${key}Max`] : 0,
         );
+        if (totalExcepts.findIndex((val) => val === key) !== -1) continue;
+        if (!target[key]) target[key] = 0;
+        target[key] += participant['contribution'][key];
       }
     });
 
@@ -3027,6 +3028,7 @@ export class MatchesService {
 
     for (const team of ['blue', 'red']) {
       Object.keys(mock.info.participants[0]['contribution']).forEach((key) => {
+        if (averageExcepts.findIndex((val) => val === key) !== -1) return;
         totalContribution[team][`${key}Average`] = totalContribution[team][key] / 5;
       });
     }
