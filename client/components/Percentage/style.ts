@@ -14,11 +14,13 @@ export const style = {
     left: 0;
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
   `,
   inner: (foregroundColor: string, percentage: string) => css`
     position: absolute;
     background-color: ${foregroundColor};
-    border-radius: 11px;
+    border-radius: 0 11px 11px 0;
     top: 0;
     left: 0;
     width: ${percentage};

@@ -19,8 +19,7 @@ export default function Percentage({
   if (value < 0) {
     throw new Error('value must be positive');
   }
-  const displayPercent = Math.round(percent * 10000) / 100;
-  const padding = 10;
+  const displayPercent = percent ? Math.round(percent * 10000) / 100 : 0;
   const [displayText, setDisplayText] = useState<string>(`${displayPercent}%`);
 
   return (
@@ -33,13 +32,10 @@ export default function Percentage({
         setDisplayText(`${displayPercent}%`);
       }}
     >
-      <div css={style.outer(backgroundColor)}></div>
-      <div
-        css={style.inner(
-          foregroundColor,
-          `${displayPercent > 100 - padding ? 100 : displayPercent + padding}%`,
-        )}
-      ></div>
+      <div css={style.outer(backgroundColor)}>
+        <div css={style.inner(foregroundColor, `${displayPercent}%`)} />
+      </div>
+
       <div css={style.text(textColor)}>{displayText}</div>
     </div>
   );
