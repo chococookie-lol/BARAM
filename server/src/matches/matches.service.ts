@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class MatchesService {
   async findOne(matchId: number) {
-    return {
+    const mock = {
       metadata: {
         dataVersion: '2',
         matchId: matchId,
@@ -2986,5 +2986,36 @@ export class MatchesService {
         tournamentCode: '',
       },
     };
+
+    for (const participant of mock.info.participants) {
+      const contribution = {
+        dealt: participant.totalDamageDealtToChampions,
+        damaged: participant.totalDamageTaken + participant.damageSelfMitigated,
+        heal: participant.totalHeal,
+        death: participant.challenges.deathsByEnemyChamps,
+        killParticipation: participant.challenges.killParticipation,
+      };
+
+      participant['contribution'] = contribution;
+    }
+
+    const totalContribution = {
+      blue: {},
+      red: {},
+    };
+
+    mock.info.participants.forEach((participant) => {
+      const target = participant.teamId === 100 ? totalContribution.blue : totalContribution.red;
+
+      for (const key of Object.keys(participant['contribution'])) {
+        if (!target[key]) target[key] = 0;
+        target[key] += participant['contribution'][key];
+      }
+    });
+
+    mock.info.teams[0]['contribution'] = totalContribution.blue;
+    mock.info.teams[1]['contribution'] = totalContribution.red;
+
+    return mock;
   }
 }
