@@ -7,12 +7,12 @@ export const style = {
       transform-origin: 50% 50%;
       opacity: 0.85;
       scale: 1;
-      transition: 0.2s;
+      transition: scale 0.2s;
     }
     path:hover {
       opacity: 1;
       scale: 1.05;
-      transition: 0.2s;
+      transition: scale 0.2s;
     }
   `,
   text: (size: number, textColor: string) => css`
