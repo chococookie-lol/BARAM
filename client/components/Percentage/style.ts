@@ -25,11 +25,13 @@ export const style = {
     height: 100%;
   `,
   text: (color: string) => css`
+    line-height: 16px;
     color: ${color};
     position: absolute;
     width: 100%;
     height: 100%;
     font-size: 13px;
     text-align: center;
+    vertical-align: middle;
   `,
 };
