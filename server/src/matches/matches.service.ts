@@ -2993,6 +2993,8 @@ export class MatchesService {
         damaged: participant.totalDamageTaken + participant.damageSelfMitigated,
         heal: participant.totalHeal,
         death: participant.challenges.deathsByEnemyChamps,
+        gold: participant.goldEarned,
+        cs: participant.totalMinionsKilled,
         killParticipation: participant.challenges.killParticipation,
       };
 
@@ -3013,11 +3015,21 @@ export class MatchesService {
         if (excepts.findIndex((val) => val === key) !== -1) continue;
         if (!target[key]) target[key] = 0;
         target[key] += participant['contribution'][key];
+        target[`${key}Max`] = Math.max(
+          participant['contribution'][key],
+          target[`${key}Max`] ? target[`${key}Max`] : 0,
+        );
       }
     });
 
     totalContribution.blue['death'] = mock.info.teams.at(1).objectives.champion.kills;
     totalContribution.red['death'] = mock.info.teams.at(0).objectives.champion.kills;
+
+    for (const team of ['blue', 'red']) {
+      Object.keys(mock.info.participants[0]['contribution']).forEach((key) => {
+        totalContribution[team][`${key}Average`] = totalContribution[team][key] / 5;
+      });
+    }
 
     mock.info.teams[0]['contribution'] = totalContribution.blue;
     mock.info.teams[1]['contribution'] = totalContribution.red;
