@@ -55,6 +55,7 @@ interface Team {
   objectives: Objectives;
   teamId: number;
   win: boolean;
+  contribution: Contribution;
 }
 
 interface Objectives {
@@ -69,6 +70,14 @@ interface Objectives {
 interface ObjectiveInfo {
   first: boolean;
   kills: number;
+}
+
+interface Contribution {
+  dealt: number;
+  damaged: number;
+  heal: number;
+  death: number;
+  killParticipation: number;
 }
 
 interface Participant {
@@ -87,6 +96,7 @@ interface Participant {
   championTransform: number;
   commandPings: number;
   consumablesPurchased: number;
+  contribution: Contribution;
   damageDealtToBuildings: number;
   damageDealtToObjectives: number;
   damageDealtToTurrets: number;
