@@ -3004,14 +3004,20 @@ export class MatchesService {
       red: {},
     };
 
+    const excepts = ['killParticipation', 'death'];
+
     mock.info.participants.forEach((participant) => {
       const target = participant.teamId === 100 ? totalContribution.blue : totalContribution.red;
 
       for (const key of Object.keys(participant['contribution'])) {
+        if (excepts.findIndex((val) => val === key) !== -1) continue;
         if (!target[key]) target[key] = 0;
         target[key] += participant['contribution'][key];
       }
     });
+
+    totalContribution.blue['death'] = mock.info.teams.at(1).objectives.champion.kills;
+    totalContribution.red['death'] = mock.info.teams.at(0).objectives.champion.kills;
 
     mock.info.teams[0]['contribution'] = totalContribution.blue;
     mock.info.teams[1]['contribution'] = totalContribution.red;
