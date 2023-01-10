@@ -16,7 +16,10 @@ export const style = {
     & > p {
       margin-block: 0;
       margin-top: ${padding}px;
+      margin-right: ${padding}px;
+      font-size: 13px;
       line-height: 16px;
+      vertical-align: middle;
       color: ${color};
     }
   `,

@@ -20,7 +20,7 @@ export function generatePath(
   let degreeSum = 0;
   val.forEach((v) => {
     const percent = v / sum;
-    const degree = percent * 360;
+    const degree = (percent == 1 ? 0.999999 : percent) * 360;
     const longPath = degree > 180 ? 1 : 0;
     const coords = [
       degreeToCoord(degree, radius, viewBoxSize),
