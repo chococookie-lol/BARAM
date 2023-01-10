@@ -12,9 +12,11 @@ interface RelativeBarProps {
 }
 
 function offsetHelper(average: number, value: number, maxOffset: number) {
-  const offset = ((value - average) / maxOffset) * 50;
-  if (offset < 0) return Math.max(-50, offset);
-  return Math.min(50, offset);
+  const isPositive = value - average > 0;
+  const diff = Math.abs(value - average);
+  const percent = (diff / maxOffset) * 35 + 15;
+
+  return (isPositive ? 1 : -1) * percent;
 }
 
 function RelativeBar({
