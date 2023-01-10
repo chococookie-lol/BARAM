@@ -6,6 +6,7 @@ export const style = {
     height: 219px;
     background-color: ${background};
     border-radius: 10px;
+    user-select: none;
   `,
   title: css`
     margin: 0;
