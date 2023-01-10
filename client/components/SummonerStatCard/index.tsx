@@ -176,6 +176,7 @@ function GameContribution({
             deathPercent={death}
             deathAmount={deathAmount}
             color={{ foreground: theme.background, background: theme.foreground }}
+            padding={6}
           />
         </div>
       </div>
