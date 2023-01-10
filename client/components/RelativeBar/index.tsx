@@ -13,8 +13,7 @@ interface RelativeBarProps {
 
 function offsetHelper(average: number, value: number, maxOffset: number) {
   const offset = ((value - average) / maxOffset) * 50;
-  if (offset < 0) return Math.max(-50, offset);
-  return Math.min(50, offset);
+  return offset < 0 ? Math.max(-50, Math.min(offset, -15)) : Math.min(50, Math.max(offset, 15));
 }
 
 function RelativeBar({
