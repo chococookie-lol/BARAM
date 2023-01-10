@@ -67,9 +67,9 @@ export function totalValueHelper(participants: Participant[]): TeamTotal {
     total[team].dealMax = Math.max(total[team].dealMax, e.totalDamageDealtToChampions);
     total[team].totalDeath += e.deaths;
     total[team].deathMax = Math.max(total[team].deathMax, e.deaths);
-    total[team].totalTank += e.totalDamageTaken;
+    total[team].totalTank += e.contribution.damaged;
 
-    total[team].totalHeal += e.totalHealsOnTeammates;
+    total[team].totalHeal += e.contribution.heal;
 
     total[team].totalCs += e.totalMinionsKilled;
     total[team].csMax = Math.max(total[team].csMax, e.totalMinionsKilled);

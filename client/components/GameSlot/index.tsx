@@ -63,8 +63,8 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
   const deathValue = me.deaths;
   const csMaxOffset = Math.abs(csMax - csAverage);
   const csValue = me.totalMinionsKilled;
-  const healValue = me.totalHealsOnTeammates;
-  const tankValue = me.totalDamageTaken;
+  const healValue = me.contribution.heal;
+  const tankValue = me.contribution.damaged;
   const dealMagic = me.magicDamageDealtToChampions;
   const dealPhysical = me.physicalDamageDealtToChampions;
   const dealTrue = me.trueDamageDealtToChampions;
