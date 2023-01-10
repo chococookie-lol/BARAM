@@ -11,3 +11,8 @@ export function convertEpochToRelativeTime(eTime: number): string {
   }
   return `${(diff / 1000 / 60 / 60 / 24).toFixed(0)}일 전`;
 }
+
+export function secondsToString(seconds: number) {
+  const minutes = Math.floor(seconds / 60);
+  return `${minutes}분 ${seconds % 60}초`;
+}
