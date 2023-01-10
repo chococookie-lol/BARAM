@@ -77,6 +77,23 @@ interface TeamContribution {
   damaged: number;
   heal: number;
   death: number;
+  gold: number;
+  cs: number;
+
+  dealtMax: number;
+  damagedMax: number;
+  healMax: number;
+  deathMax: number;
+  goldMax: number;
+  csMax: number;
+  killParticipationMax: number;
+
+  dealtAverage: number;
+  damagedAverage: number;
+  healAverage: number;
+  deathAverage: number;
+  goldAverage: number;
+  csAverage: number;
 }
 
 interface ParticipantContribution {
@@ -84,6 +101,8 @@ interface ParticipantContribution {
   damaged: number;
   heal: number;
   death: number;
+  gold: number;
+  cs: number;
   killParticipation: number;
 }
 

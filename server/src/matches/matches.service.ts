@@ -2993,6 +2993,8 @@ export class MatchesService {
         damaged: participant.totalDamageTaken + participant.damageSelfMitigated,
         heal: participant.totalHeal,
         death: participant.challenges.deathsByEnemyChamps,
+        gold: participant.goldEarned,
+        cs: participant.totalMinionsKilled,
         killParticipation: participant.challenges.killParticipation,
       };
 
@@ -3004,13 +3006,18 @@ export class MatchesService {
       red: {},
     };
 
-    const excepts = ['killParticipation', 'death'];
+    const totalExcepts = ['killParticipation', 'death'];
+    const averageExcepts = ['killParticipation'];
 
     mock.info.participants.forEach((participant) => {
       const target = participant.teamId === 100 ? totalContribution.blue : totalContribution.red;
 
       for (const key of Object.keys(participant['contribution'])) {
-        if (excepts.findIndex((val) => val === key) !== -1) continue;
+        target[`${key}Max`] = Math.max(
+          participant['contribution'][key],
+          target[`${key}Max`] ? target[`${key}Max`] : 0,
+        );
+        if (totalExcepts.findIndex((val) => val === key) !== -1) continue;
         if (!target[key]) target[key] = 0;
         target[key] += participant['contribution'][key];
       }
@@ -3018,6 +3025,13 @@ export class MatchesService {
 
     totalContribution.blue['death'] = mock.info.teams.at(1).objectives.champion.kills;
     totalContribution.red['death'] = mock.info.teams.at(0).objectives.champion.kills;
+
+    for (const team of ['blue', 'red']) {
+      Object.keys(mock.info.participants[0]['contribution']).forEach((key) => {
+        if (averageExcepts.findIndex((val) => val === key) !== -1) return;
+        totalContribution[team][`${key}Average`] = totalContribution[team][key] / 5;
+      });
+    }
 
     mock.info.teams[0]['contribution'] = totalContribution.blue;
     mock.info.teams[1]['contribution'] = totalContribution.red;
