@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 export const style = {
   container: css`
     width: 235px;
-    height: 187px;
+    height: 189px;
     border-radius: 10px;
     padding: 15px;
     display: flex;
