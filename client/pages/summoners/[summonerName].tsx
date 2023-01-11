@@ -121,7 +121,6 @@ export default function SearchPage() {
 
   useEffect(() => {
     if (matchStatistics) {
-      console.log(matchStatistics);
       setTotalStatistics(getTotalMatchStatistics(matchStatistics));
     }
   }, [matchStatistics]);
