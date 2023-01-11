@@ -3,6 +3,7 @@ import { SummonersModule } from './summoners/summoners.module';
 import { MatchesModule } from './matches/matches.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
+import { RiotApiModule } from './riot.api/riot.api.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { DatabaseModule } from './database/database.module';
     SummonersModule,
     MatchesModule,
     DatabaseModule,
+    RiotApiModule,
   ],
 })
 export class AppModule {}
