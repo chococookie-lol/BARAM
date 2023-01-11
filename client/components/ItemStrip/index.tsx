@@ -12,6 +12,7 @@ interface ItemStripProps {
 const style = {
   horizontal: (padding: number) => css`
     margin-left: -${padding}px;
+    font-size: 0;
     & > * {
       display: inline-block;
       margin-left: ${padding}px;
