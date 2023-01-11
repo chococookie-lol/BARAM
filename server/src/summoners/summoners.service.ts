@@ -1,39 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { RiotApiService } from '..//riot.api/riot.api.service';
+import { Summoner, SummonerDocument } from './schemas/summoner.schema';
 
 @Injectable()
 export class SummonersService {
+  constructor(
+    @InjectModel(Summoner.name) private summonerModel: Model<SummonerDocument>,
+    private readonly riotApiService: RiotApiService,
+  ) {}
+
   async findOne(userName: string) {
-    return {
-      userName,
-      level: 123,
-      id: '63aaa89b1117f13437f6ab4f',
-      puuid: 'xF6UfEzvrs89bWB3PhtBLKt74bthXbc2QQGY-8YlgcSvmvVw0SOjvM5zMXT6YpSMhsST65BMj0jFlw',
-      profileIconId: 1,
-      challenges: [
-        {
-          challengeId: 402408,
-          percentile: 0.5,
-          level: 'BRONZE',
-          value: 8425,
-          achievedTime: 1661939191682,
-        },
-        {
-          challengeId: 402408,
-          percentile: 0.5,
-          level: 'BRONZE',
-          value: 8425,
-          achievedTime: 1661939191682,
-        },
-        {
-          challengeId: 402408,
-          percentile: 0.5,
-          level: 'BRONZE',
-          value: 8425,
-          achievedTime: 1661939191682,
-        },
-      ],
-      lastModified: 1661939191682,
-    };
+    const summoner = await this.summonerModel.findOne({ name: userName }).lean();
+
+    if (!summoner) throw new NotFoundException('해당 소환사가 없습니다.');
+
+    return summoner;
   }
 
   async update(userName: string) {
