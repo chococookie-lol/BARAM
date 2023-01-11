@@ -2,29 +2,47 @@ import { css } from '@emotion/react';
 import { Theme } from '../../styles/theme';
 
 export const style = {
+  parent: css`
+    position: relative;
+    width: 777px;
+  `,
   container: (theme: Theme, win: boolean) => css`
     position: relative;
+    display: flex;
+    justify-content: space-between;
     height: 120px;
     width: 777px;
     background-color: ${win ? theme.blue4 : theme.red4};
     border-radius: 10px;
     color: ${theme.background};
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     * {
       box-sizing: border-box;
       overflow: hidden;
     }
   `,
+  gameSummary: css`
+    position: relative;
+    height: 120px;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+  `,
+  gameSummaryContainer: css`
+    flex-grow: 1;
+  `,
   header: (theme: Theme, win: boolean) => css`
-    float: left;
     width: 70px;
     height: 100%;
     border-radius: 10px 0 0 10px;
     font-size: 11px;
     padding: 8px 6px;
     background-color: ${win ? theme.blue3 : theme.red2};
+  `,
+  expand: css`
+    width: 40px;
+    height: 100%;
+    border-radius: 0 10px 10px 0;
   `,
   bottomRight: css`
     position: absolute;
@@ -98,13 +116,6 @@ export const style = {
   `,
   champion: css`
     font-size: 0px;
-  `,
-  expand: css`
-    position: relative;
-    float: right;
-    width: 40px;
-    height: 100%;
-    border-radius: 0 10px 10px 0;
   `,
   stickLeft: css`
     position: absolute;
