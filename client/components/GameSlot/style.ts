@@ -6,14 +6,14 @@ export const style = {
     position: relative;
     width: 777px;
   `,
-  container: (theme: Theme, win: boolean) => css`
+  container: (theme: Theme, win: boolean, expand: boolean) => css`
     position: relative;
     display: flex;
     justify-content: space-between;
     height: 120px;
     width: 777px;
     background-color: ${win ? theme.blue4 : theme.red4};
-    border-radius: 10px;
+    border-radius: 10px 10px ${expand ? 0 : 10}px 10px;
     color: ${theme.background};
     * {
       box-sizing: border-box;
@@ -31,10 +31,10 @@ export const style = {
   gameSummaryContainer: css`
     flex-grow: 1;
   `,
-  header: (theme: Theme, win: boolean) => css`
+  header: (theme: Theme, win: boolean, expand: boolean) => css`
     width: 70px;
     height: 100%;
-    border-radius: 10px 0 0 10px;
+    border-radius: 10px 0 0 ${expand ? 0 : 10}px;
     font-size: 11px;
     padding: 8px 6px;
     background-color: ${win ? theme.blue3 : theme.red2};
@@ -42,7 +42,6 @@ export const style = {
   expand: css`
     width: 40px;
     height: 100%;
-    border-radius: 0 10px 10px 0;
   `,
   bottomRight: css`
     position: absolute;

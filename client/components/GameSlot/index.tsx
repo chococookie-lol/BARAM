@@ -9,6 +9,8 @@ import RuneIcon from '../RuneIcon';
 import SpellStrip from '../SpellStrip';
 import { secondsToString } from '../../utils/time';
 import { style } from './style';
+import { useState } from 'react';
+import GameSlotDetail from '../GameSlotDetail';
 
 interface GameSlotProps {
   matchData: Match;
@@ -151,24 +153,25 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
   const contribution = matchData.info.teams.find((team) => team.teamId === me.teamId)?.contribution;
   if (!contribution) throw new Error('contribution not exists');
 
+  const [expand, setExpand] = useState<boolean>(false);
   const { theme } = useGlobalTheme();
 
   return (
     <div css={style.parent}>
-      <div css={style.container(theme, win)}>
-        <div css={style.header(theme, win)}>
+      <div css={style.container(theme, win, expand)}>
+        <div css={style.header(theme, win, expand)}>
           <div css={style.headerTitle}>{win ? '승리' : '패배'}</div>
           <div>{timeString}</div>
         </div>
         <div css={style.gameSummaryContainer}>
           <GameSlotSummary me={me} participants={participants} contribution={contribution} />
         </div>
-        <div css={style.expand}>
+        <div css={style.expand} onClick={() => setExpand(!expand)}>
           <div css={[style.seperator, style.stickLeft, style.middle]} />
-          {/* TODO: down arrow and expand onclick */}
+          {/* TODO: down arrow*/}
         </div>
       </div>
-      <div>{/* gameslot expanded */}</div>
+      <div>{expand ? <GameSlotDetail matchData={matchData} /> : <></>}</div>
     </div>
   );
 }
