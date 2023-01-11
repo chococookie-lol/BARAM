@@ -14,7 +14,7 @@ export class RiotApiService {
     this.apiKey = this.configService.get<string>('API_KEY');
   }
 
-  async getSummoner(name: string) {
+  async getSummonerByName(name: string) {
     const { data } = await this.httpService.axiosRef.get<RoitSummonerResponse>(
       `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}`,
       {
@@ -27,6 +27,18 @@ export class RiotApiService {
     return data;
   }
 
+  async getSummonerByPuuid(name: string) {
+    const { data } = await this.httpService.axiosRef.get<RoitSummonerResponse>(
+      `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/${name}`,
+      {
+        headers: {
+          'X-Riot-Token': this.apiKey,
+        },
+      },
+    );
+
+    return data;
+  }
   async getChallenges(puuid: string) {
     const { data } = await this.httpService.axiosRef.get<RiotChallengeResponse>(
       `https://kr.api.riotgames.com/lol/challenges/v1/player-data/${puuid}`,
