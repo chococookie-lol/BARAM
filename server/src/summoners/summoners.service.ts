@@ -20,7 +20,23 @@ export class SummonersService {
   }
 
   async update(userName: string) {
-    return { userName };
+    const summonerFromRiot = await this.riotApiService.getSummoner(userName);
+    const challenges = await this.riotApiService.getChallenges(summonerFromRiot.puuid);
+    const userChallenges = challenges.preferences.challengeIds.map((challengeId) =>
+      challenges.challenges.find((c) => c.challengeId === challengeId),
+    );
+
+    await this.summonerModel.updateOne(
+      { puuid: summonerFromRiot.puuid },
+      {
+        name: summonerFromRiot.name,
+        level: summonerFromRiot.summonerLevel,
+        profileIconId: summonerFromRiot.profileIconId,
+        puuid: summonerFromRiot.puuid,
+        challenges: [...userChallenges],
+      },
+      { upsert: true },
+    );
   }
 
   async findAllMatches(userName: string) {
