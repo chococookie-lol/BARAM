@@ -11,16 +11,16 @@ export class SummonersService {
     private readonly riotApiService: RiotApiService,
   ) {}
 
-  async findOne(userName: string) {
-    const summoner = await this.summonerModel.findOne({ name: userName }).lean();
+  async findOne(summonerName: string) {
+    const summoner = await this.summonerModel.findOne({ name: summonerName }).lean();
 
     if (!summoner) throw new NotFoundException('해당 소환사가 없습니다.');
 
     return summoner;
   }
 
-  async update(userName: string) {
-    const summonerFromRiot = await this.riotApiService.getSummoner(userName);
+  async update(summonerName: string) {
+    const summonerFromRiot = await this.riotApiService.getSummoner(summonerName);
     const challenges = await this.riotApiService.getChallenges(summonerFromRiot.puuid);
     const userChallenges = challenges.preferences.challengeIds.map((challengeId) =>
       challenges.challenges.find((c) => c.challengeId === challengeId),
@@ -39,27 +39,16 @@ export class SummonersService {
     );
   }
 
-  async findAllMatches(userName: string) {
+  async findAllMatches(summonerName: string) {
     return {
-      userName,
-      matchIds: [
-        '84723482140',
-        '84723482140',
-        '84723482140',
-        '84723482140',
-        '84723482140',
-        '84723482140',
-        '84723482140',
-        '84723482140',
-        '84723482140',
-        '84723482140',
-      ],
+      summonerName,
+      matchIds: ['84723482140'],
     };
   }
 
-  async updateMatches(userName: string, after?: number) {
+  async updateMatches(summonerName: string, after?: number) {
     return {
-      userName,
+      summonerName,
       after,
     };
   }
