@@ -7,7 +7,7 @@ import PercentageStatistics from '../PercentageStatistics';
 import RelativeStatistics from '../RelativeStatistics';
 import RuneIcon from '../RuneIcon';
 import SpellStrip from '../SpellStrip';
-import { secondsToString, totalValueHelper } from './helper';
+import { secondsToString } from '../../utils/time';
 import { style } from './style';
 
 interface GameSlotProps {
@@ -40,22 +40,26 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
   const d = me.deaths;
   const a = me.assists;
 
+  const contribution = matchData.info.teams.find((team) => team.teamId === me.teamId)?.contribution;
+
+  if (!contribution) throw new Error('contribution not exists');
+
   const {
-    totalTank,
-    totalDeal,
-    totalDeath,
-    totalHeal,
-    dealAverage,
-    dealMax,
+    heal,
+    dealt,
+    dealtAverage,
+    dealtMax,
     goldAverage,
     goldMax,
+    death,
     deathAverage,
     deathMax,
     csAverage,
     csMax,
-  } = totalValueHelper(info.participants)[team];
+    damaged,
+  } = contribution;
 
-  const dealMaxOffset = Math.abs(dealMax - dealAverage);
+  const dealMaxOffset = Math.abs(dealtMax - dealtAverage);
   const dealValue = me.totalDamageDealtToChampions;
   const goldMaxOffset = Math.abs(goldMax - goldAverage);
   const goldValue = me.goldEarned;
@@ -63,8 +67,8 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
   const deathValue = me.deaths;
   const csMaxOffset = Math.abs(csMax - csAverage);
   const csValue = me.totalMinionsKilled;
-  const healValue = me.totalHealsOnTeammates;
-  const tankValue = me.totalDamageTaken;
+  const healValue = me.contribution.heal;
+  const damagedValue = me.contribution.damaged;
   const dealMagic = me.magicDamageDealtToChampions;
   const dealPhysical = me.physicalDamageDealtToChampions;
   const dealTrue = me.trueDamageDealtToChampions;
@@ -107,20 +111,20 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
       <div css={[style.item]}>
         <PercentageStatistics
           padding={6}
-          dealtPercent={dealValue / totalDeal}
+          dealtPercent={dealValue / dealt}
           dealtAmount={dealValue}
-          healPercent={healValue / totalHeal}
+          healPercent={healValue / heal}
           healAmount={healValue}
-          damagedPercent={tankValue / totalTank}
-          damagedAmount={tankValue}
-          deathPercent={deathValue / totalDeath}
+          damagedPercent={damagedValue / damaged}
+          damagedAmount={damagedValue}
+          deathPercent={deathValue / death}
           deathAmount={deathValue}
           color={{ foreground: theme.foreground, background: theme.background }}
         />
       </div>
       <div css={[style.item]}>
         <RelativeStatistics
-          dealAverage={dealAverage}
+          dealAverage={dealtAverage}
           dealMaxOffset={dealMaxOffset}
           dealValue={dealValue}
           goldAverage={goldAverage}
