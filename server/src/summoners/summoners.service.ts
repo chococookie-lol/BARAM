@@ -22,9 +22,9 @@ export class SummonersService {
   async update(summonerName: string) {
     const summonerFromRiot = await this.riotApiService.getSummoner(summonerName);
     const challenges = await this.riotApiService.getChallenges(summonerFromRiot.puuid);
-    const userChallenges = challenges.preferences.challengeIds.map((challengeId) =>
-      challenges.challenges.find((c) => c.challengeId === challengeId),
-    );
+    const userChallenges = challenges.preferences.challengeIds
+      .map((challengeId) => challenges.challenges.find((c) => c.challengeId === challengeId))
+      .filter((c) => !!c);
 
     await this.summonerModel.updateOne(
       { puuid: summonerFromRiot.puuid },
