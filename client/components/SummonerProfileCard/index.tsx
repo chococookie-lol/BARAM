@@ -47,9 +47,9 @@ export default function SummonerProfileCard({
           {challenges.map((challenge, idx) => (
             <ChallengeIcon
               key={`challenge-${idx}`}
-              id={challenge.challengeId}
-              tier={challenge.level}
-              value={challenge.value}
+              id={challenge?.challengeId}
+              tier={challenge?.level}
+              value={challenge?.value}
               width={50}
               height={50}
             />
