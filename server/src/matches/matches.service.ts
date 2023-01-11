@@ -3028,11 +3028,12 @@ export class MatchesService {
     mock.info.participants.forEach((participant) => {
       const target = participant.teamId === 100 ? totalContribution.blue : totalContribution.red;
       const participation = {
-        kill: participant.challenges.killParticipation,
+        kill: Math.round(participant.challenges.killParticipation * 1000) / 1000,
       };
 
       Object.keys(participant['contribution']).forEach((key) => {
-        participation[key] = participant['contribution'][key] / target[key];
+        participation[key] =
+          Math.round((participant['contribution'][key] / target[key]) * 1000) / 1000;
       });
 
       participant['participation'] = participation;
