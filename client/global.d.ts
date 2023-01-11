@@ -103,7 +103,16 @@ interface ParticipantContribution {
   death: number;
   gold: number;
   cs: number;
-  killParticipation: number;
+}
+
+interface ParticipantParticipation {
+  dealt: number;
+  damaged: number;
+  heal: number;
+  death: number;
+  gold: number;
+  cs: number;
+  kill: number;
 }
 
 interface Participant {
@@ -123,6 +132,7 @@ interface Participant {
   commandPings: number;
   consumablesPurchased: number;
   contribution: ParticipantContribution;
+  participation: ParticipantParticipation;
   damageDealtToBuildings: number;
   damageDealtToObjectives: number;
   damageDealtToTurrets: number;
