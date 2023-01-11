@@ -20,7 +20,10 @@ export class SummonersService {
   }
 
   async update(summonerName: string) {
-    const summonerFromRiot = await this.riotApiService.getSummoner(summonerName);
+    const summonerFromDb = await this.summonerModel.findOne({ name: summonerName }).lean();
+    const summonerFromRiot = await (!!summonerFromDb
+      ? this.riotApiService.getSummonerByPuuid(summonerFromDb.puuid)
+      : this.riotApiService.getSummonerByName(summonerName));
     const challenges = await this.riotApiService.getChallenges(summonerFromRiot.puuid);
     const userChallenges = challenges.preferences.challengeIds
       .map((challengeId) => challenges.challenges.find((c) => c.challengeId === challengeId))
