@@ -171,7 +171,9 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
           {/* TODO: down arrow*/}
         </div>
       </div>
-      <div>{expand ? <GameSlotDetail matchData={matchData} /> : <></>}</div>
+      <div>
+        {expand ? <GameSlotDetail participants={participants} teams={info.teams} /> : <></>}
+      </div>
     </div>
   );
 }
