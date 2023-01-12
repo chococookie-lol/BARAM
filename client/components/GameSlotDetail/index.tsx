@@ -26,15 +26,17 @@ function GameSlotTable({ win, teamId, participants }: GameSlotTableProps) {
   return (
     <table css={style.tableContainer(theme, teamId, win)}>
       <thead>
-        <th>
-          <span>{win ? '승리' : '패배'}</span> ({teamId === 100 ? '블루' : '레드'}팀)
-        </th>
-        <th>룬</th>
-        <th>KDA</th>
-        <th>빌드</th>
-        <th>준 피해량</th>
-        <th>받은 피해량</th>
-        <th>딜 유형</th>
+        <tr>
+          <th>
+            <span>{win ? '승리' : '패배'}</span> ({teamId === 100 ? '블루' : '레드'}팀)
+          </th>
+          <th>룬</th>
+          <th>KDA</th>
+          <th>빌드</th>
+          <th>준 피해량</th>
+          <th>받은 피해량</th>
+          <th>딜 유형</th>
+        </tr>
       </thead>
       <tbody>
         {participants.map((e, i) => {
@@ -50,7 +52,6 @@ function GameSlotRow({ participant }: GameSlotRowProps) {
   const subPerk = participant.perks.styles.find((e) => e.description == 'subStyle');
   if (!primaryPerk || !subPerk) throw 'perk not properly formatted';
   const { theme } = useGlobalTheme();
-  console.log(participant.contribution);
   return (
     <tr css={style.container}>
       <td>
