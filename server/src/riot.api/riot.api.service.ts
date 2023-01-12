@@ -1,6 +1,8 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { AxiosError, HttpStatusCode } from 'axios';
+import { RiotApiException } from './definition/riot.api.exception';
 import { RiotChallengeResponse, RoitSummonerResponse } from './interface';
 
 @Injectable()
@@ -14,29 +16,56 @@ export class RiotApiService {
     this.apiKey = this.configService.get<string>('API_KEY');
   }
 
-  async getSummoner(name: string) {
-    const { data } = await this.httpService.axiosRef.get<RoitSummonerResponse>(
-      `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}`,
-      {
+  async call<T>(uri: string) {
+    try {
+      return await this.httpService.axiosRef.get<T>(uri, {
         headers: {
           'X-Riot-Token': this.apiKey,
         },
-      },
-    );
+      });
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const serviceUnavailableCodes = [
+          HttpStatus.BAD_REQUEST,
+          HttpStatus.UNAUTHORIZED,
+          HttpStatus.FORBIDDEN,
+          HttpStatus.METHOD_NOT_ALLOWED,
+          HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+          HttpStatus.TOO_MANY_REQUESTS,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          HttpStatus.SERVICE_UNAVAILABLE,
+          HttpStatus.GATEWAY_TIMEOUT,
+        ];
 
-    return data;
+        if (serviceUnavailableCodes.includes(+error.code)) {
+          throw new RiotApiException(+error.code, error.message);
+        }
+
+        return null;
+      }
+    }
   }
 
-  async getChallenges(puuid: string) {
-    const { data } = await this.httpService.axiosRef.get<RiotChallengeResponse>(
-      `https://kr.api.riotgames.com/lol/challenges/v1/player-data/${puuid}`,
-      {
-        headers: {
-          'X-Riot-Token': this.apiKey,
-        },
-      },
-    );
+  async getSummonerByName(name: string) {
+    return (
+      await this.call<RoitSummonerResponse>(
+        `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}`,
+      )
+    )?.data;
+  }
 
-    return data;
+  async getSummonerByPuuid(name: string) {
+    return (
+      await this.call<RoitSummonerResponse>(
+        `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/${name}`,
+      )
+    )?.data;
+  }
+  async getChallenges(puuid: string) {
+    return (
+      await this.call<RiotChallengeResponse>(
+        `https://kr.api.riotgames.com/lol/challenges/v1/player-data/${puuid}`,
+      )
+    )?.data;
   }
 }
