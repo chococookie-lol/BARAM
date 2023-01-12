@@ -6,27 +6,27 @@ import { SummonersService } from './summoners.service';
 export class SummonersController {
   constructor(private readonly summonersService: SummonersService) {}
 
-  @Get('/:userName')
-  async findOne(@Param('userName') userName: string) {
-    return await this.summonersService.findOne(userName);
+  @Get('/:summonerName')
+  async findOne(@Param('summonerName') summonerName: string) {
+    return await this.summonersService.findOne(summonerName);
   }
 
-  @Post('/:userName')
-  async update(@Param('userName') userName: string) {
-    return await this.summonersService.update(userName);
+  @Post('/:summonerName')
+  async update(@Param('summonerName') summonerName: string) {
+    return await this.summonersService.update(summonerName);
   }
 
-  @Get('/:userName/matches')
-  async findAllMatches(@Param('userName') userName: string) {
-    return this.summonersService.findAllMatches(userName);
+  @Get('/:summonerName/matches')
+  async findAllMatches(@Param('summonerName') summonerName: string) {
+    return this.summonersService.findAllMatches(summonerName);
   }
 
-  @Post('/:userName/matches')
+  @Post('/:summonerName/matches')
   async updateMatches(
-    @Param('userName') userName: string,
+    @Param('summonerName') summonerName: string,
     @Query()
     query: PostMatchesQuery,
   ) {
-    return await this.summonersService.updateMatches(userName, query.after);
+    return await this.summonersService.updateMatches(summonerName, query.after);
   }
 }

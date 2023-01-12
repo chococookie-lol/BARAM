@@ -2995,7 +2995,6 @@ export class MatchesService {
         death: participant.challenges.deathsByEnemyChamps,
         gold: participant.goldEarned,
         cs: participant.totalMinionsKilled,
-        killParticipation: participant.challenges.killParticipation,
       };
 
       participant['contribution'] = contribution;
@@ -3025,6 +3024,20 @@ export class MatchesService {
 
     totalContribution.blue['death'] = mock.info.teams.at(1).objectives.champion.kills;
     totalContribution.red['death'] = mock.info.teams.at(0).objectives.champion.kills;
+
+    mock.info.participants.forEach((participant) => {
+      const target = participant.teamId === 100 ? totalContribution.blue : totalContribution.red;
+      const participation = {
+        kill: Math.round(participant.challenges.killParticipation * 1000) / 1000,
+      };
+
+      Object.keys(participant['contribution']).forEach((key) => {
+        participation[key] =
+          Math.round((participant['contribution'][key] / target[key]) * 1000) / 1000;
+      });
+
+      participant['participation'] = participation;
+    });
 
     for (const team of ['blue', 'red']) {
       Object.keys(mock.info.participants[0]['contribution']).forEach((key) => {

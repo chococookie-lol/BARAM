@@ -1,66 +1,54 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { RiotApiService } from '..//riot.api/riot.api.service';
+import { Summoner, SummonerDocument } from './schemas/summoner.schema';
 
 @Injectable()
 export class SummonersService {
-  async findOne(userName: string) {
+  constructor(
+    @InjectModel(Summoner.name) private summonerModel: Model<SummonerDocument>,
+    private readonly riotApiService: RiotApiService,
+  ) {}
+
+  async findOne(summonerName: string) {
+    const summoner = await this.summonerModel.findOne({ name: summonerName }).lean();
+
+    if (!summoner) throw new NotFoundException('해당 소환사가 없습니다.');
+
+    return summoner;
+  }
+
+  async update(summonerName: string) {
+    const summonerFromRiot = await this.riotApiService.getSummoner(summonerName);
+    const challenges = await this.riotApiService.getChallenges(summonerFromRiot.puuid);
+    const userChallenges = challenges.preferences.challengeIds.map((challengeId) =>
+      challenges.challenges.find((c) => c.challengeId === challengeId),
+    );
+
+    await this.summonerModel.updateOne(
+      { puuid: summonerFromRiot.puuid },
+      {
+        name: summonerFromRiot.name,
+        level: summonerFromRiot.summonerLevel,
+        profileIconId: summonerFromRiot.profileIconId,
+        puuid: summonerFromRiot.puuid,
+        challenges: [...userChallenges],
+      },
+      { upsert: true },
+    );
+  }
+
+  async findAllMatches(summonerName: string) {
     return {
-      userName,
-      level: 123,
-      id: '63aaa89b1117f13437f6ab4f',
-      puuid: 'xF6UfEzvrs89bWB3PhtBLKt74bthXbc2QQGY-8YlgcSvmvVw0SOjvM5zMXT6YpSMhsST65BMj0jFlw',
-      profileIconId: 1,
-      challenges: [
-        {
-          challengeId: 402408,
-          percentile: 0.5,
-          level: 'BRONZE',
-          value: 8425,
-          achievedTime: 1661939191682,
-        },
-        {
-          challengeId: 402408,
-          percentile: 0.5,
-          level: 'BRONZE',
-          value: 8425,
-          achievedTime: 1661939191682,
-        },
-        {
-          challengeId: 402408,
-          percentile: 0.5,
-          level: 'BRONZE',
-          value: 8425,
-          achievedTime: 1661939191682,
-        },
-      ],
-      lastModified: 1661939191682,
+      summonerName,
+      matchIds: ['84723482140'],
     };
   }
 
-  async update(userName: string) {
-    return { userName };
-  }
-
-  async findAllMatches(userName: string) {
+  async updateMatches(summonerName: string, after?: number) {
     return {
-      userName,
-      matchIds: [
-        '84723482140',
-        '84723482140',
-        '84723482140',
-        '84723482140',
-        '84723482140',
-        '84723482140',
-        '84723482140',
-        '84723482140',
-        '84723482140',
-        '84723482140',
-      ],
-    };
-  }
-
-  async updateMatches(userName: string, after?: number) {
-    return {
-      userName,
+      summonerName,
       after,
     };
   }
