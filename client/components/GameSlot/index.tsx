@@ -9,24 +9,23 @@ import RuneIcon from '../RuneIcon';
 import SpellStrip from '../SpellStrip';
 import { secondsToString } from '../../utils/time';
 import { style } from './style';
+import { useState } from 'react';
+import GameSlotDetail from '../GameSlotDetail';
 
 interface GameSlotProps {
   matchData: Match;
   puuid: string;
 }
 
-function GameSlot({ matchData, puuid }: GameSlotProps) {
-  const { info } = matchData;
-  const { participants, gameDuration } = info;
-  const version = '12.23.1';
+interface GameSlotSummaryProps {
+  me: Participant;
+  participants: Participant[];
+  contribution: TeamContribution;
+}
 
+function GameSlotSummary({ me, participants, contribution }: GameSlotSummaryProps) {
   const { theme } = useGlobalTheme();
-  const me = participants.find((e) => e.puuid == puuid);
-  if (!me) throw Error("can't find summoner in match");
-  const team = me.teamId == 100 ? 'blue' : 'red';
-  const win = me.win;
   const championName = me.championName;
-  const timeString = secondsToString(gameDuration);
   const level = me.champLevel;
   const spells = [me.summoner1Id, me.summoner2Id];
   const items = [me.item0, me.item1, me.item2, me.item3, me.item4, me.item5];
@@ -39,11 +38,6 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
   const k = me.kills;
   const d = me.deaths;
   const a = me.assists;
-
-  const contribution = matchData.info.teams.find((team) => team.teamId === me.teamId)?.contribution;
-
-  if (!contribution) throw new Error('contribution not exists');
-
   const {
     heal,
     dealt,
@@ -76,11 +70,7 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
   const kda = ((k + a) / d).toFixed(2);
 
   return (
-    <div css={style.container(theme, win)}>
-      <div css={style.header(theme, win)}>
-        <div css={style.headerTitle}>{win ? '승리' : '패배'}</div>
-        <div>{timeString}</div>
-      </div>
+    <div css={style.gameSummary}>
       <div css={[style.item, style.champion]}>
         <div css={[style.bottomRight, style.level]}>{level}</div>
         <ChampionPic championName={championName} width={80} height={80} />
@@ -147,9 +137,42 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
           textColor={'black'}
         />
       </div>
-      <div css={style.expand}>
-        <div css={[style.seperator, style.stickLeft, style.middle]} />
-        {/* TODO: down arrow and expand onclick */}
+    </div>
+  );
+}
+
+function GameSlot({ matchData, puuid }: GameSlotProps) {
+  const { info } = matchData;
+  const { participants, gameDuration } = info;
+  const me = participants.find((e) => e.puuid == puuid);
+  if (!me) throw Error("can't find summoner in match");
+
+  const win = me.win;
+  const timeString = secondsToString(gameDuration);
+
+  const contribution = matchData.info.teams.find((team) => team.teamId === me.teamId)?.contribution;
+  if (!contribution) throw new Error('contribution not exists');
+
+  const [expand, setExpand] = useState<boolean>(false);
+  const { theme } = useGlobalTheme();
+
+  return (
+    <div css={style.parent}>
+      <div css={style.container(theme, win, expand)}>
+        <div css={style.header(theme, win, expand)}>
+          <div css={style.headerTitle}>{win ? '승리' : '패배'}</div>
+          <div>{timeString}</div>
+        </div>
+        <div css={style.gameSummaryContainer}>
+          <GameSlotSummary me={me} participants={participants} contribution={contribution} />
+        </div>
+        <div css={style.expand} onClick={() => setExpand(!expand)}>
+          <div css={[style.seperator, style.stickLeft, style.middle]} />
+          {/* TODO: down arrow*/}
+        </div>
+      </div>
+      <div>
+        {expand ? <GameSlotDetail participants={participants} teams={info.teams} /> : <></>}
       </div>
     </div>
   );
