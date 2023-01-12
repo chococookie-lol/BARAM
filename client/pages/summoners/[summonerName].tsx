@@ -150,7 +150,7 @@ export default function SearchPage() {
           profileIconId={summonerProfile.profileIconId}
           summonerName={summonerName}
           summonerLevel={summonerProfile.level}
-          modifiedAt={summonerProfile.lastModified}
+          modifiedAt={new Date(summonerProfile.updatedAt).getTime()}
           challenges={summonerProfile.challenges}
         />
         <SummonerStatCard

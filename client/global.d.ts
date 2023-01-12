@@ -15,7 +15,7 @@ interface SummonerProfile {
   puuid: string;
   profileIconId: number;
   challenges: Challenge[];
-  lastModified: number;
+  updatedAt: string;
 }
 
 type SummonerMatchIds = string[];
