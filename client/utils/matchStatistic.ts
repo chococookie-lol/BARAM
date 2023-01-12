@@ -18,10 +18,9 @@ export function getMatchStatistic(match: Match, puuid: string) {
   };
 
   const myContribution = me.contribution;
+  const myParticipation = me.participation;
 
-  const totalContribution = match.info.teams.find((team) => team.teamId === teamId)?.contribution;
-
-  if (!totalContribution) throw new Error('Match 데이터 오류');
+  if (!myParticipation) throw new Error('Match 데이터 오류');
 
   return {
     win,
@@ -31,7 +30,7 @@ export function getMatchStatistic(match: Match, puuid: string) {
     assists,
     camp,
     myContribution,
-    totalContribution,
+    myParticipation,
   };
 }
 
@@ -71,26 +70,24 @@ export function getTotalMatchStatistics(matchStatistic: { [index: string]: Match
     kda.kills += matchStatistic[matchId].kills;
     kda.assists += matchStatistic[matchId].assists;
     kda.deaths += matchStatistic[matchId].deaths;
-    kda.killContribution += matchStatistic[matchId].totalKill;
 
     camp.blue += matchStatistic[matchId].camp.blue;
     camp.red += matchStatistic[matchId].camp.red;
 
-    gameContribution.dealt = matchStatistic[matchId].totalContribution.dealt;
-    gameContribution.dealtAmount += matchStatistic[matchId].myContribution.dealt;
-    gameContribution.damaged += matchStatistic[matchId].totalContribution.damaged;
-    gameContribution.damagedAmount += matchStatistic[matchId].myContribution.damaged;
-    gameContribution.heal += matchStatistic[matchId].totalContribution.heal;
-    gameContribution.healAmount += matchStatistic[matchId].myContribution.heal;
-    gameContribution.death += matchStatistic[matchId].totalContribution.death;
-    gameContribution.deathAmount += matchStatistic[matchId].deaths;
+    gameContribution.dealt += matchStatistic[matchId].myParticipation.dealt;
+    gameContribution.damaged += matchStatistic[matchId].myParticipation.damaged;
+    gameContribution.heal += matchStatistic[matchId].myParticipation.heal;
+    gameContribution.death += matchStatistic[matchId].myParticipation.death;
+    kda.killContribution += matchStatistic[matchId].myParticipation.kill;
   }
 
-  kda.killContribution = kda.kills / kda.killContribution;
-  gameContribution.dealt = gameContribution.dealtAmount / gameContribution.dealt;
-  gameContribution.heal = gameContribution.healAmount / gameContribution.heal;
-  gameContribution.damaged = gameContribution.damagedAmount / gameContribution.damaged;
-  gameContribution.death = gameContribution.deathAmount / gameContribution.death;
+  const count = Object.keys(matchStatistic).length;
+
+  kda.killContribution = kda.killContribution / count;
+  gameContribution.dealt = gameContribution.dealt / count;
+  gameContribution.heal = gameContribution.heal / count;
+  gameContribution.damaged = gameContribution.damaged / count;
+  gameContribution.death = gameContribution.death / count;
 
   return {
     winRate,
