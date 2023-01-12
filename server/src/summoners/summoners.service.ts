@@ -24,6 +24,9 @@ export class SummonersService {
     const summonerFromRiot = await (!!summonerFromDb
       ? this.riotApiService.getSummonerByPuuid(summonerFromDb.puuid)
       : this.riotApiService.getSummonerByName(summonerName));
+
+    if (!summonerFromRiot) throw new NotFoundException('소환사를 찾을 수 없습니다.');
+
     const challenges = await this.riotApiService.getChallenges(summonerFromRiot.puuid);
     const userChallenges = challenges.preferences.challengeIds
       .map((challengeId) => challenges.challenges.find((c) => c.challengeId === challengeId))
