@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { AxiosError, HttpStatusCode } from 'axios';
 import { RiotApiException } from './definition/riot.api.exception';
 import { RiotChallengeResponse, RoitSummonerResponse } from './interface';
+import { RiotMatchResponse } from './interface/riot.match.interface';
 
 @Injectable()
 export class RiotApiService {
@@ -65,6 +66,14 @@ export class RiotApiService {
     return (
       await this.call<RiotChallengeResponse>(
         `https://kr.api.riotgames.com/lol/challenges/v1/player-data/${puuid}`,
+      )
+    )?.data;
+  }
+
+  async getMatch(matchId: string) {
+    return (
+      await this.call<RiotMatchResponse>(
+        `https://asia.api.riotgames.com/lol/match/v5/matches/${matchId}`,
       )
     )?.data;
   }
