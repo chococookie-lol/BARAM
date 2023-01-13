@@ -3,6 +3,7 @@ import { Theme } from '../../styles/theme';
 
 export const style = {
   parent: css`
+    user-select: none;
     position: relative;
     width: 777px;
   `,
