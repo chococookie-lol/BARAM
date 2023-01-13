@@ -248,4 +248,7 @@ export const detailStyle = {
       display: inline-block;
     }
   `,
+  visible: (visible: boolean) => css`
+    display: ${visible ? 'block' : 'none'};
+  `,
 };
