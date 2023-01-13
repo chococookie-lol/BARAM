@@ -21,8 +21,6 @@ export default function SummonerProfileCard({
 }: SummonerProfileCardProps) {
   if (challenges.length > 3) throw new Error('challenge는 최대 세개입니다.');
 
-  // TODO: 최근 업데이트 시간(숫자) => ~일 전으로 수정하기
-
   return (
     <div css={[style.container, style.backgroundColor('#37393A')]}>
       <div css={style.summonerDetailContainer}>
