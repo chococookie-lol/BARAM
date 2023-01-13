@@ -12,6 +12,7 @@ import { style, detailStyle } from './style';
 import { useState } from 'react';
 import Percentage from '../Percentage';
 import PercentageBar from '../PercentageBar';
+import React from 'react';
 
 interface GameSlotProps {
   matchData: Match;
@@ -154,7 +155,11 @@ function GameSlotRow({ participant }: GameSlotRowProps) {
   );
 }
 
-function GameSlotDetail({ participants, teams }: GameSlotDetailProps) {
+const GameSlotDetail = React.memo(function GameSlotDetail({
+  participants,
+  teams,
+}: GameSlotDetailProps) {
+  console.log('render!');
   const red: Participant[] = [];
   const blue: Participant[] = [];
   participants.forEach((e) => {
@@ -168,9 +173,13 @@ function GameSlotDetail({ participants, teams }: GameSlotDetailProps) {
       <GameSlotTable win={!bluewin} teamId={200} participants={red} />
     </div>
   );
-}
+});
 
-function GameSlotSummary({ me, participants, contribution }: GameSlotSummaryProps) {
+const GameSlotSummary = React.memo(function GameSlotSummary({
+  me,
+  participants,
+  contribution,
+}: GameSlotSummaryProps) {
   const { theme } = useGlobalTheme();
   const championName = me.championName;
   const level = me.champLevel;
@@ -274,7 +283,7 @@ function GameSlotSummary({ me, participants, contribution }: GameSlotSummaryProp
       </div>
     </div>
   );
-}
+});
 
 function GameSlot({ matchData, puuid }: GameSlotProps) {
   const { info } = matchData;
@@ -289,6 +298,7 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
   if (!contribution) throw new Error('contribution not exists');
 
   const [expand, setExpand] = useState<boolean>(false);
+  const [rendered, setRendered] = useState<boolean>(false);
   const { theme } = useGlobalTheme();
 
   return (
@@ -301,13 +311,19 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
         <div css={style.gameSummaryContainer}>
           <GameSlotSummary me={me} participants={participants} contribution={contribution} />
         </div>
-        <div css={style.expand} onClick={() => setExpand(!expand)}>
+        <div
+          css={style.expand}
+          onClick={() => {
+            setRendered(true);
+            setExpand(!expand);
+          }}
+        >
           <div css={[style.seperator, style.stickLeft, style.middle]} />
           {/* TODO: down arrow*/}
         </div>
       </div>
-      <div>
-        {expand ? <GameSlotDetail participants={participants} teams={info.teams} /> : <></>}
+      <div css={detailStyle.visible(expand)}>
+        {rendered ? <GameSlotDetail participants={participants} teams={info.teams} /> : <></>}
       </div>
     </div>
   );
