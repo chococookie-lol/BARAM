@@ -38,20 +38,8 @@ function GameSlotSummary({ me, participants, contribution }: GameSlotSummaryProp
   const k = me.kills;
   const d = me.deaths;
   const a = me.assists;
-  const {
-    heal,
-    dealt,
-    dealtAverage,
-    dealtMax,
-    goldAverage,
-    goldMax,
-    death,
-    deathAverage,
-    deathMax,
-    csAverage,
-    csMax,
-    damaged,
-  } = contribution;
+  const { dealtAverage, dealtMax, goldAverage, goldMax, deathAverage, deathMax, csAverage, csMax } =
+    contribution;
 
   const dealMaxOffset = Math.abs(dealtMax - dealtAverage);
   const dealValue = me.totalDamageDealtToChampions;
@@ -101,13 +89,13 @@ function GameSlotSummary({ me, participants, contribution }: GameSlotSummaryProp
       <div css={[style.item]}>
         <PercentageStatistics
           padding={6}
-          dealtPercent={dealValue / dealt}
+          dealtPercent={me.participation.dealt}
           dealtAmount={dealValue}
-          healPercent={healValue / heal}
+          healPercent={me.participation.heal}
           healAmount={healValue}
-          damagedPercent={damagedValue / damaged}
+          damagedPercent={me.participation.damaged}
           damagedAmount={damagedValue}
-          deathPercent={deathValue / death}
+          deathPercent={me.participation.death}
           deathAmount={deathValue}
           color={{ foreground: theme.foreground, background: theme.background }}
         />

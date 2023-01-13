@@ -20,11 +20,17 @@ export class SummonersService {
   }
 
   async update(summonerName: string) {
-    const summonerFromRiot = await this.riotApiService.getSummoner(summonerName);
+    const summonerFromDb = await this.summonerModel.findOne({ name: summonerName }).lean();
+    const summonerFromRiot = await (!!summonerFromDb
+      ? this.riotApiService.getSummonerByPuuid(summonerFromDb.puuid)
+      : this.riotApiService.getSummonerByName(summonerName));
+
+    if (!summonerFromRiot) throw new NotFoundException('소환사를 찾을 수 없습니다.');
+
     const challenges = await this.riotApiService.getChallenges(summonerFromRiot.puuid);
-    const userChallenges = challenges.preferences.challengeIds.map((challengeId) =>
-      challenges.challenges.find((c) => c.challengeId === challengeId),
-    );
+    const userChallenges = challenges.preferences.challengeIds
+      .map((challengeId) => challenges.challenges.find((c) => c.challengeId === challengeId))
+      .filter((c) => !!c);
 
     await this.summonerModel.updateOne(
       { puuid: summonerFromRiot.puuid },
@@ -42,7 +48,7 @@ export class SummonersService {
   async findAllMatches(summonerName: string) {
     return {
       summonerName,
-      matchIds: ['84723482140'],
+      matchIds: [6260963449],
     };
   }
 
