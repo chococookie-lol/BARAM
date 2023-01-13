@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import { GetMatchIdParam } from './dtos/get-matchId.dto';
 import { MatchesService } from './matches.service';
 
@@ -9,5 +9,10 @@ export class MatchesController {
   @Get('/:matchId')
   async findOne(@Param() param: GetMatchIdParam) {
     return await this.matchesService.findOne(param.matchId);
+  }
+
+  @Post('/:matchId')
+  async updateOne(@Param() param: GetMatchIdParam) {
+    return await this.matchesService.updateOne(param.matchId);
   }
 }
