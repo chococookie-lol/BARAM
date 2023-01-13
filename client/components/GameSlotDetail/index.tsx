@@ -2,9 +2,11 @@ import { useGlobalTheme } from '../../styles/GlobalThemeContext';
 import ChampionPic from '../ChampionPic';
 import ItemStrip from '../ItemStrip';
 import Percentage from '../Percentage';
+import PercentageBar from '../PercentageBar';
 import RuneIcon from '../RuneIcon';
 import SpellStrip from '../SpellStrip';
 import { style } from './style';
+import { GLOBAL_COLOR } from '../../utils/color';
 
 interface GameSlotRowProps {
   participant: Participant;
@@ -122,12 +124,13 @@ function GameSlotRow({ participant }: GameSlotRowProps) {
         />
       </td>
       <td css={style.percentage}>
-        <Percentage
-          backgroundColor={theme.foreground}
-          foregroundColor={theme.red1}
-          textColor={theme.background}
-          percent={1}
-          value={100}
+        <PercentageBar
+          amounts={[
+            participant.physicalDamageDealtToChampions,
+            participant.magicDamageDealtToChampions,
+            participant.trueDamageDealtToChampions,
+          ]}
+          colors={[GLOBAL_COLOR.red1, GLOBAL_COLOR.blue1, GLOBAL_COLOR.white]}
         />
       </td>
     </tr>
