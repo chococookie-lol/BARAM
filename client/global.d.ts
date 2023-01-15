@@ -105,7 +105,7 @@ interface Participant {
   commandPings: number;
   consumablesPurchased: number;
   contribution: ParticipantContribution;
-  participation: ParticipantParticipation;
+  contributionPercentage: ParticipantParticipation;
   damageDealtToBuildings: number;
   damageDealtToObjectives: number;
   damageDealtToTurrets: number;
