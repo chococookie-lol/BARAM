@@ -85,12 +85,23 @@ export default function SearchPage() {
     (async () => {
       try {
         setSummonerProfile(await getSummonerProfile(summonerName));
-        setMatchIds((await getSummonerMatchIds(summonerName)).matchIds);
       } catch (e) {
         console.error(e);
       }
     })();
   }, [summonerName]);
+
+  useEffect(() => {
+    if (summonerProfile === null) return;
+
+    (async () => {
+      try {
+        setMatchIds((await getSummonerMatchIds(summonerProfile.puuid)).matchIds);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, [summonerProfile]);
 
   useEffect(() => {
     const promises = matchIds.map((matchId) => getMatch(matchId));

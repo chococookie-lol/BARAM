@@ -73,39 +73,12 @@ interface ObjectiveInfo {
 }
 
 interface TeamContribution {
-  dealt: number;
-  damaged: number;
-  heal: number;
-  death: number;
-  gold: number;
-  cs: number;
-
-  dealtMax: number;
-  damagedMax: number;
-  healMax: number;
-  deathMax: number;
-  goldMax: number;
-  csMax: number;
-  killParticipationMax: number;
-
-  dealtAverage: number;
-  damagedAverage: number;
-  healAverage: number;
-  deathAverage: number;
-  goldAverage: number;
-  csAverage: number;
+  total: Contribution;
+  max: Contribution;
+  average: Contribution;
 }
 
-interface ParticipantContribution {
-  dealt: number;
-  damaged: number;
-  heal: number;
-  death: number;
-  gold: number;
-  cs: number;
-}
-
-interface ParticipantParticipation {
+interface Contribution {
   dealt: number;
   damaged: number;
   heal: number;
@@ -132,7 +105,7 @@ interface Participant {
   commandPings: number;
   consumablesPurchased: number;
   contribution: ParticipantContribution;
-  participation: ParticipantParticipation;
+  contributionPercentage: ParticipantParticipation;
   damageDealtToBuildings: number;
   damageDealtToObjectives: number;
   damageDealtToTurrets: number;

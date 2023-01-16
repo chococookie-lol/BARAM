@@ -1,8 +1,8 @@
-import { ConsoleLogger, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RiotApiService } from 'src/riot.api/riot.api.service';
-import { Match, MatchDocument, TeamContribution } from './schemas/match.schema';
+import { Contribution, Match, MatchDocument, TeamContribution } from './schemas/match.schema';
 
 @Injectable()
 export class MatchesService {
@@ -20,81 +20,100 @@ export class MatchesService {
     return match;
   }
 
-  async updateOne(matchId: number) {
-    const match = await this.riotApiService.getMatch(`KR_${matchId}`);
-    console.log(match);
-    if (!match) throw new NotFoundException('경기를 찾을 수 없습니다.');
+  async findAll(puuid: string) {
+    const matchIds: number[] = await this.matchModel
+      .distinct('id', { 'metadata.participants': { $all: [puuid] } })
+      .lean();
 
-    for (const participant of match.info.participants) {
-      const contribution = {
-        dealt: participant.totalDamageDealtToChampions,
-        damaged: participant.totalDamageTaken + participant.damageSelfMitigated,
-        heal: participant.totalHeal,
-        death: participant.challenges.deathsByEnemyChamps,
-        gold: participant.goldEarned,
-        cs: participant.totalMinionsKilled,
-      };
-
-      participant['contribution'] = contribution;
-    }
-
-    const totalContribution = {
-      blue: new TeamContribution(),
-      red: new TeamContribution(),
+    return {
+      puuid,
+      matchIds: matchIds,
     };
+  }
 
-    const totalExcepts = ['killParticipation', 'death'];
-    const averageExcepts = ['killParticipation'];
+  async updateMany(puuid: string, after: number) {
+    const matches = await this.riotApiService.getMatchesByPuuid(puuid, after, 3);
 
-    match.info.participants.forEach((participant) => {
-      const target = participant.teamId === 100 ? totalContribution.blue : totalContribution.red;
+    for (const matchId of matches) {
+      const id: number = +matchId.substring(3);
 
-      for (const key of Object.keys(participant['contribution'])) {
-        target[`${key}Max`] = Math.max(
-          participant['contribution'][key],
-          target[`${key}Max`] ? target[`${key}Max`] : 0,
-        );
-        if (totalExcepts.findIndex((val) => val === key) !== -1) continue;
-        if (!target[key]) target[key] = 0;
-        target[key] += participant['contribution'][key];
+      const contributionKeys = Object.getOwnPropertyNames(new Contribution());
+
+      // check db
+      if (!(await this.matchModel.countDocuments({ id: id }, { limit: 1 }).lean())) {
+        // fetch if not found
+        const match = <Match>await this.riotApiService.getMatch(matchId);
+        if (!match) throw new NotFoundException('경기를 찾을 수 없습니다.');
+
+        // set id
+        match.id = id;
+
+        // create property
+        match.info.teams[0].contribution = new TeamContribution();
+        match.info.teams[1].contribution = new TeamContribution();
+
+        // personal & team contribution (value)
+        for (const participant of match.info.participants) {
+          // create property
+          const contribution = new Contribution();
+
+          // personal contribution statistics
+          contribution.dealt = participant.totalDamageDealtToChampions;
+          contribution.damaged = participant.totalDamageTaken + participant.damageSelfMitigated;
+          contribution.heal = participant.totalHeal;
+          contribution.death = participant.challenges.deathsByEnemyChamps;
+          contribution.gold = participant.goldEarned;
+          contribution.cs = participant.totalMinionsKilled;
+          contribution.kill = participant.kills;
+
+          participant.contribution = contribution;
+
+          // team statistics
+          const teamContribution = (
+            participant.teamId === 100 ? match.info.teams[0] : match.info.teams[1]
+          ).contribution;
+
+          contributionKeys.forEach((key) => {
+            // max value
+            teamContribution.max[key] = Math.max(
+              participant.contribution[key],
+              teamContribution.max[key] || 0,
+            );
+
+            // total value (for average calculation)
+            teamContribution.total[key] += participant.contribution[key];
+          });
+        }
+
+        // personal contribution (percentage)
+        for (const participant of match.info.participants) {
+          // create property
+          const contributionPercentage = new Contribution();
+
+          const teamContribution = (
+            participant.teamId === 100 ? match.info.teams[0] : match.info.teams[1]
+          ).contribution;
+
+          // personal participation statistics (percentage)
+          contributionKeys.forEach((key) => {
+            // TODO: consider version & optimize : ex) make use of 'KillParticipation'
+            contributionPercentage[key] =
+              Math.round((participant.contribution[key] / teamContribution.total[key]) * 1000) /
+              1000;
+          });
+
+          participant.contributionPercentage = contributionPercentage;
+        }
+
+        // team contribution : average
+        contributionKeys.forEach((key) => {
+          for (const team of match.info.teams) {
+            team.contribution.average[key] = team.contribution.total[key] / 5;
+          }
+        });
+
+        await this.matchModel.updateOne({ id: id }, match, { upsert: true });
       }
-    });
-
-    totalContribution.blue['death'] = match.info.teams.at(1).objectives.champion.kills;
-    totalContribution.red['death'] = match.info.teams.at(0).objectives.champion.kills;
-
-    match.info.participants.forEach((participant) => {
-      const target = participant.teamId === 100 ? totalContribution.blue : totalContribution.red;
-      const participation = {
-        kill: Math.round(participant.challenges.killParticipation * 1000) / 1000,
-      };
-
-      Object.keys(participant['contribution']).forEach((key) => {
-        participation[key] =
-          Math.round((participant['contribution'][key] / target[key]) * 1000) / 1000;
-      });
-
-      participant['participation'] = participation;
-    });
-
-    for (const team of ['blue', 'red']) {
-      Object.keys(match.info.participants[0]['contribution']).forEach((key) => {
-        if (averageExcepts.findIndex((val) => val === key) !== -1) return;
-        totalContribution[team][`${key}Average`] = totalContribution[team][key] / 5;
-      });
     }
-
-    match.info.teams[0]['contribution'] = totalContribution.blue;
-    match.info.teams[1]['contribution'] = totalContribution.red;
-
-    await this.matchModel.updateOne(
-      { id: matchId },
-      {
-        id: matchId,
-        info: match.info,
-        metadata: match.metadata,
-      },
-      { upsert: true },
-    );
   }
 }

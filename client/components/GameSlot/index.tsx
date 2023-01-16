@@ -8,9 +8,11 @@ import RelativeStatistics from '../RelativeStatistics';
 import RuneIcon from '../RuneIcon';
 import SpellStrip from '../SpellStrip';
 import { secondsToString } from '../../utils/time';
-import { style } from './style';
+import { style, detailStyle } from './style';
 import { useState } from 'react';
-import GameSlotDetail from '../GameSlotDetail';
+import Percentage from '../Percentage';
+import PercentageBar from '../PercentageBar';
+import React from 'react';
 
 interface GameSlotProps {
   matchData: Match;
@@ -19,11 +21,163 @@ interface GameSlotProps {
 
 interface GameSlotSummaryProps {
   me: Participant;
-  participants: Participant[];
-  contribution: TeamContribution;
+  teamContribution: TeamContribution;
 }
 
-function GameSlotSummary({ me, participants, contribution }: GameSlotSummaryProps) {
+interface GameSlotRowProps {
+  participant: Participant;
+}
+
+interface GameSlotTableProps {
+  win: boolean;
+  teamId: 100 | 200;
+  participants: Participant[];
+}
+
+interface GameSlotDetailProps {
+  participants: Participant[];
+  teams: Team[];
+}
+
+function GameSlotTable({ win, teamId, participants }: GameSlotTableProps) {
+  const { theme } = useGlobalTheme();
+  return (
+    <table css={detailStyle.tableContainer(theme, teamId, win)}>
+      <thead>
+        <tr>
+          <th>
+            <span>{win ? '승리' : '패배'}</span> ({teamId === 100 ? '블루' : '레드'}팀)
+          </th>
+          <th>룬</th>
+          <th>KDA</th>
+          <th>빌드</th>
+          <th>준 피해량</th>
+          <th>받은 피해량</th>
+          <th>딜 유형</th>
+        </tr>
+      </thead>
+      <tbody>
+        {participants.map((e, i) => {
+          return <GameSlotRow key={i} participant={e} />;
+        })}
+      </tbody>
+    </table>
+  );
+}
+
+function GameSlotRow({ participant }: GameSlotRowProps) {
+  const primaryPerk = participant.perks.styles.find((e) => e.description == 'primaryStyle');
+  const subPerk = participant.perks.styles.find((e) => e.description == 'subStyle');
+  if (!primaryPerk || !subPerk) throw 'perk not properly formatted';
+  const { theme } = useGlobalTheme();
+  return (
+    <tr css={detailStyle.container}>
+      <td>
+        <div css={detailStyle.champion}>
+          <div css={detailStyle.level}>{participant.champLevel}</div>
+          <ChampionPic championName={participant.championName} width={32} height={32} />
+        </div>
+        <div css={detailStyle.name}>{participant.summonerName}</div>
+      </td>
+      <td css={detailStyle.summonerSettings}>
+        <SpellStrip
+          spells={[participant.summoner1Id, participant.summoner2Id]}
+          width={15}
+          height={15}
+          direction={'vertical'}
+          padding={1}
+        />
+        <div css={detailStyle.runes}>
+          <RuneIcon
+            styleId={primaryPerk.style}
+            runeId={primaryPerk.selections[0].perk}
+            width={15}
+            height={15}
+          />
+          <RuneIcon styleId={subPerk.style} width={15} height={15} />
+        </div>
+      </td>
+      <td>
+        <div css={detailStyle.kdaContainer}>
+          <div css={detailStyle.kda}>
+            {participant.kills}/<p>{participant.deaths}</p>/{participant.assists}
+          </div>
+          <p css={detailStyle.kdaverage}>
+            {((participant.kills + participant.assists) / participant.deaths).toFixed(2)}
+          </p>
+        </div>
+      </td>
+      <td>
+        <ItemStrip
+          items={[
+            participant.item0,
+            participant.item1,
+            participant.item2,
+            participant.item3,
+            participant.item4,
+            participant.item5,
+          ]}
+          width={21}
+          height={21}
+          padding={1}
+        />
+      </td>
+      <td css={detailStyle.percentage}>
+        <Percentage
+          backgroundColor={theme.foreground}
+          foregroundColor={theme.accent1}
+          textColor={theme.background}
+          percent={participant.contributionPercentage.dealt}
+          value={participant.contribution.dealt}
+        />
+      </td>
+      <td css={detailStyle.percentage}>
+        <Percentage
+          backgroundColor={theme.foreground}
+          foregroundColor={theme.red3}
+          textColor={theme.background}
+          percent={participant.contributionPercentage.damaged}
+          value={participant.contribution.damaged}
+        />
+      </td>
+      <td css={detailStyle.percentage}>
+        <PercentageBar
+          amounts={[
+            participant.physicalDamageDealtToChampions,
+            participant.magicDamageDealtToChampions,
+            participant.trueDamageDealtToChampions,
+          ]}
+          colors={[GLOBAL_COLOR.red1, GLOBAL_COLOR.blue1, GLOBAL_COLOR.white]}
+        />
+      </td>
+    </tr>
+  );
+}
+
+const GameSlotDetail = React.memo(function GameSlotDetail({
+  participants,
+  teams,
+}: GameSlotDetailProps) {
+  console.log('render!');
+  const red: Participant[] = [];
+  const blue: Participant[] = [];
+  participants.forEach((e) => {
+    if (e.teamId == 100) blue.push(e);
+    else red.push(e);
+  });
+  const bluewin = teams[0].win;
+  return (
+    <div>
+      <GameSlotTable win={bluewin} teamId={100} participants={blue} />
+      <GameSlotTable win={!bluewin} teamId={200} participants={red} />
+    </div>
+  );
+});
+
+const GameSlotSummary = React.memo(function GameSlotSummary({
+  me,
+  teamContribution,
+}: GameSlotSummaryProps) {
   const { theme } = useGlobalTheme();
   const championName = me.championName;
   const level = me.champLevel;
@@ -38,16 +192,14 @@ function GameSlotSummary({ me, participants, contribution }: GameSlotSummaryProp
   const k = me.kills;
   const d = me.deaths;
   const a = me.assists;
-  const { dealtAverage, dealtMax, goldAverage, goldMax, deathAverage, deathMax, csAverage, csMax } =
-    contribution;
 
-  const dealMaxOffset = Math.abs(dealtMax - dealtAverage);
+  const dealMaxOffset = Math.abs(teamContribution.max.dealt - teamContribution.average.dealt);
   const dealValue = me.totalDamageDealtToChampions;
-  const goldMaxOffset = Math.abs(goldMax - goldAverage);
+  const goldMaxOffset = Math.abs(teamContribution.max.gold - teamContribution.average.gold);
   const goldValue = me.goldEarned;
-  const deathMaxOffset = Math.abs(deathMax - deathAverage);
+  const deathMaxOffset = Math.abs(teamContribution.max.death - teamContribution.average.death);
   const deathValue = me.deaths;
-  const csMaxOffset = Math.abs(csMax - csAverage);
+  const csMaxOffset = Math.abs(teamContribution.max.cs - teamContribution.average.cs);
   const csValue = me.totalMinionsKilled;
   const healValue = me.contribution.heal;
   const damagedValue = me.contribution.damaged;
@@ -89,29 +241,29 @@ function GameSlotSummary({ me, participants, contribution }: GameSlotSummaryProp
       <div css={[style.item]}>
         <PercentageStatistics
           padding={6}
-          dealtPercent={me.participation.dealt}
+          dealtPercent={me.contributionPercentage.dealt}
           dealtAmount={dealValue}
-          healPercent={me.participation.heal}
+          healPercent={me.contributionPercentage.heal}
           healAmount={healValue}
-          damagedPercent={me.participation.damaged}
+          damagedPercent={me.contributionPercentage.damaged}
           damagedAmount={damagedValue}
-          deathPercent={me.participation.death}
+          deathPercent={me.contributionPercentage.death}
           deathAmount={deathValue}
           color={{ foreground: theme.foreground, background: theme.background }}
         />
       </div>
       <div css={[style.item]}>
         <RelativeStatistics
-          dealAverage={dealtAverage}
+          dealAverage={teamContribution.average.dealt}
           dealMaxOffset={dealMaxOffset}
           dealValue={dealValue}
-          goldAverage={goldAverage}
+          goldAverage={teamContribution.average.gold}
           goldMaxOffset={goldMaxOffset}
           goldValue={goldValue}
-          deathAverage={deathAverage}
+          deathAverage={teamContribution.average.death}
           deathMaxOffset={deathMaxOffset}
           deathValue={deathValue}
-          csAverage={csAverage}
+          csAverage={teamContribution.average.cs}
           csMaxOffset={csMaxOffset}
           csValue={csValue}
         />
@@ -127,7 +279,7 @@ function GameSlotSummary({ me, participants, contribution }: GameSlotSummaryProp
       </div>
     </div>
   );
-}
+});
 
 function GameSlot({ matchData, puuid }: GameSlotProps) {
   const { info } = matchData;
@@ -139,9 +291,10 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
   const timeString = secondsToString(gameDuration);
 
   const contribution = matchData.info.teams.find((team) => team.teamId === me.teamId)?.contribution;
-  if (!contribution) throw new Error('contribution not exists');
+  if (!contribution) throw new Error('contribution does not exist');
 
   const [expand, setExpand] = useState<boolean>(false);
+  const [rendered, setRendered] = useState<boolean>(false);
   const { theme } = useGlobalTheme();
 
   return (
@@ -152,15 +305,21 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
           <div>{timeString}</div>
         </div>
         <div css={style.gameSummaryContainer}>
-          <GameSlotSummary me={me} participants={participants} contribution={contribution} />
+          <GameSlotSummary me={me} teamContribution={contribution} />
         </div>
-        <div css={style.expand} onClick={() => setExpand(!expand)}>
+        <div
+          css={style.expand}
+          onClick={() => {
+            setRendered(true);
+            setExpand(!expand);
+          }}
+        >
           <div css={[style.seperator, style.stickLeft, style.middle]} />
           {/* TODO: down arrow*/}
         </div>
       </div>
-      <div>
-        {expand ? <GameSlotDetail participants={participants} teams={info.teams} /> : <></>}
+      <div css={detailStyle.visible(expand)}>
+        {rendered ? <GameSlotDetail participants={participants} teams={info.teams} /> : <></>}
       </div>
     </div>
   );

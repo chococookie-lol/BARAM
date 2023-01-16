@@ -16,11 +16,9 @@ export const getSummonerProfile = async (
   ).data;
 };
 
-export const getSummonerMatchIds = async (
-  summonerName: string,
-): Promise<SummonerMatchIdsResponse> => {
+export const getSummonerMatchIds = async (puuid: string): Promise<SummonerMatchIdsResponse> => {
   return await (
-    await defaultAxiosInstance.get(`/summoners/${summonerName}/matches`)
+    await defaultAxiosInstance.get(`/matches/by-puuid/${puuid}`)
   ).data;
 };
 

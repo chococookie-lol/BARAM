@@ -18,9 +18,9 @@ export function getMatchStatistic(match: Match, puuid: string) {
   };
 
   const myContribution = me.contribution;
-  const myParticipation = me.participation;
+  const myPercentage = me.contributionPercentage;
 
-  if (!myParticipation) throw new Error('Match 데이터 오류');
+  if (!myContribution || !myPercentage) throw new Error('Match 데이터 오류');
 
   return {
     win,
@@ -30,7 +30,7 @@ export function getMatchStatistic(match: Match, puuid: string) {
     assists,
     camp,
     myContribution,
-    myParticipation,
+    myPercentage,
   };
 }
 
@@ -74,20 +74,20 @@ export function getTotalMatchStatistics(matchStatistic: { [index: string]: Match
     camp.blue += matchStatistic[matchId].camp.blue;
     camp.red += matchStatistic[matchId].camp.red;
 
-    gameContribution.dealt += matchStatistic[matchId].myParticipation.dealt;
-    gameContribution.damaged += matchStatistic[matchId].myParticipation.damaged;
-    gameContribution.heal += matchStatistic[matchId].myParticipation.heal;
-    gameContribution.death += matchStatistic[matchId].myParticipation.death;
-    kda.killContribution += matchStatistic[matchId].myParticipation.kill;
+    gameContribution.dealt += matchStatistic[matchId].myPercentage.dealt;
+    gameContribution.damaged += matchStatistic[matchId].myPercentage.damaged;
+    gameContribution.heal += matchStatistic[matchId].myPercentage.heal;
+    gameContribution.death += matchStatistic[matchId].myPercentage.death;
+    kda.killContribution += matchStatistic[matchId].myPercentage.kill;
   }
 
   const count = Object.keys(matchStatistic).length;
 
-  kda.killContribution = kda.killContribution / count;
-  gameContribution.dealt = gameContribution.dealt / count;
-  gameContribution.heal = gameContribution.heal / count;
-  gameContribution.damaged = gameContribution.damaged / count;
-  gameContribution.death = gameContribution.death / count;
+  kda.killContribution /= count;
+  gameContribution.dealt /= count;
+  gameContribution.heal /= count;
+  gameContribution.damaged /= count;
+  gameContribution.death /= count;
 
   return {
     winRate,
