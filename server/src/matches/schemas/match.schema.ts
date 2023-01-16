@@ -932,7 +932,7 @@ class Info {
 
 const infoSchema = SchemaFactory.createForClass(Info);
 
-@Schema({ collection: 'matches' })
+@Schema({ collection: 'match' })
 export class Match extends Document {
   @Prop({ required: true, unique: true })
   id: number;
