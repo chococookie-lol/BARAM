@@ -181,6 +181,10 @@ export default function SearchPage() {
           summonerLevel={summonerProfile.level}
           modifiedAt={new Date(summonerProfile.updatedAt).getTime()}
           challenges={summonerProfile.challenges}
+          onFetch={async () => {
+            setSummonerProfile(await fetchSummonerProfile(summonerName));
+            //todo: fetch match
+          }}
         />
         <SummonerStatCard
           winRate={winRate}
