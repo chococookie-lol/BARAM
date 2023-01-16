@@ -415,53 +415,30 @@ class Perks {
 const perksSchema = SchemaFactory.createForClass(Perks);
 
 @Schema({ id: false, _id: false })
-class ParticipantParticipation {
+export class Contribution {
   @Prop({ required: true })
-  dealt: number;
+  dealt: number = 0;
 
   @Prop({ required: true })
-  damaged: number;
+  damaged: number = 0;
 
   @Prop({ required: true })
-  heal: number;
+  heal: number = 0;
 
   @Prop({ required: true })
-  death: number;
+  death: number = 0;
 
   @Prop({ required: true })
-  gold: number;
+  gold: number = 0;
 
   @Prop({ required: true })
-  cs: number;
+  cs: number = 0;
 
   @Prop({ required: true })
-  kill: number;
+  kill: number = 0;
 }
 
-const participantParticipationSchema = SchemaFactory.createForClass(ParticipantParticipation);
-
-@Schema({ id: false, _id: false })
-class ParticipantContribution {
-  @Prop({ required: true })
-  dealt: number;
-
-  @Prop({ required: true })
-  damaged: number;
-
-  @Prop({ required: true })
-  heal: number;
-
-  @Prop({ required: true })
-  death: number;
-
-  @Prop({ required: true })
-  gold: number;
-
-  @Prop({ required: true })
-  cs: number;
-}
-
-const participantContributionSchema = SchemaFactory.createForClass(ParticipantContribution);
+const contributionSchema = SchemaFactory.createForClass(Contribution);
 
 @Schema({ id: false, _id: false })
 class Participant {
@@ -510,11 +487,11 @@ class Participant {
   @Prop({ required: true })
   consumablesPurchased: number;
 
-  @Prop({ required: true, type: participantParticipationSchema })
-  contribution: ParticipantContribution;
+  @Prop({ required: true, type: contributionSchema })
+  contribution: Contribution;
 
-  @Prop({ required: true, type: participantParticipationSchema })
-  participation: ParticipantParticipation;
+  @Prop({ required: true, type: contributionSchema })
+  contributionPercentage: Contribution;
 
   @Prop({ required: true })
   damageDealtToBuildings: number;
@@ -839,62 +816,14 @@ const participantSchema = SchemaFactory.createForClass(Participant);
 
 @Schema({ id: false, _id: false })
 export class TeamContribution {
-  @Prop({ required: true })
-  dealt: number;
+  @Prop({ required: true, type: contributionSchema })
+  total: Contribution = new Contribution();
 
-  @Prop({ required: true })
-  damaged: number;
+  @Prop({ required: true, type: contributionSchema })
+  max: Contribution = new Contribution();
 
-  @Prop({ required: true })
-  heal: number;
-
-  @Prop({ required: true })
-  death: number;
-
-  @Prop({ required: true })
-  gold: number;
-
-  @Prop({ required: true })
-  cs: number;
-
-  @Prop({ required: true })
-  dealtMax: number;
-
-  @Prop({ required: true })
-  damagedMax: number;
-
-  @Prop({ required: true })
-  healMax: number;
-
-  @Prop({ required: true })
-  deathMax: number;
-
-  @Prop({ required: true })
-  goldMax: number;
-
-  @Prop({ required: true })
-  csMax: number;
-
-  @Prop({ required: true })
-  killParticipationMax: number;
-
-  @Prop({ required: true })
-  dealtAverage: number;
-
-  @Prop({ required: true })
-  damagedAverage: number;
-
-  @Prop({ required: true })
-  healAverage: number;
-
-  @Prop({ required: true })
-  deathAverage: number;
-
-  @Prop({ required: true })
-  goldAverage: number;
-
-  @Prop({ required: true })
-  csAverage: number;
+  @Prop({ required: true, type: contributionSchema })
+  average: Contribution = new Contribution();
 }
 
 const teamContributionSchema = SchemaFactory.createForClass(TeamContribution);

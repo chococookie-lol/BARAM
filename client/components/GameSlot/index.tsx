@@ -21,8 +21,7 @@ interface GameSlotProps {
 
 interface GameSlotSummaryProps {
   me: Participant;
-  participants: Participant[];
-  contribution: TeamContribution;
+  teamContribution: TeamContribution;
 }
 
 interface GameSlotRowProps {
@@ -128,7 +127,7 @@ function GameSlotRow({ participant }: GameSlotRowProps) {
           backgroundColor={theme.foreground}
           foregroundColor={theme.accent1}
           textColor={theme.background}
-          percent={participant.participation.dealt}
+          percent={participant.contributionPercentage.dealt}
           value={participant.contribution.dealt}
         />
       </td>
@@ -137,7 +136,7 @@ function GameSlotRow({ participant }: GameSlotRowProps) {
           backgroundColor={theme.foreground}
           foregroundColor={theme.red3}
           textColor={theme.background}
-          percent={participant.participation.damaged}
+          percent={participant.contributionPercentage.damaged}
           value={participant.contribution.damaged}
         />
       </td>
@@ -177,8 +176,7 @@ const GameSlotDetail = React.memo(function GameSlotDetail({
 
 const GameSlotSummary = React.memo(function GameSlotSummary({
   me,
-  participants,
-  contribution,
+  teamContribution,
 }: GameSlotSummaryProps) {
   const { theme } = useGlobalTheme();
   const championName = me.championName;
@@ -194,16 +192,14 @@ const GameSlotSummary = React.memo(function GameSlotSummary({
   const k = me.kills;
   const d = me.deaths;
   const a = me.assists;
-  const { dealtAverage, dealtMax, goldAverage, goldMax, deathAverage, deathMax, csAverage, csMax } =
-    contribution;
 
-  const dealMaxOffset = Math.abs(dealtMax - dealtAverage);
+  const dealMaxOffset = Math.abs(teamContribution.max.dealt - teamContribution.average.dealt);
   const dealValue = me.totalDamageDealtToChampions;
-  const goldMaxOffset = Math.abs(goldMax - goldAverage);
+  const goldMaxOffset = Math.abs(teamContribution.max.gold - teamContribution.average.gold);
   const goldValue = me.goldEarned;
-  const deathMaxOffset = Math.abs(deathMax - deathAverage);
+  const deathMaxOffset = Math.abs(teamContribution.max.death - teamContribution.average.death);
   const deathValue = me.deaths;
-  const csMaxOffset = Math.abs(csMax - csAverage);
+  const csMaxOffset = Math.abs(teamContribution.max.cs - teamContribution.average.cs);
   const csValue = me.totalMinionsKilled;
   const healValue = me.contribution.heal;
   const damagedValue = me.contribution.damaged;
@@ -245,29 +241,29 @@ const GameSlotSummary = React.memo(function GameSlotSummary({
       <div css={[style.item]}>
         <PercentageStatistics
           padding={6}
-          dealtPercent={me.participation.dealt}
+          dealtPercent={me.contributionPercentage.dealt}
           dealtAmount={dealValue}
-          healPercent={me.participation.heal}
+          healPercent={me.contributionPercentage.heal}
           healAmount={healValue}
-          damagedPercent={me.participation.damaged}
+          damagedPercent={me.contributionPercentage.damaged}
           damagedAmount={damagedValue}
-          deathPercent={me.participation.death}
+          deathPercent={me.contributionPercentage.death}
           deathAmount={deathValue}
           color={{ foreground: theme.foreground, background: theme.background }}
         />
       </div>
       <div css={[style.item]}>
         <RelativeStatistics
-          dealAverage={dealtAverage}
+          dealAverage={teamContribution.average.dealt}
           dealMaxOffset={dealMaxOffset}
           dealValue={dealValue}
-          goldAverage={goldAverage}
+          goldAverage={teamContribution.average.gold}
           goldMaxOffset={goldMaxOffset}
           goldValue={goldValue}
-          deathAverage={deathAverage}
+          deathAverage={teamContribution.average.death}
           deathMaxOffset={deathMaxOffset}
           deathValue={deathValue}
-          csAverage={csAverage}
+          csAverage={teamContribution.average.cs}
           csMaxOffset={csMaxOffset}
           csValue={csValue}
         />
@@ -295,7 +291,7 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
   const timeString = secondsToString(gameDuration);
 
   const contribution = matchData.info.teams.find((team) => team.teamId === me.teamId)?.contribution;
-  if (!contribution) throw new Error('contribution not exists');
+  if (!contribution) throw new Error('contribution does not exist');
 
   const [expand, setExpand] = useState<boolean>(false);
   const [rendered, setRendered] = useState<boolean>(false);
@@ -309,7 +305,7 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
           <div>{timeString}</div>
         </div>
         <div css={style.gameSummaryContainer}>
-          <GameSlotSummary me={me} participants={participants} contribution={contribution} />
+          <GameSlotSummary me={me} teamContribution={contribution} />
         </div>
         <div
           css={style.expand}

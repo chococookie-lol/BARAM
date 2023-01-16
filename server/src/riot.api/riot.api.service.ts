@@ -77,4 +77,14 @@ export class RiotApiService {
       )
     )?.data;
   }
+
+  async getMatchesByPuuid(puuid: string, after: number, count: number) {
+    return (
+      await this.call<string[]>(
+        `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?${
+          after && `endTime=${after}`
+        }&queue=450&start=0&count=${count}`,
+      )
+    )?.data;
+  }
 }
