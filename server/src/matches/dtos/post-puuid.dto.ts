@@ -1,7 +1,7 @@
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNumberString, IsOptional } from 'class-validator';
 
-export class PostPuuidQuery {
-  @IsNumber()
+export class AfterQuery {
   @IsOptional()
+  @IsNumberString()
   after?: number;
 }

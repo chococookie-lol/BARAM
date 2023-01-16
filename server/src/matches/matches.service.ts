@@ -27,8 +27,8 @@ export class MatchesService {
     return match;
   }
 
-  async findAll(puuid: string) {
-    const matchIds = await this.playService.findMany(puuid);
+  async findAll(puuid: string, after?: number) {
+    const matchIds = await this.playService.findMany(puuid, after);
 
     return {
       puuid,
