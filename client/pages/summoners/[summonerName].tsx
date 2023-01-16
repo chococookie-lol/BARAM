@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { isAxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import GameSlot from '../../components/GameSlot';
@@ -6,7 +7,12 @@ import Logo from '../../components/Logo';
 import SearchBar from '../../components/SearchBar';
 import SummonerProfileCard from '../../components/SummonerProfileCard';
 import SummonerStatCard from '../../components/SummonerStatCard';
-import { getMatch, getSummonerMatchIds, getSummonerProfile } from '../../utils/api';
+import {
+  fetchSummonerProfile,
+  getMatch,
+  getSummonerMatchIds,
+  getSummonerProfile,
+} from '../../utils/api';
 import {
   getMatchStatistic,
   getTotalMatchStatistics,
@@ -92,7 +98,13 @@ export default function SearchPage() {
       try {
         setSummonerProfile(await getSummonerProfile(summonerName));
       } catch (e) {
-        console.error(e);
+        if (isAxiosError(e) && e.response?.status == 404)
+          try {
+            setSummonerProfile(await fetchSummonerProfile(summonerName));
+          } catch (e) {
+            // todo: error handling
+            console.log(e);
+          }
       }
     })();
   }, [summonerName]);
