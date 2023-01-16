@@ -1,6 +1,7 @@
 import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { async } from 'rxjs';
 import { RiotApiException } from 'src/riot.api/definition/riot.api.exception';
 import { RiotApiService } from 'src/riot.api/riot.api.service';
 import { Summoner, SummonerDocument } from 'src/summoners/schemas/summoner.schema';
@@ -128,18 +129,21 @@ export class MatchesService {
       return id;
     });
 
-    Promise.allSettled(promises).then(async (res) => {
+    (async () => {
+      const res = await Promise.allSettled(promises);
+
       res.forEach((r) => {
         if (r.status === 'fulfilled') this.logger.log(r.value);
         else if (r.status === 'rejected') this.logger.error(r.reason);
       });
+
       await this.summonerModel
         .updateOne(
           { puuid: puuid, isFetching: true },
           { $set: { isFetching: false, updatedAt: new Date().getTime() } },
         )
         .lean();
-    });
+    })();
 
     return;
   }
