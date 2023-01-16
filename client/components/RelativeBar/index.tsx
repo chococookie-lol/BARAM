@@ -14,7 +14,7 @@ interface RelativeBarProps {
 function offsetHelper(average: number, value: number, maxOffset: number) {
   const isPositive = value - average > 0;
   const diff = Math.abs(value - average);
-  const percent = (diff / maxOffset) * 35 + 15;
+  const percent = Math.min(50, (diff / maxOffset) * 35 + 15);
 
   return (isPositive ? 1 : -1) * percent;
 }
