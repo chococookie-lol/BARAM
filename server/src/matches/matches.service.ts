@@ -13,7 +13,7 @@ export class MatchesService {
   ) {}
 
   async findOne(matchId: number) {
-    const match = await this.matchModel.findOne({ id: matchId }).lean();
+    const match = await this.matchModel.findOne({ 'info.gameId': matchId }).lean();
 
     if (!match) throw new NotFoundException('해당 경기가 없습니다.');
 
@@ -22,7 +22,7 @@ export class MatchesService {
 
   async findAll(puuid: string) {
     const matchIds: number[] = await this.matchModel
-      .distinct('id', { 'metadata.participants': { $all: [puuid] } })
+      .distinct('info.gameId', { 'metadata.participants': { $all: [puuid] } })
       .lean();
 
     return {
@@ -34,19 +34,18 @@ export class MatchesService {
   async updateMany(puuid: string, after: number) {
     const matches = await this.riotApiService.getMatchesByPuuid(puuid, after, 3);
 
+    if (!matches) throw new NotFoundException('경기를 찾을 수 없습니다.');
+
     for (const matchId of matches) {
       const id: number = +matchId.substring(3);
 
       const contributionKeys = Object.getOwnPropertyNames(new Contribution());
 
       // check db
-      if (!(await this.matchModel.countDocuments({ id: id }, { limit: 1 }).lean())) {
+      if (!(await this.matchModel.countDocuments({ 'info.gameId': id }, { limit: 1 }).lean())) {
         // fetch if not found
         const match = <Match>await this.riotApiService.getMatch(matchId);
         if (!match) throw new NotFoundException('경기를 찾을 수 없습니다.');
-
-        // set id
-        match.id = id;
 
         // create property
         match.info.teams[0].contribution = new TeamContribution();
@@ -112,7 +111,7 @@ export class MatchesService {
           }
         });
 
-        await this.matchModel.updateOne({ id: id }, match, { upsert: true });
+        await this.matchModel.updateOne({ 'info.gameId': id }, match, { upsert: true });
       }
     }
   }
