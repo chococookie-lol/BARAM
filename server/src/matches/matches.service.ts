@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { async } from 'rxjs';
+import { PlayService } from 'src/play/play.service';
 import { RiotApiException } from 'src/riot.api/definition/riot.api.exception';
 import { RiotApiService } from 'src/riot.api/riot.api.service';
 import { Summoner, SummonerDocument } from 'src/summoners/schemas/summoner.schema';
@@ -16,6 +16,7 @@ export class MatchesService {
     private matchModel: Model<MatchDocument>,
     @InjectModel(Summoner.name) private summonerModel: Model<SummonerDocument>,
     private readonly riotApiService: RiotApiService,
+    private readonly playService: PlayService,
   ) {}
 
   async findOne(matchId: number) {
@@ -27,9 +28,7 @@ export class MatchesService {
   }
 
   async findAll(puuid: string) {
-    const matchIds: number[] = await this.matchModel
-      .distinct('info.gameId', { 'metadata.participants': { $all: [puuid] } })
-      .lean();
+    const matchIds = await this.playService.findMany(puuid);
 
     return {
       puuid,
@@ -45,7 +44,7 @@ export class MatchesService {
     if (updateSummoner.matchedCount === 0)
       throw new ForbiddenException('해당 소환사에 대한 작업을 완료할 수 없습니다.');
 
-    const matches = await this.riotApiService.getMatchesByPuuid(puuid, after, 20);
+    const matches = await this.riotApiService.getMatchesByPuuid(puuid, after, 5);
 
     if (!matches) throw new RiotApiException(404, '경기를 찾을 수 없습니다.');
 
@@ -125,6 +124,7 @@ export class MatchesService {
         });
 
         await this.matchModel.updateOne({ 'info.gameId': id }, match, { upsert: true });
+        await this.playService.create(puuid, id);
       }
       return id;
     });
