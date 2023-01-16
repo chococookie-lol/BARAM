@@ -138,10 +138,7 @@ export class MatchesService {
       });
 
       await this.summonerModel
-        .updateOne(
-          { puuid: puuid, isFetching: true },
-          { $set: { isFetching: false, updatedAt: new Date().getTime() } },
-        )
+        .updateOne({ puuid: puuid, isFetching: true }, { $set: { isFetching: false } })
         .lean();
     })();
 
