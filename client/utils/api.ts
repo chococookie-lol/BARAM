@@ -23,10 +23,22 @@ export const fetchSummonerProfile = async (
   return await getSummonerProfile(summonerName);
 };
 
-export const getSummonerMatchIds = async (puuid: string): Promise<SummonerMatchIdsResponse> => {
-  return await (
-    await defaultAxiosInstance.get(`/matches/by-puuid/${puuid}`)
+export const getSummonerMatchIds = async (
+  puuid: string,
+  after?: number,
+): Promise<SummonerMatchIdsResponse> => {
+  return (
+    await defaultAxiosInstance.get(`/matches/by-puuid/${puuid}${after ? `?after=${after}` : ''}`)
   ).data;
+};
+
+export const requestFetchSummonerMatches = async (
+  puuid: string,
+  after?: number,
+): Promise<number> => {
+  return (
+    await defaultAxiosInstance.post(`/matches/by-puuid/${puuid}${after ? `?after=${after}` : ''}`)
+  ).status;
 };
 
 export const getMatch = async (matchId: string): Promise<MatchResponse> => {

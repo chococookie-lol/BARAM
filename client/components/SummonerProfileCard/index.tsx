@@ -11,7 +11,8 @@ interface SummonerProfileCardProps {
   summonerLevel: number;
   modifiedAt: number;
   challenges: Challenge[];
-  onFetch: () => void;
+  fetching: boolean;
+  onClick: () => void;
 }
 
 export default function SummonerProfileCard({
@@ -20,16 +21,10 @@ export default function SummonerProfileCard({
   summonerLevel,
   modifiedAt,
   challenges,
-  onFetch,
+  fetching,
+  onClick,
 }: SummonerProfileCardProps) {
-  const [fetching, setFetching] = useState<boolean>(false);
   if (challenges.length > 3) throw new Error('challenge는 최대 세개입니다.');
-
-  const onClick = async () => {
-    setFetching(true);
-    await onFetch();
-    setFetching(false);
-  };
 
   return (
     <div css={[style.container, style.backgroundColor('#37393A')]}>

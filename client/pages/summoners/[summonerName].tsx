@@ -12,6 +12,7 @@ import {
   getMatch,
   getSummonerMatchIds,
   getSummonerProfile,
+  requestFetchSummonerMatches,
 } from '../../utils/api';
 import {
   getMatchStatistic,
@@ -70,18 +71,37 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
   const [summonerProfile, setSummonerProfile] = useState<SummonerProfile | null>(null);
   const [matchIds, setMatchIds] = useState<SummonerMatchIds>([]);
   const [matches, setMatches] = useState<Match[]>([]);
-  const [matchStatistics, setMatchStatistics] = useState<{ [key: string]: MatchStatistic } | null>(
-    null,
-  );
+  const [matchStatistics, setMatchStatistics] = useState<{ [key: string]: MatchStatistic }>({});
   const [totalStatistics, setTotalStatistics] = useState<TotalStatistic>(defaultTotalStatistics);
+  const [fetching, setFetching] = useState<boolean>(false);
+  const [poll, setPoll] = useState<boolean>(false);
 
   useEffect(() => {
-    // reset summoner data
+    async function fetch() {
+      const newSummonerProfile = await getSummonerProfile(summonerName);
+      if (!newSummonerProfile.isFetching) {
+        // fetch finished
+        setSummonerProfile(newSummonerProfile);
+        setPoll(false);
+        setFetching(false);
+      }
+    }
+    if (poll) {
+      const timer = setInterval(fetch, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [poll]);
+
+  useEffect(() => {
+    // reset previous summoner data
     setSummonerProfile(null);
     setMatchIds([]);
     setMatches([]);
-    setMatchStatistics(null);
+    setMatchStatistics({});
     setTotalStatistics(defaultTotalStatistics);
+    setPoll(false);
+    setFetching(false);
+
     if (!summonerName) return;
 
     (async () => {
@@ -93,7 +113,6 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
             setSummonerProfile(await fetchSummonerProfile(summonerName));
           } catch (e) {
             // todo: error handling
-            console.log(e);
           }
       }
     })();
@@ -161,10 +180,18 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
           summonerLevel={summonerProfile.level}
           modifiedAt={new Date(summonerProfile.updatedAt).getTime()}
           challenges={summonerProfile.challenges}
-          onFetch={async () => {
-            setSummonerProfile(await fetchSummonerProfile(summonerName));
-            //todo: fetch match
+          onClick={async () => {
+            try {
+              setFetching(true);
+              await requestFetchSummonerMatches(summonerProfile.puuid);
+              setPoll(true);
+            } catch (e) {
+              console.log(e);
+              setPoll(false);
+              setFetching(false);
+            }
           }}
+          fetching={fetching}
         />
         <SummonerStatCard
           winRate={winRate}
