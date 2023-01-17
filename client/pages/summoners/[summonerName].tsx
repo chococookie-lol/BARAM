@@ -101,7 +101,7 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
         clearInterval(timer);
       };
     }
-  }, [loadMore, summonerName, matches]);
+  }, [loadMore, summonerName, matchIds, matches]);
 
   useEffect(() => {
     async function tick() {
