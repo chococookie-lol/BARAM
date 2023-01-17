@@ -76,32 +76,36 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
   const [totalStatistics, setTotalStatistics] = useState<TotalStatistic>(defaultTotalStatistics);
   const [fetching, setFetching] = useState<boolean>(false);
   const [poll, setPoll] = useState<boolean>(false);
+  const [lastMatchTimeStamp, setLastMatchTimeStamp] = useState<number>(0);
+  const [lastMatchId, setLastMatchId] = useState<number>(0);
 
   useEffect(() => {
-    async function fetch() {
+    async function tick() {
       const newSummonerProfile = await getSummonerProfile(summonerName);
       if (!newSummonerProfile.isFetching) {
         // fetch finished
         setSummonerProfile(newSummonerProfile);
         setPoll(false);
-        setFetching(false);
       }
     }
     if (poll) {
-      const timer = setInterval(fetch, 1000);
+      const timer = setInterval(tick, 1000);
       return () => clearInterval(timer);
     }
   }, [poll]);
 
+  // on summoner change
   useEffect(() => {
     // reset previous summoner data
+    setLastMatchId(0);
+    setLastMatchTimeStamp(0);
+    setPoll(false);
+    setFetching(false);
+    setTotalStatistics(defaultTotalStatistics);
     setSummonerProfile(null);
     setMatchIds([]);
     setMatches([]);
     setMatchStatistics({});
-    setTotalStatistics(defaultTotalStatistics);
-    setPoll(false);
-    setFetching(false);
 
     if (!summonerName) return;
 
@@ -124,7 +128,14 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
 
     (async () => {
       try {
-        setMatchIds((await getSummonerMatchIds(summonerProfile.puuid)).matchIds);
+        if (lastMatchId) {
+          setMatchIds([
+            ...matchIds,
+            ...(await getSummonerMatchIds(summonerProfile.puuid, lastMatchId)).matchIds,
+          ]);
+        } else {
+          setMatchIds((await getSummonerMatchIds(summonerProfile.puuid, lastMatchId)).matchIds);
+        }
       } catch (e) {
         console.error(e);
       }
@@ -133,7 +144,7 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
 
   useEffect(() => {
     const promises = matchIds.map((matchId) => getMatch(matchId));
-
+    if (matchIds.length) setLastMatchId(matchIds[matchIds.length - 1]);
     (async () => {
       try {
         setMatches(await Promise.all(promises));
@@ -146,7 +157,7 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
   useEffect(() => {
     if (!summonerProfile) return;
     if (matches.length === 0) return;
-
+    setLastMatchTimeStamp(Math.floor(matches[matches.length - 1].info.gameCreation / 1000));
     setMatchStatistics(
       matches.reduce((acc, match) => {
         const newAcc: { [index: string]: MatchStatistic } = { ...acc };
@@ -156,12 +167,13 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
         return newAcc;
       }, {}),
     );
-  }, [matches, summonerProfile]);
+  }, [matches]);
 
   useEffect(() => {
     if (matchStatistics) {
       setTotalStatistics(getTotalMatchStatistics(matchStatistics));
     }
+    setFetching(false);
   }, [matchStatistics]);
 
   // before loading router
@@ -184,6 +196,7 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
           onClick={async () => {
             try {
               setFetching(true);
+              setLastMatchId(0);
               await requestFetchSummonerMatches(summonerProfile.puuid);
               setPoll(true);
             } catch (e) {
@@ -209,6 +222,25 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
             puuid={summonerProfile.puuid}
           />
         ))}
+        {matches && (
+          <Button
+            width={'100%'}
+            enabled={!fetching}
+            onClick={async () => {
+              try {
+                setFetching(true);
+                await requestFetchSummonerMatches(summonerProfile.puuid, lastMatchTimeStamp);
+                setPoll(true);
+              } catch (e) {
+                console.log(e);
+                setPoll(false);
+                setFetching(false);
+              }
+            }}
+          >
+            {fetching ? '...' : '더보기'}
+          </Button>
+        )}
       </main>
     </>
   );
