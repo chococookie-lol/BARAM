@@ -15,8 +15,7 @@ export class MatchesController {
 
   @Post('/by-puuid/:puuid')
   async updateMany(@Param() param: GetPuuidParam, @Query() query: AfterQuery) {
-    console.log(query);
-    // return await this.matchesService.updateMany(param.puuid, query.after);
+    return await this.matchesService.updateMany(param.puuid, query.after);
   }
 
   @Get('/:matchId')
