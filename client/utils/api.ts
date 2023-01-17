@@ -41,7 +41,7 @@ export const requestFetchSummonerMatches = async (
   ).status;
 };
 
-export const getMatch = async (matchId: string): Promise<MatchResponse> => {
+export const getMatch = async (matchId: number): Promise<MatchResponse> => {
   return await (
     await defaultAxiosInstance.get(`/matches/${matchId}`)
   ).data;
