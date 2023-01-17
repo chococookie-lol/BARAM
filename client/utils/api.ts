@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_PATH;
 
@@ -21,6 +21,16 @@ export const fetchSummonerProfile = async (
 ): Promise<SummonerProfileResponse> => {
   await defaultAxiosInstance.post(`/summoners/${summonerName}`);
   return await getSummonerProfile(summonerName);
+};
+
+export const tryToGetSummonerProfile = async (
+  summonerName: string,
+): Promise<SummonerProfileResponse> => {
+  try {
+    return await getSummonerProfile(summonerName);
+  } catch (e) {
+    return await fetchSummonerProfile(summonerName);
+  }
 };
 
 export const getSummonerMatchIds = async (

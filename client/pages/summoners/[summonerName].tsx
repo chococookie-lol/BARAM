@@ -14,6 +14,7 @@ import {
   getSummonerMatchIds,
   getSummonerProfile,
   requestFetchSummonerMatches,
+  tryToGetSummonerProfile,
 } from '../../utils/api';
 import {
   getMatchStatistic,
@@ -75,31 +76,55 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
   const [matchStatistics, setMatchStatistics] = useState<{ [key: string]: MatchStatistic }>({});
   const [totalStatistics, setTotalStatistics] = useState<TotalStatistic>(defaultTotalStatistics);
   const [fetching, setFetching] = useState<boolean>(false);
-  const [poll, setPoll] = useState<boolean>(false);
-  const [lastMatchTimeStamp, setLastMatchTimeStamp] = useState<number>(0);
-  const [lastMatchId, setLastMatchId] = useState<number>(0);
+  const [loadMore, setLoadMore] = useState<boolean>(false);
+  const [update, setUpdate] = useState<boolean>(false);
 
   useEffect(() => {
     async function tick() {
       const newSummonerProfile = await getSummonerProfile(summonerName);
       if (!newSummonerProfile.isFetching) {
-        // fetch finished
         setSummonerProfile(newSummonerProfile);
-        setPoll(false);
+        const lastMatchId = matches.length ? matches[matches.length - 1].info.gameId : 0;
+
+        const newMatchIds = (
+          await getSummonerMatchIds(newSummonerProfile.puuid, lastMatchId)
+        ).matchIds.filter((id) => matchIds.indexOf(id) === -1);
+
+        setMatchIds(newMatchIds);
+        setLoadMore(false);
       }
     }
-    if (poll) {
+
+    if (loadMore) {
+      const timer = setInterval(tick, 1000);
+      return () => {
+        clearInterval(timer);
+      };
+    }
+  }, [loadMore, summonerName, matches]);
+
+  useEffect(() => {
+    async function tick() {
+      const newSummonerProfile = await getSummonerProfile(summonerName);
+      if (!newSummonerProfile.isFetching) {
+        setSummonerProfile(newSummonerProfile);
+        setMatches([]);
+        setMatchIds((await getSummonerMatchIds(newSummonerProfile.puuid)).matchIds);
+        setUpdate(false);
+      }
+    }
+
+    if (update) {
       const timer = setInterval(tick, 1000);
       return () => clearInterval(timer);
     }
-  }, [poll]);
+  }, [update, summonerName]);
 
   // on summoner change
   useEffect(() => {
     // reset previous summoner data
-    setLastMatchId(0);
-    setLastMatchTimeStamp(0);
-    setPoll(false);
+    setUpdate(false);
+    setLoadMore(false);
     setFetching(false);
     setTotalStatistics(defaultTotalStatistics);
     setSummonerProfile(null);
@@ -111,43 +136,23 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
 
     (async () => {
       try {
-        setSummonerProfile(await getSummonerProfile(summonerName));
+        const newSummonerProfile = await tryToGetSummonerProfile(summonerName);
+        setSummonerProfile(newSummonerProfile);
+        setMatchIds((await getSummonerMatchIds(newSummonerProfile.puuid)).matchIds);
       } catch (e) {
-        if (isAxiosError(e) && e.response?.status == 404)
-          try {
-            setSummonerProfile(await fetchSummonerProfile(summonerName));
-          } catch (e) {
-            // todo: error handling
-          }
+        console.error(e);
       }
     })();
   }, [summonerName]);
 
   useEffect(() => {
-    if (summonerProfile === null) return;
+    if (matchIds.length === 0) return;
 
-    (async () => {
-      try {
-        if (lastMatchId) {
-          setMatchIds([
-            ...matchIds,
-            ...(await getSummonerMatchIds(summonerProfile.puuid, lastMatchId)).matchIds,
-          ]);
-        } else {
-          setMatchIds((await getSummonerMatchIds(summonerProfile.puuid, lastMatchId)).matchIds);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    })();
-  }, [summonerProfile]);
-
-  useEffect(() => {
     const promises = matchIds.map((matchId) => getMatch(matchId));
-    if (matchIds.length) setLastMatchId(matchIds[matchIds.length - 1]);
     (async () => {
       try {
-        setMatches(await Promise.all(promises));
+        const newMatches = await Promise.all(promises);
+        setMatches((matches) => [...matches, ...newMatches]);
       } catch (e) {
         console.error(e);
       }
@@ -155,9 +160,13 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
   }, [matchIds]);
 
   useEffect(() => {
-    if (!summonerProfile) return;
-    if (matches.length === 0) return;
-    setLastMatchTimeStamp(Math.floor(matches[matches.length - 1].info.gameCreation / 1000));
+    if (!summonerProfile || matches.length === 0) return;
+
+    // sort
+    matches.sort((a: Match, b: Match) => {
+      return a.info.gameCreation < b.info.gameCreation ? 1 : -1;
+    });
+
     setMatchStatistics(
       matches.reduce((acc, match) => {
         const newAcc: { [index: string]: MatchStatistic } = { ...acc };
@@ -167,7 +176,7 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
         return newAcc;
       }, {}),
     );
-  }, [matches]);
+  }, [matches, summonerProfile]);
 
   useEffect(() => {
     if (matchStatistics) {
@@ -196,12 +205,11 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
           onClick={async () => {
             try {
               setFetching(true);
-              setLastMatchId(0);
               await requestFetchSummonerMatches(summonerProfile.puuid);
-              setPoll(true);
+              setUpdate(true);
             } catch (e) {
-              console.log(e);
-              setPoll(false);
+              console.error(e);
+              setUpdate(false);
               setFetching(false);
             }
           }}
@@ -229,11 +237,14 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
             onClick={async () => {
               try {
                 setFetching(true);
-                await requestFetchSummonerMatches(summonerProfile.puuid, lastMatchTimeStamp);
-                setPoll(true);
+                await requestFetchSummonerMatches(
+                  summonerProfile.puuid,
+                  Math.floor(matches[matches.length - 1].info.gameCreation / 1000),
+                );
+                setLoadMore(true);
               } catch (e) {
-                console.log(e);
-                setPoll(false);
+                console.error(e);
+                setLoadMore(false);
                 setFetching(false);
               }
             }}
