@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import { isAxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import Button from '../../components/Button';
 import GameSlot from '../../components/GameSlot';
 import Logo from '../../components/Logo';
 import SearchBar from '../../components/SearchBar';
@@ -51,12 +52,12 @@ const style = {
     text-align: center;
   `,
   main: css`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
+    width: 777px;
+    display: block;
+    position: relative;
+    margin: 0 auto;
     & > * {
-      margin: 10px 0;
+      margin: 10px 0 0 0;
     }
   `,
 };
