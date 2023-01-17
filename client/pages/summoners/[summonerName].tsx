@@ -60,39 +60,29 @@ const style = {
   `,
 };
 
-export default function SearchPage() {
-  const router = useRouter();
-  const [searchText, setSearchText] = useState<string>('');
-  const [summonerName, setSummonerName] = useState<string | null>(null);
+const defaultTotalStatistics = getTotalMatchStatistics({});
+
+interface SummonerProfilePanelProps {
+  summonerName: string;
+}
+
+function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
   const [summonerProfile, setSummonerProfile] = useState<SummonerProfile | null>(null);
   const [matchIds, setMatchIds] = useState<SummonerMatchIds>([]);
   const [matches, setMatches] = useState<Match[]>([]);
   const [matchStatistics, setMatchStatistics] = useState<{ [key: string]: MatchStatistic } | null>(
     null,
   );
-  const [totalStatistics, setTotalStatistics] = useState<TotalStatistic | null>(null);
+  const [totalStatistics, setTotalStatistics] = useState<TotalStatistic>(defaultTotalStatistics);
 
-  const handleSearch = () => {
-    if (searchText === '') return;
-
+  useEffect(() => {
+    // reset summoner data
+    setSummonerProfile(null);
     setMatchIds([]);
     setMatches([]);
     setMatchStatistics(null);
-    setTotalStatistics(null);
-
-    router.push(`/summoners/${searchText}`);
-  };
-
-  useEffect(() => {
-    const query = router.query;
-    if (typeof query.summonerName === 'string') {
-      setSummonerName(query.summonerName);
-      setSearchText(query.summonerName);
-    }
-  }, [router.isReady, router.query]);
-
-  useEffect(() => {
-    if (summonerName === null) return;
+    setTotalStatistics(defaultTotalStatistics);
+    if (!summonerName) return;
 
     (async () => {
       try {
@@ -154,26 +144,16 @@ export default function SearchPage() {
     }
   }, [matchStatistics]);
 
-  if (!summonerName || !summonerProfile || !totalStatistics) {
-    return (
-      <>
-        <header css={style.header}>
-          <Logo width={221} />
-          <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={handleSearch} />
-        </header>
-        <p css={style.textAlignCenter}>Loading...</p>
-      </>
-    );
-  }
+  // before loading router
+  if (!summonerName) return <></>;
+
+  // before fetching summoner info
+  if (!summonerProfile) return <p css={style.textAlignCenter}>Loading...</p>;
 
   const { winRate, kda, camp, gameContribution } = totalStatistics;
 
   return (
     <>
-      <header css={style.header}>
-        <Logo width={221} />
-        <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={handleSearch} />
-      </header>
       <div css={style.profile}>
         <SummonerProfileCard
           profileIconId={summonerProfile.profileIconId}
@@ -202,6 +182,34 @@ export default function SearchPage() {
           />
         ))}
       </main>
+    </>
+  );
+}
+
+export default function SearchPage() {
+  const router = useRouter();
+  const [searchText, setSearchText] = useState<string>('');
+  const [summonerName, setSummonerName] = useState<string>('');
+
+  const handleSearch = () => {
+    if (searchText === '') return;
+    router.push(`/summoners/${searchText}`);
+  };
+
+  useEffect(() => {
+    const query = router.query;
+    if (typeof query.summonerName === 'string') {
+      setSummonerName(query.summonerName);
+      setSearchText(query.summonerName);
+    }
+  }, [router.isReady, router.query]);
+  return (
+    <>
+      <header css={style.header}>
+        <Logo width={221} />
+        <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={handleSearch} />
+      </header>
+      <SummonerProfilePanel summonerName={summonerName} />
     </>
   );
 }
