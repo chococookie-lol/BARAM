@@ -20,26 +20,30 @@ interface GameSlotProps {
 }
 
 interface GameSlotSummaryProps {
+  version: string;
   me: Participant;
   teamContribution: TeamContribution;
 }
 
 interface GameSlotRowProps {
+  version: string;
   participant: Participant;
 }
 
 interface GameSlotTableProps {
+  version: string;
   win: boolean;
   teamId: 100 | 200;
   participants: Participant[];
 }
 
 interface GameSlotDetailProps {
+  version: string;
   participants: Participant[];
   teams: Team[];
 }
 
-function GameSlotTable({ win, teamId, participants }: GameSlotTableProps) {
+function GameSlotTable({ version, win, teamId, participants }: GameSlotTableProps) {
   const { theme } = useGlobalTheme();
   return (
     <table css={detailStyle.tableContainer(theme, teamId, win)}>
@@ -58,14 +62,14 @@ function GameSlotTable({ win, teamId, participants }: GameSlotTableProps) {
       </thead>
       <tbody>
         {participants.map((e, i) => {
-          return <GameSlotRow key={i} participant={e} />;
+          return <GameSlotRow version={version} key={i} participant={e} />;
         })}
       </tbody>
     </table>
   );
 }
 
-function GameSlotRow({ participant }: GameSlotRowProps) {
+function GameSlotRow({ version, participant }: GameSlotRowProps) {
   const primaryPerk = participant.perks.styles.find((e) => e.description == 'primaryStyle');
   const subPerk = participant.perks.styles.find((e) => e.description == 'subStyle');
   if (!primaryPerk || !subPerk) throw 'perk not properly formatted';
@@ -81,6 +85,7 @@ function GameSlotRow({ participant }: GameSlotRowProps) {
       </td>
       <td css={detailStyle.summonerSettings}>
         <SpellStrip
+          version={version}
           spells={[participant.summoner1Id, participant.summoner2Id]}
           width={15}
           height={15}
@@ -89,12 +94,13 @@ function GameSlotRow({ participant }: GameSlotRowProps) {
         />
         <div css={detailStyle.runes}>
           <RuneIcon
+            version={version}
             styleId={primaryPerk.style}
             runeId={primaryPerk.selections[0].perk}
             width={15}
             height={15}
           />
-          <RuneIcon styleId={subPerk.style} width={15} height={15} />
+          <RuneIcon version={version} styleId={subPerk.style} width={15} height={15} />
         </div>
       </td>
       <td>
@@ -155,10 +161,10 @@ function GameSlotRow({ participant }: GameSlotRowProps) {
 }
 
 const GameSlotDetail = React.memo(function GameSlotDetail({
+  version,
   participants,
   teams,
 }: GameSlotDetailProps) {
-  console.log('render!');
   const red: Participant[] = [];
   const blue: Participant[] = [];
   participants.forEach((e) => {
@@ -168,13 +174,14 @@ const GameSlotDetail = React.memo(function GameSlotDetail({
   const bluewin = teams[0].win;
   return (
     <div>
-      <GameSlotTable win={bluewin} teamId={100} participants={blue} />
-      <GameSlotTable win={!bluewin} teamId={200} participants={red} />
+      <GameSlotTable version={version} win={bluewin} teamId={100} participants={blue} />
+      <GameSlotTable version={version} win={!bluewin} teamId={200} participants={red} />
     </div>
   );
 });
 
 const GameSlotSummary = React.memo(function GameSlotSummary({
+  version,
   me,
   teamContribution,
 }: GameSlotSummaryProps) {
@@ -218,13 +225,26 @@ const GameSlotSummary = React.memo(function GameSlotSummary({
       <div css={[style.item]}>
         <div css={style.summary}>
           <div css={style.middle}>
-            <SpellStrip spells={spells} width={25} height={25} direction={'vertical'} padding={3} />
+            <SpellStrip
+              version={version}
+              spells={spells}
+              width={25}
+              height={25}
+              direction={'vertical'}
+              padding={3}
+            />
           </div>
           <div css={style.middle}>
             <div css={style.bottomRight}>
-              <RuneIcon styleId={secondaryRuneStyle} width={20} height={20} />
+              <RuneIcon version={version} styleId={secondaryRuneStyle} width={20} height={20} />
             </div>
-            <RuneIcon styleId={primaryRuneStyle} runeId={primaryRune} width={55} height={55} />
+            <RuneIcon
+              version={version}
+              styleId={primaryRuneStyle}
+              runeId={primaryRune}
+              width={55}
+              height={55}
+            />
           </div>
           <div css={[style.kdaContainer, style.middle]}>
             <div css={style.kda}>
@@ -233,7 +253,7 @@ const GameSlotSummary = React.memo(function GameSlotSummary({
             <p css={style.kdaverage}>{kda}</p>
           </div>
         </div>
-        <ItemStrip items={items} width={25} height={25} padding={3} />
+        <ItemStrip items={items} version={version} width={25} height={25} padding={3} />
       </div>
       <div css={[style.item]}>
         <div css={style.seperator} />
@@ -283,6 +303,7 @@ const GameSlotSummary = React.memo(function GameSlotSummary({
 
 function GameSlot({ matchData, puuid }: GameSlotProps) {
   const { info } = matchData;
+  const version = matchData.info.gameVersion;
   const { participants, gameDuration } = info;
   const me = participants.find((e) => e.puuid == puuid);
   if (!me) throw Error("can't find summoner in match");
@@ -305,7 +326,7 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
           <div>{timeString}</div>
         </div>
         <div css={style.gameSummaryContainer}>
-          <GameSlotSummary me={me} teamContribution={contribution} />
+          <GameSlotSummary version={version} me={me} teamContribution={contribution} />
         </div>
         <div
           css={style.expand}
@@ -319,7 +340,11 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
         </div>
       </div>
       <div css={detailStyle.visible(expand)}>
-        {rendered ? <GameSlotDetail participants={participants} teams={info.teams} /> : <></>}
+        {rendered ? (
+          <GameSlotDetail participants={participants} teams={info.teams} version={version} />
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );

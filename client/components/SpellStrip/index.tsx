@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import SpellIcon from '../SpellIcon';
 
 interface SpellStripProps {
+  version: string;
   spells: number[];
   width: number;
   height: number;
@@ -27,6 +28,7 @@ const style = {
 };
 
 function SpellStrip({
+  version,
   spells,
   width,
   height,
@@ -37,7 +39,7 @@ function SpellStrip({
   return (
     <div css={style[direction](padding)}>
       {spells.map((e, i) => (
-        <SpellIcon key={i} id={e ? e : nullSpell} width={width} height={height} />
+        <SpellIcon version={version} key={i} id={e ? e : nullSpell} width={width} height={height} />
       ))}
     </div>
   );

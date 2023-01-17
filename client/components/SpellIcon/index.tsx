@@ -1,22 +1,30 @@
 import Image from 'next/image';
 import { css } from '@emotion/react';
 import { useRecoilValueLoadable } from 'recoil';
-import { ddragonSpells, ddragonVersion } from '../../states/ddragon';
-import { DDRAGON_BASE_URL, DEAFULT_PLACEHOLDER, spellIdToIcon } from '../../utils/ddragon';
+import { ddragonSpells, ddragonVersions } from '../../states/ddragon';
+import {
+  DDRAGON_BASE_URL,
+  DEAFULT_PLACEHOLDER,
+  getMajorVersion,
+  spellIdToIcon,
+} from '../../utils/ddragon';
 
 interface SpellIconProps {
+  version: string;
   id: number;
   width: number;
   height: number;
 }
 
-function SpellIcon({ id, width, height }: SpellIconProps) {
-  const spells = useRecoilValueLoadable(ddragonSpells);
-  const version = useRecoilValueLoadable(ddragonVersion);
+function SpellIcon({ version, id, width, height }: SpellIconProps) {
+  const versions = useRecoilValueLoadable(ddragonVersions);
+  const majorVersion =
+    getMajorVersion(versions.state === 'hasValue' ? versions.contents : [], version) ?? '13.1.1';
+  const spells = useRecoilValueLoadable(ddragonSpells(majorVersion));
 
   const src =
-    spells.state === 'hasValue' && version.state === 'hasValue'
-      ? `${DDRAGON_BASE_URL}${version.contents}/img/spell/${spellIdToIcon(spells.contents, id)}`
+    spells.state === 'hasValue'
+      ? `${DDRAGON_BASE_URL}${majorVersion}/img/spell/${spellIdToIcon(spells.contents, id)}`
       : DEAFULT_PLACEHOLDER;
   return (
     <Image

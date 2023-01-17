@@ -1,11 +1,12 @@
 import Image from 'next/image';
 import { css } from '@emotion/react';
 import { useRecoilValueLoadable } from 'recoil';
-import { ddragonVersion } from '../../states/ddragon';
-import { DDRAGON_BASE_URL, DEAFULT_PLACEHOLDER } from '../../utils/ddragon';
+import { ddragonVersions } from '../../states/ddragon';
+import { DDRAGON_BASE_URL, DEAFULT_PLACEHOLDER, getMajorVersion } from '../../utils/ddragon';
 
 interface ItemIconProps {
   id: number;
+  version?: string;
   width: number;
   height: number;
 }
@@ -14,11 +15,12 @@ const style = css`
   border-radius: 13%;
 `;
 
-function ItemIcon({ id, width, height }: ItemIconProps) {
-  const version = useRecoilValueLoadable(ddragonVersion);
+function ItemIcon({ id, version, width, height }: ItemIconProps) {
+  // const version = useRecoilValueLoadable(ddragonVersion);
+  const versions = useRecoilValueLoadable(ddragonVersions);
   const src =
-    version.state === 'hasValue'
-      ? `${DDRAGON_BASE_URL}${version.contents}/img/item/${id}.png`
+    versions.state === 'hasValue' && version !== undefined
+      ? `${DDRAGON_BASE_URL}${getMajorVersion(versions.contents, version)}/img/item/${id}.png`
       : DEAFULT_PLACEHOLDER;
   return <Image css={style} src={src} width={width} height={height} alt={id.toString()} />;
 }

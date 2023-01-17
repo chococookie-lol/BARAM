@@ -35,6 +35,12 @@ export const getSummonerDdragon = async (
   ).data;
 };
 
+export async function getDdragonVersions(): Promise<string[]> {
+  return await (
+    await axios.get(`https://ddragon.leagueoflegends.com/api/versions.json`)
+  ).data;
+}
+
 export function runeStyleIdToIcon(runeStyles: RuneStyle[], style: number): string {
   return runeStyles.find((e) => e.id === style)?.icon || 'perk-images/Styles/RunesIcon.png';
 }
@@ -51,4 +57,32 @@ export function spellIdToIcon(spells: Spells, id: number): string {
     Object.keys(spells).find((k) => spells[k].key === id.toString()) ||
       'Summoner_UltBookPlaceholder'
   ].image.full;
+}
+
+export function getMajorVersion(versions: string[], fullVersion: string): string | null {
+  for (const version of versions) {
+    if (getVersionDiff(version, fullVersion)) {
+      return version;
+    }
+  }
+  return null;
+}
+
+/**
+ *
+ * @param min 12.23.1
+ * @param full 12.23.483.5208
+ * @returns true
+ */
+export function getVersionDiff(min: string, full: string) {
+  const m = min.split('.');
+  const f = full.split('.');
+
+  if (m.length > f.length) throw new Error('min must be shorter than full');
+
+  for (let i in m) {
+    if (m[i] > f[i]) return false;
+  }
+
+  return true;
 }
