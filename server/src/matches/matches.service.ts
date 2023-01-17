@@ -1,29 +1,34 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { PlayService } from 'src/play/play.service';
+import { RiotApiException } from 'src/riot.api/definition/riot.api.exception';
 import { RiotApiService } from 'src/riot.api/riot.api.service';
+import { Summoner, SummonerDocument } from 'src/summoners/schemas/summoner.schema';
 import { Contribution, Match, MatchDocument, TeamContribution } from './schemas/match.schema';
 
 @Injectable()
 export class MatchesService {
+  private logger = new Logger(MatchesService.name);
+
   constructor(
     @InjectModel(Match.name)
     private matchModel: Model<MatchDocument>,
+    @InjectModel(Summoner.name) private summonerModel: Model<SummonerDocument>,
     private readonly riotApiService: RiotApiService,
+    private readonly playService: PlayService,
   ) {}
 
   async findOne(matchId: number) {
-    const match = await this.matchModel.findOne({ id: matchId }).lean();
+    const match = await this.matchModel.findOne({ 'info.gameId': matchId }).lean();
 
     if (!match) throw new NotFoundException('해당 경기가 없습니다.');
 
     return match;
   }
 
-  async findAll(puuid: string) {
-    const matchIds: number[] = await this.matchModel
-      .distinct('id', { 'metadata.participants': { $all: [puuid] } })
-      .lean();
+  async findAll(puuid: string, after?: number) {
+    const matchIds = await this.playService.findMany(puuid, after);
 
     return {
       puuid,
@@ -32,21 +37,27 @@ export class MatchesService {
   }
 
   async updateMany(puuid: string, after: number) {
-    const matches = await this.riotApiService.getMatchesByPuuid(puuid, after, 3);
+    const updateSummoner = await this.summonerModel
+      .updateOne({ puuid: puuid, isFetching: false }, { $set: { isFetching: true } })
+      .lean();
 
-    for (const matchId of matches) {
+    if (updateSummoner.matchedCount === 0)
+      throw new ForbiddenException('해당 소환사에 대한 작업을 완료할 수 없습니다.');
+
+    const matches = await this.riotApiService.getMatchesByPuuid(puuid, after, 5);
+
+    if (!matches) throw new RiotApiException(404, '경기를 찾을 수 없습니다.');
+
+    const promises = matches.map(async (matchId) => {
       const id: number = +matchId.substring(3);
 
       const contributionKeys = Object.getOwnPropertyNames(new Contribution());
 
       // check db
-      if (!(await this.matchModel.countDocuments({ id: id }, { limit: 1 }).lean())) {
+      if (!(await this.matchModel.countDocuments({ 'info.gameId': id }, { limit: 1 }).lean())) {
         // fetch if not found
         const match = <Match>await this.riotApiService.getMatch(matchId);
-        if (!match) throw new NotFoundException('경기를 찾을 수 없습니다.');
-
-        // set id
-        match.id = id;
+        if (!match) throw new NotFoundException(`경기(id:${id}) 를 찾을 수 없습니다.`);
 
         // create property
         match.info.teams[0].contribution = new TeamContribution();
@@ -112,8 +123,25 @@ export class MatchesService {
           }
         });
 
-        await this.matchModel.updateOne({ id: id }, match, { upsert: true });
+        await this.matchModel.updateOne({ 'info.gameId': id }, match, { upsert: true });
+        await this.playService.create(puuid, id);
       }
-    }
+      return id;
+    });
+
+    (async () => {
+      const res = await Promise.allSettled(promises);
+
+      res.forEach((r) => {
+        if (r.status === 'fulfilled') this.logger.log(r.value);
+        else if (r.status === 'rejected') this.logger.error(r.reason);
+      });
+
+      await this.summonerModel
+        .updateOne({ puuid: puuid, isFetching: true }, { $set: { isFetching: false } })
+        .lean();
+    })();
+
+    return;
   }
 }

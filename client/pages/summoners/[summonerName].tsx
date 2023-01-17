@@ -69,6 +69,11 @@ export default function SearchPage() {
   const handleSearch = () => {
     if (searchText === '') return;
 
+    setMatchIds([]);
+    setMatches([]);
+    setMatchStatistics(null);
+    setTotalStatistics(null);
+
     router.push(`/summoners/${searchText}`);
   };
 
@@ -76,6 +81,7 @@ export default function SearchPage() {
     const query = router.query;
     if (typeof query.summonerName === 'string') {
       setSummonerName(query.summonerName);
+      setSearchText(query.summonerName);
     }
   }, [router.isReady, router.query]);
 

@@ -893,7 +893,7 @@ class Info {
   @Prop({ required: true })
   gameEndTimestamp: number;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   gameId: number;
 
   @Prop({ required: true })
@@ -932,11 +932,8 @@ class Info {
 
 const infoSchema = SchemaFactory.createForClass(Info);
 
-@Schema({ collection: 'matches' })
+@Schema({ collection: 'match', id: true })
 export class Match extends Document {
-  @Prop({ required: true, unique: true })
-  id: number;
-
   @Prop({ required: true, type: metaDataSchema })
   metadata: Metadata;
 

@@ -4,6 +4,7 @@ import { MatchesModule } from './matches/matches.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { RiotApiModule } from './riot.api/riot.api.module';
+import { PlayModule } from './play/play.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { RiotApiModule } from './riot.api/riot.api.module';
     MatchesModule,
     DatabaseModule,
     RiotApiModule,
+    PlayModule,
   ],
 })
 export class AppModule {}

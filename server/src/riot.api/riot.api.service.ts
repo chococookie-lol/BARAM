@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AxiosError, HttpStatusCode } from 'axios';
+import { AxiosError } from 'axios';
 import { RiotApiException } from './definition/riot.api.exception';
 import { RiotChallengeResponse, RoitSummonerResponse } from './interface';
 import { RiotMatchResponse } from './interface/riot.match.interface';
@@ -9,6 +9,7 @@ import { RiotMatchResponse } from './interface/riot.match.interface';
 @Injectable()
 export class RiotApiService {
   apiKey: string;
+  private readonly logger = new Logger(RiotApiService.name);
 
   constructor(
     private readonly httpService: HttpService,
@@ -38,7 +39,8 @@ export class RiotApiService {
           HttpStatus.GATEWAY_TIMEOUT,
         ];
 
-        if (serviceUnavailableCodes.includes(+error.code)) {
+        if (serviceUnavailableCodes.includes(+error.response?.status)) {
+          this.logger.error(`RoitAPI Error: ${error.message}`);
           throw new RiotApiException(+error.code, error.message);
         }
 

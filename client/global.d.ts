@@ -14,6 +14,7 @@ interface SummonerProfile {
   id: string;
   puuid: string;
   profileIconId: number;
+  isFetching: boolean;
   challenges: Challenge[];
   updatedAt: string;
 }
