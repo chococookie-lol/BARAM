@@ -43,6 +43,9 @@ export const style = {
   expand: css`
     width: 40px;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
   `,
   bottomRight: css`
     position: absolute;
@@ -120,6 +123,10 @@ export const style = {
   stickLeft: css`
     position: absolute;
     left: 0;
+  `,
+  downArrow: css`
+    margin: auto;
+    margin-bottom: 15px;
   `,
 };
 
