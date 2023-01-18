@@ -115,6 +115,7 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
       </td>
       <td>
         <ItemStrip
+          version={version}
           items={[
             participant.item0,
             participant.item1,
