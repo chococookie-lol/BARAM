@@ -23,18 +23,16 @@ const style = {
     background-color: ${color};
   `,
   text: css`
+    pointer-events: none;
     line-height: 16px;
     color: black;
     position: absolute;
     width: 100%;
     height: 100%;
-    font-size: 13px;
+    font-size: 12px;
     text-align: center;
     vertical-align: middle;
-  `,
-  span: css`
     color: white;
-    border-radius: 10px;
   `,
 };
 
@@ -63,9 +61,8 @@ export default function PercentageBar({ amounts, colors }: PercentageBarProps) {
             onMouseLeave={() => setText('')}
           ></div>
         ))}
-      <div css={style.text}>
-        <span css={style.span}>&nbsp; {text} &nbsp;</span>
-      </div>
+
+      <div css={style.text}>{text}</div>
     </div>
   );
 }
