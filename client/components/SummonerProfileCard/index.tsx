@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { convertEpochToRelativeTime } from '../../utils/time';
 import Button from '../Button';
 import ChallengeIcon from '../ChallengeIcon';
@@ -10,6 +11,8 @@ interface SummonerProfileCardProps {
   summonerLevel: number;
   modifiedAt: number;
   challenges: Challenge[];
+  fetching: boolean;
+  onClick: () => void;
 }
 
 export default function SummonerProfileCard({
@@ -18,6 +21,8 @@ export default function SummonerProfileCard({
   summonerLevel,
   modifiedAt,
   challenges,
+  fetching,
+  onClick,
 }: SummonerProfileCardProps) {
   if (challenges.length > 3) throw new Error('challenge는 최대 세개입니다.');
 
@@ -35,8 +40,8 @@ export default function SummonerProfileCard({
               최근 업데이트: {convertEpochToRelativeTime(modifiedAt)}
             </p>
           </div>
-          <Button width="80px" onClick={() => {}}>
-            전적 갱신
+          <Button width="80px" onClick={onClick} enabled={!fetching}>
+            {fetching ? '갱신중' : '전적 갱신'}
           </Button>
         </div>
       </div>

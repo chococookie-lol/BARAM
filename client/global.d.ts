@@ -19,7 +19,7 @@ interface SummonerProfile {
   updatedAt: string;
 }
 
-type SummonerMatchIds = string[];
+type SummonerMatchIds = number[];
 
 interface SummonerMatchIdsResponse {
   summonerName: string;
