@@ -86,6 +86,8 @@ export default function SummonerStatCard({
 function WinRate({ win, lose }: WinRateProps) {
   const { theme } = useGlobalTheme();
 
+  const winRate = (win / (win + lose)) * 100;
+
   return (
     <div css={style.winrateContainer}>
       <span css={[style.color(theme.background), style.fontSize('13px'), style.statTitle]}>
@@ -95,7 +97,7 @@ function WinRate({ win, lose }: WinRateProps) {
         label={['승리', '패배']}
         val={[win, lose]}
         color={[theme.blue2, theme.red2]}
-        title={`${((win / (win + lose)) * 100).toFixed(0)}%`}
+        title={`${isFinite(winRate) ? winRate : '100'}%`}
         size={110}
         textColor={theme.background}
       />
@@ -107,7 +109,7 @@ function KDA({ kills, assists, deaths, killContribution }: KDAProps) {
   const { theme } = useGlobalTheme();
 
   const kda = (kills + assists) / deaths;
-  const kdastr = kda ? kda.toFixed(2) : '∞';
+  const kdaStr = isFinite(kda) ? kda.toFixed(2) : '∞';
 
   return (
     <div css={style.kdaContainer}>
@@ -123,7 +125,7 @@ function KDA({ kills, assists, deaths, killContribution }: KDAProps) {
           &nbsp;{assists}
         </p>
         <p css={[style.color(theme.background), style.fontSize('20px'), style.resetMargin]}>
-          {kdastr} : 1
+          {kdaStr} : 1
         </p>
         <p css={[style.color(theme.red2), style.fontSize('14px'), style.resetMargin]}>
           킬관여 {(killContribution * 100).toFixed(1)}%
