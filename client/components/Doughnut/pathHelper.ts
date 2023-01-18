@@ -19,6 +19,7 @@ export function generatePath(
   const paths: DoughnutPath[] = [];
   let degreeSum = 0;
   val.forEach((v) => {
+    if (!v) return;
     const percent = v / sum;
     const degree = (percent == 1 ? 0.999999 : percent) * 360;
     const longPath = degree > 180 ? 1 : 0;
