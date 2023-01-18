@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 import { style } from './style';
 
 interface PercentageProps {
@@ -21,6 +22,10 @@ export default function Percentage({
   }
   const displayPercent = percent ? Math.round(percent * 10000) / 100 : 0;
   const [displayText, setDisplayText] = useState<string>(`${displayPercent}%`);
+
+  useEffect(() => {
+    setDisplayText(`${displayPercent}%`);
+  }, [displayPercent]);
 
   return (
     <div
