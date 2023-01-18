@@ -124,9 +124,10 @@ export const style = {
     position: absolute;
     left: 0;
   `,
-  downArrow: css`
+  downArrow: (isExpanded: boolean) => css`
     margin: auto;
     margin-bottom: 15px;
+    transform: rotate(${isExpanded ? '180deg' : '0deg'});
   `,
 };
 

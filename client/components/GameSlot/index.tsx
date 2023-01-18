@@ -337,7 +337,7 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
           }}
         >
           <div css={[style.seperator, style.stickLeft, style.middle]} />
-          <DownArrow css={style.downArrow} />
+          <DownArrow css={style.downArrow(expand)} />
         </div>
       </div>
       <div css={detailStyle.visible(expand)}>
