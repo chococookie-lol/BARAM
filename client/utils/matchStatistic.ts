@@ -83,11 +83,13 @@ export function getTotalMatchStatistics(matchStatistic: { [index: string]: Match
 
   const count = Object.keys(matchStatistic).length;
 
-  kda.killContribution /= count;
-  gameContribution.dealt /= count;
-  gameContribution.heal /= count;
-  gameContribution.damaged /= count;
-  gameContribution.death /= count;
+  if (count) {
+    kda.killContribution /= count;
+    gameContribution.dealt /= count;
+    gameContribution.heal /= count;
+    gameContribution.damaged /= count;
+    gameContribution.death /= count;
+  }
 
   return {
     winRate,

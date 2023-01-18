@@ -1,23 +1,30 @@
 import Image from 'next/image';
 import { useRecoilValueLoadable } from 'recoil';
-import { ddragonRunes } from '../../states/ddragon';
+import { ddragonRunes, ddragonVersions } from '../../states/ddragon';
 import {
   DDRAGON_BASE_URL,
   DEAFULT_PLACEHOLDER,
+  getMajorVersion,
   runeIdToIcon,
   runeStyleIdToIcon,
 } from '../../utils/ddragon';
 import { style } from './style';
 
 interface RuneIconProps {
+  version: string;
   styleId: number;
   runeId?: number;
   width: number;
   height: number;
 }
 
-function RuneIcon({ styleId, runeId, width, height }: RuneIconProps) {
-  const runes = useRecoilValueLoadable(ddragonRunes);
+function RuneIcon({ version, styleId, runeId, width, height }: RuneIconProps) {
+  const versions = useRecoilValueLoadable(ddragonVersions);
+  const runes = useRecoilValueLoadable(
+    ddragonRunes(
+      getMajorVersion(versions.state === 'hasValue' ? versions.contents : [], version) ?? '13.1.1',
+    ),
+  );
   const src =
     runes.state === 'hasValue'
       ? `${DDRAGON_BASE_URL}img/${
