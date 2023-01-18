@@ -49,15 +49,15 @@ function GameSlotTable({ version, win, teamId, participants }: GameSlotTableProp
     <table css={detailStyle.tableContainer(theme, teamId, win)}>
       <thead>
         <tr>
-          <th>
+          <th css={detailStyle.thFirst(theme, win)}>
             <span>{win ? '승리' : '패배'}</span> ({teamId === 100 ? '블루' : '레드'}팀)
           </th>
-          <th>룬</th>
-          <th>KDA</th>
-          <th>빌드</th>
-          <th>준 피해량</th>
-          <th>받은 피해량</th>
-          <th>딜 유형</th>
+          <th css={detailStyle.width('4.1%')}>룬</th>
+          <th css={detailStyle.width('6%')}>KDA</th>
+          <th css={detailStyle.width('19%')}>빌드</th>
+          <th css={detailStyle.width('16%')}>준 피해량</th>
+          <th css={detailStyle.width('16%')}>받은 피해량</th>
+          <th css={detailStyle.width('16%')}>딜 유형</th>
         </tr>
       </thead>
       <tbody>
