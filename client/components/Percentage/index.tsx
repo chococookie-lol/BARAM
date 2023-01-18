@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useSetRecoilState } from 'recoil';
 import { style } from './style';
 
 interface PercentageProps {
