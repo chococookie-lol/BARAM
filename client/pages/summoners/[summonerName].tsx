@@ -230,7 +230,7 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
             puuid={summonerProfile.puuid}
           />
         ))}
-        {matches && (
+        {matches.length !== 0 && (
           <Button
             width={'100%'}
             enabled={!fetching}
