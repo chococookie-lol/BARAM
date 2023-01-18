@@ -137,32 +137,17 @@ export const detailStyle = {
     th {
       height: 22px;
     }
-    th:nth-child(1) {
-      text-align: left;
-      color: ${theme.foreground};
-      span {
-        color: ${win ? theme.blue2 : theme.red2};
-      }
-      width: 22%;
+  `,
+  thFirst: (theme: Theme, win: boolean) => css`
+    text-align: left;
+    color: ${theme.foreground};
+    span {
+      color: ${win ? theme.blue2 : theme.red2};
     }
-    th:nth-child(2) {
-      width: 4.1%;
-    }
-    th:nth-child(3) {
-      width: 6%;
-    }
-    th:nth-child(4) {
-      width: 19%;
-    }
-    th:nth-child(5) {
-      width: 16%;
-    }
-    th:nth-child(6) {
-      width: 16%;
-    }
-    th:nth-child(7) {
-      width: 16%;
-    }
+    width: 22%;
+  `,
+  width: (width: string) => css`
+    width: ${width};
   `,
   container: css`
     position: relative;
