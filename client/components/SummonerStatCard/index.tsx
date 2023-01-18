@@ -86,7 +86,7 @@ export default function SummonerStatCard({
 function WinRate({ win, lose }: WinRateProps) {
   const { theme } = useGlobalTheme();
 
-  const winRate = (win / (win + lose)) * 100;
+  const winRate = Math.floor((win / (win + lose)) * 100);
 
   return (
     <div css={style.winrateContainer}>
