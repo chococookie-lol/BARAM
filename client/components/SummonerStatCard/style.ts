@@ -8,6 +8,11 @@ export const style = {
     border-radius: 10px;
     user-select: none;
   `,
+  noMatchesText: (textColor: string) => css`
+    line-height: 219px;
+    color: ${textColor};
+    text-align: center;
+  `,
   title: css`
     margin: 0;
     padding: 20px 0 20px 20px;
