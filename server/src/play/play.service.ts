@@ -10,23 +10,24 @@ export class PlayService {
   async findMany(puuid: string, after?: number) {
     const plays = after
       ? await this.playModel
-          .find({ puuid: puuid }, {}, { sort: { matchId: -1 } })
+          .find({ puuid: puuid }, {}, { sort: { gameCreation: -1 } })
           .where('matchId')
           .lt(after)
           .limit(5)
           .lean()
       : await this.playModel
-          .find({ puuid: puuid }, {}, { sort: { matchId: -1 } })
+          .find({ puuid: puuid }, {}, { sort: { gameCreation: -1 } })
           .limit(5)
           .lean();
 
     return plays.map((play) => play.matchId);
   }
 
-  async create(puuid: string, matchId: number) {
+  async create(puuid: string, matchId: number, gameCreation: number) {
     await this.playModel.create({
       puuid: puuid,
       matchId: matchId,
+      gameCreation: gameCreation,
     });
   }
 }
