@@ -1,9 +1,16 @@
-import { atom, selector } from 'recoil';
-import { getChampionDdragon, getRuneDdragon, getSummonerDdragon } from '../utils/ddragon';
+import { atom, selector, selectorFamily } from 'recoil';
+import {
+  getChampionDdragon,
+  getRuneDdragon,
+  getSummonerDdragon,
+  getDdragonVersions,
+} from '../utils/ddragon';
 
-export const ddragonVersion = atom<string>({
+export const ddragonVersion = selector<string>({
   key: 'ddragonVersion',
-  default: '12.23.1',
+  get: async ({ get }) => {
+    return get(ddragonVersions)[0];
+  },
 });
 
 export const ddragonRegion = atom<string>({
@@ -11,23 +18,36 @@ export const ddragonRegion = atom<string>({
   default: 'ko_KR',
 });
 
-export const ddragonChampions = selector<Champions>({
+export const ddragonChampions = selectorFamily<Champions, string>({
   key: 'ddragonChampions',
-  get: async ({ get }) => {
-    return (await getChampionDdragon(get(ddragonVersion), get(ddragonRegion))).data;
-  },
+  get:
+    (version) =>
+    async ({ get }) => {
+      return (await getChampionDdragon(version, get(ddragonRegion))).data;
+    },
 });
 
-export const ddragonRunes = selector<RuneStyle[]>({
+export const ddragonRunes = selectorFamily<RuneDdragonResponse, string>({
   key: 'ddragonRunes',
-  get: async ({ get }) => {
-    return await getRuneDdragon(get(ddragonVersion), get(ddragonRegion));
-  },
+  get:
+    (version: string) =>
+    async ({ get }) => {
+      return await getRuneDdragon(version, get(ddragonRegion));
+    },
 });
 
-export const ddragonSpells = selector<Spells>({
+export const ddragonSpells = selectorFamily<Spells, string>({
   key: 'ddragonSpells',
+  get:
+    (version: string) =>
+    async ({ get }) => {
+      return (await getSummonerDdragon(version, get(ddragonRegion))).data;
+    },
+});
+
+export const ddragonVersions = selector<string[]>({
+  key: 'ddragonVersions',
   get: async ({ get }) => {
-    return (await getSummonerDdragon(get(ddragonVersion), get(ddragonRegion))).data;
+    return await getDdragonVersions();
   },
 });
