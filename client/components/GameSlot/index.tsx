@@ -13,6 +13,7 @@ import { useState } from 'react';
 import Percentage from '../Percentage';
 import PercentageBar from '../PercentageBar';
 import React from 'react';
+import DownArrow from '../../assets/downArrow.svg';
 
 interface GameSlotProps {
   matchData: Match;
@@ -337,7 +338,7 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
           }}
         >
           <div css={[style.seperator, style.stickLeft, style.middle]} />
-          {/* TODO: down arrow*/}
+          <DownArrow css={style.downArrow(expand)} />
         </div>
       </div>
       <div css={detailStyle.visible(expand)}>
