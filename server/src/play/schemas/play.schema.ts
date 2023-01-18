@@ -13,6 +13,9 @@ export class Play extends Document {
 
   @Prop({ required: true })
   matchId: number;
+
+  @Prop({ required: true })
+  gameCreation: number;
 }
 
 export const PlaySchema = SchemaFactory.createForClass(Play);
