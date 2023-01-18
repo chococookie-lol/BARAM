@@ -74,6 +74,11 @@ export function getTotalMatchStatistics(matchStatistic: { [index: string]: Match
     camp.blue += matchStatistic[matchId].camp.blue;
     camp.red += matchStatistic[matchId].camp.red;
 
+    gameContribution.dealtAmount += matchStatistic[matchId].myContribution.dealt;
+    gameContribution.damagedAmount += matchStatistic[matchId].myContribution.damaged;
+    gameContribution.healAmount += matchStatistic[matchId].myContribution.heal;
+    gameContribution.deathAmount += matchStatistic[matchId].myContribution.death;
+
     gameContribution.dealt += matchStatistic[matchId].myPercentage.dealt;
     gameContribution.damaged += matchStatistic[matchId].myPercentage.damaged;
     gameContribution.heal += matchStatistic[matchId].myPercentage.heal;
