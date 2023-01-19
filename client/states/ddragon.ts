@@ -18,12 +18,23 @@ export const ddragonRegion = atom<string>({
   default: 'ko_KR',
 });
 
-export const ddragonChampions = selectorFamily<Champions, string>({
+interface ChampionDictionary {
+  [key: string]: string;
+}
+
+export const ddragonChampions = selectorFamily<ChampionDictionary, string>({
   key: 'ddragonChampions',
   get:
     (version) =>
-    async ({ get }) => {
-      return (await getChampionDdragon(version, get(ddragonRegion))).data;
+    async ({}) => {
+      const champions = (await getChampionDdragon(version, 'en_US')).data;
+      const result: ChampionDictionary = {};
+
+      for (const key of Object.keys(champions)) {
+        result[champions[key].key] = champions[key].id;
+      }
+
+      return result;
     },
 });
 
