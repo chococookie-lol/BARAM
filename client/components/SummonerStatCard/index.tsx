@@ -46,10 +46,18 @@ export default function SummonerStatCard({
   gameContribution,
 }: SummonerStatCardProps) {
   const { theme } = useGlobalTheme();
+  const totalGameCount = camp.blue + camp.red;
+
+  if (!totalGameCount)
+    return (
+      <div css={[style.container(theme.foreground), style.noMatchesText(theme.neutral)]}>
+        해당하는 경기가 없습니다
+      </div>
+    );
 
   return (
     <div css={style.container(theme.foreground)}>
-      <p css={[style.title, style.color(theme.background)]}>최근 {20}게임 통계</p>
+      <p css={[style.title, style.color(theme.background)]}>최근 {totalGameCount}게임 통계</p>
       <div css={style.flexBox}>
         <WinRate win={winRate.win} lose={winRate.lose} />
         <KDA
@@ -78,6 +86,8 @@ export default function SummonerStatCard({
 function WinRate({ win, lose }: WinRateProps) {
   const { theme } = useGlobalTheme();
 
+  const winRate = Math.floor((win / (win + lose)) * 100);
+
   return (
     <div css={style.winrateContainer}>
       <span css={[style.color(theme.background), style.fontSize('13px'), style.statTitle]}>
@@ -87,7 +97,7 @@ function WinRate({ win, lose }: WinRateProps) {
         label={['승리', '패배']}
         val={[win, lose]}
         color={[theme.blue2, theme.red2]}
-        title={`${((win / (win + lose)) * 100).toFixed(0)}%`}
+        title={`${isFinite(winRate) ? winRate : '100'}%`}
         size={110}
         textColor={theme.background}
       />
@@ -97,6 +107,9 @@ function WinRate({ win, lose }: WinRateProps) {
 
 function KDA({ kills, assists, deaths, killContribution }: KDAProps) {
   const { theme } = useGlobalTheme();
+
+  const kda = (kills + assists) / deaths;
+  const kdaStr = isFinite(kda) ? kda.toFixed(2) : '∞';
 
   return (
     <div css={style.kdaContainer}>
@@ -112,7 +125,7 @@ function KDA({ kills, assists, deaths, killContribution }: KDAProps) {
           &nbsp;{assists}
         </p>
         <p css={[style.color(theme.background), style.fontSize('20px'), style.resetMargin]}>
-          {((kills + assists) / deaths).toFixed(2)} : 1
+          {kdaStr} : 1
         </p>
         <p css={[style.color(theme.red2), style.fontSize('14px'), style.resetMargin]}>
           킬관여 {(killContribution * 100).toFixed(1)}%

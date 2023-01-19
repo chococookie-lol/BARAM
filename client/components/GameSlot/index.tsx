@@ -13,6 +13,7 @@ import { useState } from 'react';
 import Percentage from '../Percentage';
 import PercentageBar from '../PercentageBar';
 import React from 'react';
+import DownArrow from '../../assets/downArrow.svg';
 
 interface GameSlotProps {
   matchData: Match;
@@ -49,15 +50,15 @@ function GameSlotTable({ version, win, teamId, participants }: GameSlotTableProp
     <table css={detailStyle.tableContainer(theme, teamId, win)}>
       <thead>
         <tr>
-          <th>
+          <th css={detailStyle.thFirst(theme, win)}>
             <span>{win ? '승리' : '패배'}</span> ({teamId === 100 ? '블루' : '레드'}팀)
           </th>
-          <th>룬</th>
-          <th>KDA</th>
-          <th>빌드</th>
-          <th>준 피해량</th>
-          <th>받은 피해량</th>
-          <th>딜 유형</th>
+          <th css={detailStyle.width('4.1%')}>룬</th>
+          <th css={detailStyle.width('6%')}>KDA</th>
+          <th css={detailStyle.width('19%')}>빌드</th>
+          <th css={detailStyle.width('16%')}>준 피해량</th>
+          <th css={detailStyle.width('16%')}>받은 피해량</th>
+          <th css={detailStyle.width('16%')}>딜 유형</th>
         </tr>
       </thead>
       <tbody>
@@ -115,6 +116,7 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
       </td>
       <td>
         <ItemStrip
+          version={version}
           items={[
             participant.item0,
             participant.item1,
@@ -336,7 +338,7 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
           }}
         >
           <div css={[style.seperator, style.stickLeft, style.middle]} />
-          {/* TODO: down arrow*/}
+          <DownArrow css={style.downArrow(expand)} />
         </div>
       </div>
       <div css={detailStyle.visible(expand)}>

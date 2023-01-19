@@ -74,7 +74,7 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
   const [matchIds, setMatchIds] = useState<SummonerMatchIds>([]);
   const [matches, setMatches] = useState<Match[]>([]);
   const [matchStatistics, setMatchStatistics] = useState<{ [key: string]: MatchStatistic }>({});
-  const [totalStatistics, setTotalStatistics] = useState<TotalStatistic>(defaultTotalStatistics);
+  const [totalStatistics, setTotalStatistics] = useState<TotalStatistic | null>(null);
   const [fetching, setFetching] = useState<boolean>(false);
   const [loadMore, setLoadMore] = useState<boolean>(false);
   const [update, setUpdate] = useState<boolean>(false);
@@ -189,7 +189,7 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
   if (!summonerName) return <></>;
 
   // before fetching summoner info
-  if (!summonerProfile) return <p css={style.textAlignCenter}>Loading...</p>;
+  if (!summonerProfile || !totalStatistics) return <p css={style.textAlignCenter}>...</p>;
 
   const { winRate, kda, camp, gameContribution } = totalStatistics;
 
@@ -230,7 +230,7 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
             puuid={summonerProfile.puuid}
           />
         ))}
-        {matches && (
+        {matches.length !== 0 && (
           <Button
             width={'100%'}
             enabled={!fetching}

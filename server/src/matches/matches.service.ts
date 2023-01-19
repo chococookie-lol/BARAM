@@ -124,7 +124,7 @@ export class MatchesService {
         });
 
         await this.matchModel.updateOne({ 'info.gameId': id }, match, { upsert: true });
-        await this.playService.create(puuid, id);
+        await this.playService.create(puuid, id, match.info.gameCreation);
       }
       return id;
     });
