@@ -36,11 +36,10 @@ function ItemStrip({
   padding = 3,
   direction = 'horizontal',
 }: ItemStripProps) {
-  const nullItem = 7050;
   return (
     <div css={style[direction](padding)}>
       {items.map((e, i) => (
-        <ItemIcon key={i} id={e ? e : nullItem} version={version} width={width} height={height} />
+        <ItemIcon key={i} id={e ? e : 0} version={version} width={width} height={height} />
       ))}
     </div>
   );
