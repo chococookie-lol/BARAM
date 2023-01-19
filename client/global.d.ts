@@ -90,6 +90,7 @@ interface Contribution {
 }
 
 interface Participant {
+  contributionRank: number;
   allInPings: number;
   assistMePings: number;
   assists: number;

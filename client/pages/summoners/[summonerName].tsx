@@ -1,5 +1,4 @@
 import { css } from '@emotion/react';
-import { isAxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Button from '../../components/Button';
@@ -9,7 +8,6 @@ import SearchBar from '../../components/SearchBar';
 import SummonerProfileCard from '../../components/SummonerProfileCard';
 import SummonerStatCard from '../../components/SummonerStatCard';
 import {
-  fetchSummonerProfile,
   getMatch,
   getSummonerMatchIds,
   getSummonerProfile,
