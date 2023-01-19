@@ -7,6 +7,22 @@ import { RiotApiService } from 'src/riot.api/riot.api.service';
 import { Summoner, SummonerDocument } from 'src/summoners/schemas/summoner.schema';
 import { Contribution, Match, MatchDocument, TeamContribution } from './schemas/match.schema';
 
+interface Score {
+  index: number;
+  score: number;
+}
+
+// TODO : 계수 조정
+const scoreMultiplier: Contribution = {
+  dealt: 1,
+  damaged: 1,
+  heal: 0.5,
+  death: -1,
+  gold: 1,
+  cs: 0.5,
+  kill: 0.8,
+};
+
 @Injectable()
 export class MatchesService {
   private logger = new Logger(MatchesService.name);
@@ -53,6 +69,8 @@ export class MatchesService {
 
       const contributionKeys = Object.getOwnPropertyNames(new Contribution());
 
+      const scores: Score[] = [];
+
       // check db
       if (!(await this.matchModel.countDocuments({ 'info.gameId': id }, { limit: 1 }).lean())) {
         // fetch if not found
@@ -64,7 +82,7 @@ export class MatchesService {
         match.info.teams[1].contribution = new TeamContribution();
 
         // personal & team contribution (value)
-        for (const participant of match.info.participants) {
+        match.info.participants.forEach((participant, index, arr) => {
           // create property
           const contribution = new Contribution();
 
@@ -77,7 +95,12 @@ export class MatchesService {
           contribution.cs = participant.totalMinionsKilled;
           contribution.kill = participant.kills;
 
-          participant.contribution = contribution;
+          arr[index].contribution = contribution;
+
+          const score: Score = {
+            index: index,
+            score: 0,
+          };
 
           // team statistics
           const teamContribution = (
@@ -93,8 +116,21 @@ export class MatchesService {
 
             // total value (for average calculation)
             teamContribution.total[key] += participant.contribution[key];
+
+            // calculate individual scores
+            score.score += scoreMultiplier[key] * participant.contribution[key];
           });
-        }
+
+          scores.push(score);
+        });
+
+        // sort scores
+        scores.sort((a: Score, b: Score) => (a.score <= b.score ? 1 : -1));
+
+        // set score ranks
+        scores.forEach((score, index) => {
+          match.info.participants[score.index].contributionRank = index;
+        });
 
         // personal contribution (percentage)
         for (const participant of match.info.participants) {

@@ -416,32 +416,35 @@ const perksSchema = SchemaFactory.createForClass(Perks);
 
 @Schema({ id: false, _id: false })
 export class Contribution {
-  @Prop({ required: true })
-  dealt: number = 0;
+  @Prop({ required: true, type: Number })
+  dealt = 0;
 
-  @Prop({ required: true })
-  damaged: number = 0;
+  @Prop({ required: true, type: Number })
+  damaged = 0;
 
-  @Prop({ required: true })
-  heal: number = 0;
+  @Prop({ required: true, type: Number })
+  heal = 0;
 
-  @Prop({ required: true })
-  death: number = 0;
+  @Prop({ required: true, type: Number })
+  death = 0;
 
-  @Prop({ required: true })
-  gold: number = 0;
+  @Prop({ required: true, type: Number })
+  gold = 0;
 
-  @Prop({ required: true })
-  cs: number = 0;
+  @Prop({ required: true, type: Number })
+  cs = 0;
 
-  @Prop({ required: true })
-  kill: number = 0;
+  @Prop({ required: true, type: Number })
+  kill = 0;
 }
 
 const contributionSchema = SchemaFactory.createForClass(Contribution);
 
 @Schema({ id: false, _id: false })
 class Participant {
+  @Prop({ required: true })
+  contributionRank: number;
+
   @Prop({ required: true })
   allInPings: number;
 
