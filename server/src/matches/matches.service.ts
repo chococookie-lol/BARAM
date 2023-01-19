@@ -72,7 +72,7 @@ export class MatchesService {
           contribution.dealt = participant.totalDamageDealtToChampions;
           contribution.damaged = participant.totalDamageTaken + participant.damageSelfMitigated;
           contribution.heal = participant.totalHeal;
-          contribution.death = participant.challenges.deathsByEnemyChamps;
+          contribution.death = participant.deaths;
           contribution.gold = participant.goldEarned;
           contribution.cs = participant.totalMinionsKilled;
           contribution.kill = participant.kills;
