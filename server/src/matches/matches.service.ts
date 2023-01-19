@@ -12,17 +12,6 @@ interface Score {
   score: number;
 }
 
-// TODO : 계수 조정
-const scoreMultiplier: Contribution = {
-  dealt: 1,
-  damaged: 1,
-  heal: 0.5,
-  death: -1,
-  gold: 1,
-  cs: 0.5,
-  kill: 0.8,
-};
-
 @Injectable()
 export class MatchesService {
   private logger = new Logger(MatchesService.name);
@@ -82,7 +71,7 @@ export class MatchesService {
         match.info.teams[1].contribution = new TeamContribution();
 
         // personal & team contribution (value)
-        match.info.participants.forEach((participant, index, arr) => {
+        for (const participant of match.info.participants) {
           // create property
           const contribution = new Contribution();
 
@@ -94,13 +83,9 @@ export class MatchesService {
           contribution.gold = participant.goldEarned;
           contribution.cs = participant.totalMinionsKilled;
           contribution.kill = participant.kills;
+          contribution.assist = participant.assists;
 
-          arr[index].contribution = contribution;
-
-          const score: Score = {
-            index: index,
-            score: 0,
-          };
+          participant.contribution = contribution;
 
           // team statistics
           const teamContribution = (
@@ -116,26 +101,14 @@ export class MatchesService {
 
             // total value (for average calculation)
             teamContribution.total[key] += participant.contribution[key];
-
-            // calculate individual scores
-            score.score += scoreMultiplier[key] * participant.contribution[key];
           });
-
-          scores.push(score);
-        });
-
-        // sort scores
-        scores.sort((a: Score, b: Score) => (a.score <= b.score ? 1 : -1));
-
-        // set score ranks
-        scores.forEach((score, index) => {
-          match.info.participants[score.index].contributionRank = index;
-        });
+        }
 
         // personal contribution (percentage)
         for (const participant of match.info.participants) {
           // create property
           const contributionPercentage = new Contribution();
+          const contributionPercentageTotal = new Contribution();
 
           const teamContribution = (
             participant.teamId === 100 ? match.info.teams[0] : match.info.teams[1]
@@ -147,9 +120,17 @@ export class MatchesService {
             contributionPercentage[key] =
               Math.round((participant.contribution[key] / teamContribution.total[key]) * 1000) /
               1000;
+            contributionPercentageTotal[key] =
+              Math.round(
+                (participant.contribution[key] /
+                  (match.info.teams[0].contribution.total[key] +
+                    match.info.teams[1].contribution.total[key])) *
+                  1000,
+              ) / 1000;
           });
 
           participant.contributionPercentage = contributionPercentage;
+          participant.contributionPercentageTotal = contributionPercentageTotal;
         }
 
         // team contribution : average
@@ -157,6 +138,46 @@ export class MatchesService {
           for (const team of match.info.teams) {
             team.contribution.average[key] = team.contribution.total[key] / 5;
           }
+        });
+
+        const scoreMultiplier: Contribution = {
+          dealt: 1,
+          damaged: 1,
+          heal: 1,
+          death: -1,
+          gold: 0,
+          cs: 0,
+          kill: 1,
+          assist: 1,
+        };
+
+        // TODO: scoreMultiplier 수정
+
+        // calculate scores
+        match.info.participants.forEach((participant, index) => {
+          const score: Score = {
+            index: index,
+            score: 0,
+          };
+
+          contributionKeys.forEach((key) => {
+            // calculate individual scores
+            if (scoreMultiplier[key])
+              score.score +=
+                scoreMultiplier[key] *
+                participant.contributionPercentageTotal[key] *
+                (participant.win ? 1 : 0.5);
+          });
+
+          scores.push(score);
+        });
+
+        // sort scores
+        scores.sort((a: Score, b: Score) => (a.score <= b.score ? 1 : -1));
+
+        // set score ranks
+        scores.forEach((score, index) => {
+          match.info.participants[score.index].contributionRank = index;
         });
 
         await this.matchModel.updateOne({ 'info.gameId': id }, match, { upsert: true });

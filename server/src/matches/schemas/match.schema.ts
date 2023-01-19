@@ -436,6 +436,9 @@ export class Contribution {
 
   @Prop({ required: true, type: Number })
   kill = 0;
+
+  @Prop({ required: true, type: Number })
+  assist = 0;
 }
 
 const contributionSchema = SchemaFactory.createForClass(Contribution);
@@ -495,6 +498,9 @@ class Participant {
 
   @Prop({ required: true, type: contributionSchema })
   contributionPercentage: Contribution;
+
+  @Prop({ required: true, type: contributionSchema })
+  contributionPercentageTotal: Contribution;
 
   @Prop({ required: true })
   damageDealtToBuildings: number;
