@@ -29,8 +29,8 @@ export class SummonersService {
 
     const challenges = await this.riotApiService.getChallenges(summonerFromRiot.puuid);
     const userChallenges = challenges.preferences.challengeIds
-      .map((challengeId) => challenges.challenges.find((c) => c.challengeId === challengeId))
-      .filter((c) => !!c);
+      ?.map((challengeId) => challenges.challenges.find((c) => c.challengeId === challengeId))
+      ?.filter((c) => !!c);
 
     await this.summonerModel.updateOne(
       { puuid: summonerFromRiot.puuid },
@@ -39,7 +39,7 @@ export class SummonersService {
         level: summonerFromRiot.summonerLevel,
         profileIconId: summonerFromRiot.profileIconId,
         puuid: summonerFromRiot.puuid,
-        challenges: [...userChallenges],
+        challenges: [...(userChallenges ?? [])],
       },
       { upsert: true },
     );
