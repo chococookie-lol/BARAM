@@ -53,9 +53,9 @@ function GameSlotTable({ version, win, teamId, participants }: GameSlotTableProp
           <th css={detailStyle.thFirst(theme, win)}>
             <span>{win ? '승리' : '패배'}</span> ({teamId === 100 ? '블루' : '레드'}팀)
           </th>
-          <th css={detailStyle.width('4.1%')}>룬</th>
-          <th css={detailStyle.width('6%')}>KDA</th>
-          <th css={detailStyle.width('19%')}>빌드</th>
+          <th css={detailStyle.width('5%')}>룬</th>
+          <th css={detailStyle.width('7%')}>KDA</th>
+          <th css={detailStyle.width('18%')}>빌드</th>
           <th css={detailStyle.width('16%')}>준 피해량</th>
           <th css={detailStyle.width('16%')}>받은 피해량</th>
           <th css={detailStyle.width('16%')}>딜 유형</th>
@@ -90,23 +90,25 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
         <div css={detailStyle.name}>{participant.summonerName}</div>
       </td>
       <td css={detailStyle.summonerSettings}>
-        <SpellStrip
-          version={version}
-          spells={[participant.summoner1Id, participant.summoner2Id]}
-          width={15}
-          height={15}
-          direction={'vertical'}
-          padding={1}
-        />
-        <div css={detailStyle.runes}>
-          <RuneIcon
+        <div>
+          <SpellStrip
             version={version}
-            styleId={primaryPerk.style}
-            runeId={primaryPerk.selections[0].perk}
+            spells={[participant.summoner1Id, participant.summoner2Id]}
             width={15}
             height={15}
+            direction={'vertical'}
+            padding={1}
           />
-          <RuneIcon version={version} styleId={subPerk.style} width={15} height={15} />
+          <div css={detailStyle.runes}>
+            <RuneIcon
+              version={version}
+              styleId={primaryPerk.style}
+              runeId={primaryPerk.selections[0].perk}
+              width={15}
+              height={15}
+            />
+            <RuneIcon version={version} styleId={subPerk.style} width={15} height={15} />
+          </div>
         </div>
       </td>
       <td>

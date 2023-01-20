@@ -152,7 +152,7 @@ export const detailStyle = {
     span {
       color: ${win ? theme.blue2 : theme.red2};
     }
-    width: 22%;
+    width: 18%;
   `,
   width: (width: string) => css`
     width: ${width};
@@ -198,8 +198,13 @@ export const detailStyle = {
     font-size: 12px;
   `,
   summonerSettings: css`
+    padding-bottom: 0;
     & > div {
-      float: left;
+      height: 33px;
+      margin: auto;
+    }
+    & > div > div {
+      display: inline-block;
     }
   `,
   runes: css`
@@ -216,8 +221,8 @@ export const detailStyle = {
     float: none;
   `,
   kda: css`
+    font-size: 10px !important;
     font-weight: bold;
-    font-size: 11px;
     text-align: center;
     display: block;
     color: black;
