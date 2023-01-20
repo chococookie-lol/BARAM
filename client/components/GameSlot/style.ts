@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import { Theme } from '../../styles/theme';
+import { GLOBAL_COLOR } from '../../utils/color';
 
 export const style = {
   parent: css`
@@ -152,7 +153,7 @@ export const detailStyle = {
     span {
       color: ${win ? theme.blue2 : theme.red2};
     }
-    width: 22%;
+    width: 20%;
   `,
   width: (width: string) => css`
     width: ${width};
@@ -196,10 +197,24 @@ export const detailStyle = {
     padding-left: 4px;
     line-height: 33px;
     font-size: 12px;
+    & > span {
+      font-size: 11px;
+      background-color: ${GLOBAL_COLOR.mediumPurple};
+      color: ${GLOBAL_COLOR.white};
+      padding-left: 4px;
+      padding-right: 4px;
+      margin-right: 2px;
+      border-radius: 16.5px;
+    }
   `,
   summonerSettings: css`
+    padding-bottom: 0;
     & > div {
-      float: left;
+      height: 33px;
+      margin: auto;
+    }
+    & > div > div {
+      display: inline-block;
     }
   `,
   runes: css`
@@ -216,8 +231,8 @@ export const detailStyle = {
     float: none;
   `,
   kda: css`
+    font-size: 11px !important;
     font-weight: bold;
-    font-size: 11px;
     text-align: center;
     display: block;
     color: black;
