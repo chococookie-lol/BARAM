@@ -5,7 +5,7 @@ export default function Document() {
     <Html lang="ko">
       <Head>
         <link
-          href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css"
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap"
           rel="stylesheet"
           type="text/css"
         />
