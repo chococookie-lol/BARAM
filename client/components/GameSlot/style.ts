@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import { Theme } from '../../styles/theme';
+import { GLOBAL_COLOR } from '../../utils/color';
 
 export const style = {
   parent: css`
@@ -198,8 +199,8 @@ export const detailStyle = {
     font-size: 12px;
     & > span {
       font-size: 11px;
-      background-color: gray;
-      color: white;
+      background-color: ${GLOBAL_COLOR.mediumPurple};
+      color: ${GLOBAL_COLOR.white};
       padding-left: 4px;
       padding-right: 4px;
       margin-right: 2px;
