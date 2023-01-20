@@ -16,3 +16,11 @@ export function secondsToString(seconds: number) {
   const minutes = Math.floor(seconds / 60);
   return `${minutes}분 ${seconds % 60}초`;
 }
+
+export function convertEpochToDate(eTime: number): string {
+  const day = new Date(eTime);
+  return `${day.getMonth() + 1}월 ${day.getDate()}일 ${day.getHours()}:${day
+    .getMinutes()
+    .toString()
+    .padStart(2, '0;')}`;
+}
