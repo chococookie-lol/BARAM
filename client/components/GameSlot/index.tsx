@@ -80,7 +80,12 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
       <td>
         <div css={detailStyle.champion}>
           <div css={detailStyle.level}>{participant.champLevel}</div>
-          <ChampionPic championName={participant.championName} width={32} height={32} />
+          <ChampionPic
+            championKey={participant.championId}
+            version={version}
+            width={32}
+            height={32}
+          />
         </div>
         <div css={detailStyle.name}>{participant.summonerName}</div>
       </td>
@@ -188,7 +193,7 @@ const GameSlotSummary = React.memo(function GameSlotSummary({
   teamContribution,
 }: GameSlotSummaryProps) {
   const { theme } = useGlobalTheme();
-  const championName = me.championName;
+  const championId = me.championId;
   const level = me.champLevel;
   const spells = [me.summoner1Id, me.summoner2Id];
   const items = [me.item0, me.item1, me.item2, me.item3, me.item4, me.item5];
@@ -222,7 +227,7 @@ const GameSlotSummary = React.memo(function GameSlotSummary({
     <div css={style.gameSummary}>
       <div css={[style.item, style.champion]}>
         <div css={[style.bottomRight, style.level]}>{level}</div>
-        <ChampionPic championName={championName} width={80} height={80} />
+        <ChampionPic championKey={championId} version={version} width={80} height={80} />
       </div>
       <div css={[style.item]}>
         <div css={style.summary}>
