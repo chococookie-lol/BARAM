@@ -21,7 +21,7 @@ interface CampProps {
 }
 
 interface GameContributionProps {
-  place: number;
+  rank: number;
   dealt: number;
   dealtAmount: number;
   heal: number;
@@ -68,7 +68,7 @@ export default function SummonerStatCard({
         />
         <CampStatistic blue={camp.blue} red={camp.red} />
         <GameContribution
-          place={gameContribution.place}
+          rank={gameContribution.rank}
           dealt={gameContribution.dealt}
           heal={gameContribution.heal}
           damaged={gameContribution.damaged}
@@ -167,7 +167,7 @@ function GameContribution({
   deathAmount,
   heal,
   healAmount,
-  place,
+  rank,
 }: GameContributionProps) {
   const { theme } = useGlobalTheme();
 
@@ -178,7 +178,7 @@ function GameContribution({
           평균 게임 기여도
         </span>
         <div css={style.contribution}>
-          <p css={[style.fontSize('20px'), style.color(theme.background)]}>2.5위</p>
+          <p css={[style.fontSize('20px'), style.color(theme.background)]}>{rank}위</p>
           <PercentageStatistics
             dealtPercent={dealt}
             dealtAmount={dealtAmount}

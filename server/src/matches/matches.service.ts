@@ -7,6 +7,11 @@ import { RiotApiService } from 'src/riot.api/riot.api.service';
 import { Summoner, SummonerDocument } from 'src/summoners/schemas/summoner.schema';
 import { Contribution, Match, MatchDocument, TeamContribution } from './schemas/match.schema';
 
+interface Score {
+  index: number;
+  score: number;
+}
+
 @Injectable()
 export class MatchesService {
   private logger = new Logger(MatchesService.name);
@@ -53,6 +58,8 @@ export class MatchesService {
 
       const contributionKeys = Object.getOwnPropertyNames(new Contribution());
 
+      const scores: Score[] = [];
+
       // check db
       if (!(await this.matchModel.countDocuments({ 'info.gameId': id }, { limit: 1 }).lean())) {
         // fetch if not found
@@ -72,10 +79,11 @@ export class MatchesService {
           contribution.dealt = participant.totalDamageDealtToChampions;
           contribution.damaged = participant.totalDamageTaken + participant.damageSelfMitigated;
           contribution.heal = participant.totalHeal;
-          contribution.death = participant.challenges.deathsByEnemyChamps;
+          contribution.death = participant.deaths;
           contribution.gold = participant.goldEarned;
           contribution.cs = participant.totalMinionsKilled;
           contribution.kill = participant.kills;
+          contribution.assist = participant.assists;
 
           participant.contribution = contribution;
 
@@ -100,6 +108,7 @@ export class MatchesService {
         for (const participant of match.info.participants) {
           // create property
           const contributionPercentage = new Contribution();
+          const contributionPercentageTotal = new Contribution();
 
           const teamContribution = (
             participant.teamId === 100 ? match.info.teams[0] : match.info.teams[1]
@@ -111,9 +120,17 @@ export class MatchesService {
             contributionPercentage[key] =
               Math.round((participant.contribution[key] / teamContribution.total[key]) * 1000) /
               1000;
+            contributionPercentageTotal[key] =
+              Math.round(
+                (participant.contribution[key] /
+                  (match.info.teams[0].contribution.total[key] +
+                    match.info.teams[1].contribution.total[key])) *
+                  1000,
+              ) / 1000;
           });
 
           participant.contributionPercentage = contributionPercentage;
+          participant.contributionPercentageTotal = contributionPercentageTotal;
         }
 
         // team contribution : average
@@ -121,6 +138,46 @@ export class MatchesService {
           for (const team of match.info.teams) {
             team.contribution.average[key] = team.contribution.total[key] / 5;
           }
+        });
+
+        const scoreMultiplier: Contribution = {
+          dealt: 1,
+          damaged: 1,
+          heal: 1,
+          death: -1,
+          gold: 0,
+          cs: 0,
+          kill: 1,
+          assist: 1,
+        };
+
+        // TODO: scoreMultiplier 수정
+
+        // calculate scores
+        match.info.participants.forEach((participant, index) => {
+          const score: Score = {
+            index: index,
+            score: 0,
+          };
+
+          contributionKeys.forEach((key) => {
+            // calculate individual scores
+            if (scoreMultiplier[key])
+              score.score +=
+                scoreMultiplier[key] *
+                participant.contributionPercentageTotal[key] *
+                (participant.win ? 1 : 0.5);
+          });
+
+          scores.push(score);
+        });
+
+        // sort scores
+        scores.sort((a: Score, b: Score) => (a.score <= b.score ? 1 : -1));
+
+        // set score ranks
+        scores.forEach((score, index) => {
+          match.info.participants[score.index].contributionRank = index;
         });
 
         await this.matchModel.updateOne({ 'info.gameId': id }, match, { upsert: true });

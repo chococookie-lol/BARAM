@@ -19,6 +19,7 @@ export function getMatchStatistic(match: Match, puuid: string) {
 
   const myContribution = me.contribution;
   const myPercentage = me.contributionPercentage;
+  const contributionRank = me.contributionRank;
 
   if (!myContribution || !myPercentage) throw new Error('Match 데이터 오류');
 
@@ -30,6 +31,7 @@ export function getMatchStatistic(match: Match, puuid: string) {
     assists,
     camp,
     myContribution,
+    contributionRank,
     myPercentage,
   };
 }
@@ -60,7 +62,7 @@ export function getTotalMatchStatistics(matchStatistic: { [index: string]: Match
     deathAmount: 0,
     damaged: 0,
     damagedAmount: 0,
-    place: 0,
+    rank: 0,
   };
 
   for (const matchId of Object.keys(matchStatistic)) {
@@ -73,6 +75,8 @@ export function getTotalMatchStatistics(matchStatistic: { [index: string]: Match
 
     camp.blue += matchStatistic[matchId].camp.blue;
     camp.red += matchStatistic[matchId].camp.red;
+
+    gameContribution.rank += matchStatistic[matchId].contributionRank;
 
     gameContribution.dealtAmount += matchStatistic[matchId].myContribution.dealt;
     gameContribution.damagedAmount += matchStatistic[matchId].myContribution.damaged;
@@ -94,6 +98,7 @@ export function getTotalMatchStatistics(matchStatistic: { [index: string]: Match
     gameContribution.heal /= count;
     gameContribution.damaged /= count;
     gameContribution.death /= count;
+    gameContribution.rank /= count;
   }
 
   return {
