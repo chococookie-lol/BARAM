@@ -152,7 +152,7 @@ export const detailStyle = {
     span {
       color: ${win ? theme.blue2 : theme.red2};
     }
-    width: 18%;
+    width: 20%;
   `,
   width: (width: string) => css`
     width: ${width};
@@ -196,6 +196,15 @@ export const detailStyle = {
     padding-left: 4px;
     line-height: 33px;
     font-size: 12px;
+    & > span {
+      font-size: 11px;
+      background-color: gray;
+      color: white;
+      padding-left: 4px;
+      padding-right: 4px;
+      margin-right: 2px;
+      border-radius: 16.5px;
+    }
   `,
   summonerSettings: css`
     padding-bottom: 0;
@@ -221,7 +230,7 @@ export const detailStyle = {
     float: none;
   `,
   kda: css`
-    font-size: 10px !important;
+    font-size: 11px !important;
     font-weight: bold;
     text-align: center;
     display: block;

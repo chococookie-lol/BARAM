@@ -87,7 +87,10 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
             height={32}
           />
         </div>
-        <div css={detailStyle.name}>{participant.summonerName}</div>
+        <div css={detailStyle.name}>
+          <span>{rankToString(participant.contributionRank)}</span>
+          {participant.summonerName}
+        </div>
       </td>
       <td css={detailStyle.summonerSettings}>
         <div>
@@ -357,6 +360,19 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
       </div>
     </div>
   );
+}
+
+function rankToString(rank: number) {
+  switch (rank) {
+    case 0:
+      return '1st';
+    case 1:
+      return '2nd';
+    case 2:
+      return '3rd';
+    default:
+      return `${rank + 1}th`;
+  }
 }
 
 export default GameSlot;
