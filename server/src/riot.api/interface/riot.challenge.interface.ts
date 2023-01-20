@@ -6,9 +6,9 @@ export interface RiotChallengeResponse {
 }
 
 interface Preferences {
-  bannerAccent: string;
-  title: string;
-  challengeIds: number[];
+  bannerAccent?: string;
+  title?: string;
+  challengeIds?: number[];
 }
 
 interface Challenge {
