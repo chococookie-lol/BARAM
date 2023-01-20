@@ -7,7 +7,7 @@ import PercentageStatistics from '../PercentageStatistics';
 import RelativeStatistics from '../RelativeStatistics';
 import RuneIcon from '../RuneIcon';
 import SpellStrip from '../SpellStrip';
-import { secondsToString } from '../../utils/time';
+import { convertEpochToDate, secondsToString } from '../../utils/time';
 import { style, detailStyle } from './style';
 import { useState } from 'react';
 import Percentage from '../Percentage';
@@ -336,6 +336,8 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
         <div css={style.header(theme, win, expand)}>
           <div css={style.headerTitle}>{win ? '승리' : '패배'}</div>
           <div>{timeString}</div>
+          <div>&nbsp;</div>
+          <div>{convertEpochToDate(matchData.info.gameStartTimestamp)}</div>
         </div>
         <div css={style.gameSummaryContainer}>
           <GameSlotSummary version={version} me={me} teamContribution={contribution} />
