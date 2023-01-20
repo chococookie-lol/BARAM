@@ -3,6 +3,8 @@ import axios from 'axios';
 export const DDRAGON_BASE_URL = 'https://ddragon.leagueoflegends.com/cdn/';
 export const DEAFULT_PLACEHOLDER =
   'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+export const DEAFULT_PLACEHOLDER_GRAY =
+  'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==';
 
 export const ddragonAxiosInstance = axios.create({
   baseURL: DDRAGON_BASE_URL,
