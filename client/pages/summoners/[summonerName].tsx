@@ -9,12 +9,14 @@ import SummonerProfileCard from '../../components/SummonerProfileCard';
 import SummonerStatCard from '../../components/SummonerStatCard';
 import {
   getMatch,
+  getScoreMultipliers,
   getSummonerMatchIds,
   getSummonerProfile,
   requestFetchSummonerMatches,
   tryToGetSummonerProfile,
 } from '../../utils/api';
 import {
+  calculateContributionRanks,
   getMatchStatistic,
   getTotalMatchStatistics,
   MatchStatistic,
@@ -76,6 +78,7 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
   const [fetching, setFetching] = useState<boolean>(false);
   const [loadMore, setLoadMore] = useState<boolean>(false);
   const [update, setUpdate] = useState<boolean>(false);
+  const [scoreMultipliers, setScoreMultipliers] = useState<Contribution | null>(null);
 
   useEffect(() => {
     async function tick() {
@@ -141,12 +144,21 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
         console.error(e);
       }
     })();
+
+    (async () => {
+      setScoreMultipliers(await getScoreMultipliers());
+    })();
   }, [summonerName]);
 
   useEffect(() => {
-    if (matchIds.length === 0) return;
+    if (matchIds.length === 0 || !scoreMultipliers) return;
 
-    const promises = matchIds.map((matchId) => getMatch(matchId));
+    const promises = matchIds.map(async (matchId) => {
+      const match = await getMatch(matchId);
+      calculateContributionRanks(match, scoreMultipliers);
+      return match;
+    });
+
     (async () => {
       try {
         const newMatches = await Promise.all(promises);
@@ -155,7 +167,7 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
         console.error(e);
       }
     })();
-  }, [matchIds]);
+  }, [matchIds, scoreMultipliers]);
 
   useEffect(() => {
     if (!summonerProfile || matches.length === 0) return;
