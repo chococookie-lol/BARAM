@@ -88,7 +88,7 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
           />
         </div>
         <div css={detailStyle.name}>
-          <span css={detailStyle.visible(!isNaN(participant.contributionRank))}>
+          <span css={detailStyle.visibleInline(!isNaN(participant.contributionRank))}>
             {rankToString(participant.contributionRank)}
           </span>
           {participant.summonerName}
