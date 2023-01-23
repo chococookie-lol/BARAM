@@ -56,3 +56,7 @@ export const getMatch = async (matchId: number): Promise<MatchResponse> => {
     await defaultAxiosInstance.get(`/matches/${matchId}`)
   ).data;
 };
+
+export const getScoreMultipliers = async (): Promise<Contribution> => {
+  return (await defaultAxiosInstance.get(`/statistics/score/multipliers`)).data;
+};
