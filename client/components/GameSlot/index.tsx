@@ -7,7 +7,7 @@ import PercentageStatistics from '../PercentageStatistics';
 import RelativeStatistics from '../RelativeStatistics';
 import RuneIcon from '../RuneIcon';
 import SpellStrip from '../SpellStrip';
-import { secondsToString } from '../../utils/time';
+import { convertEpochToDate, secondsToString } from '../../utils/time';
 import { style, detailStyle } from './style';
 import { useState } from 'react';
 import Percentage from '../Percentage';
@@ -53,9 +53,9 @@ function GameSlotTable({ version, win, teamId, participants }: GameSlotTableProp
           <th css={detailStyle.thFirst(theme, win)}>
             <span>{win ? '승리' : '패배'}</span> ({teamId === 100 ? '블루' : '레드'}팀)
           </th>
-          <th css={detailStyle.width('4.1%')}>룬</th>
-          <th css={detailStyle.width('6%')}>KDA</th>
-          <th css={detailStyle.width('19%')}>빌드</th>
+          <th css={detailStyle.width('5%')}>룬</th>
+          <th css={detailStyle.width('7%')}>KDA</th>
+          <th css={detailStyle.width('18%')}>빌드</th>
           <th css={detailStyle.width('16%')}>준 피해량</th>
           <th css={detailStyle.width('16%')}>받은 피해량</th>
           <th css={detailStyle.width('16%')}>딜 유형</th>
@@ -87,26 +87,31 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
             height={32}
           />
         </div>
-        <div css={detailStyle.name}>{participant.summonerName}</div>
+        <div css={detailStyle.name}>
+          <span>{rankToString(participant.contributionRank)}</span>
+          {participant.summonerName}
+        </div>
       </td>
       <td css={detailStyle.summonerSettings}>
-        <SpellStrip
-          version={version}
-          spells={[participant.summoner1Id, participant.summoner2Id]}
-          width={15}
-          height={15}
-          direction={'vertical'}
-          padding={1}
-        />
-        <div css={detailStyle.runes}>
-          <RuneIcon
+        <div>
+          <SpellStrip
             version={version}
-            styleId={primaryPerk.style}
-            runeId={primaryPerk.selections[0].perk}
+            spells={[participant.summoner1Id, participant.summoner2Id]}
             width={15}
             height={15}
+            direction={'vertical'}
+            padding={1}
           />
-          <RuneIcon version={version} styleId={subPerk.style} width={15} height={15} />
+          <div css={detailStyle.runes}>
+            <RuneIcon
+              version={version}
+              styleId={primaryPerk.style}
+              runeId={primaryPerk.selections[0].perk}
+              width={15}
+              height={15}
+            />
+            <RuneIcon version={version} styleId={subPerk.style} width={15} height={15} />
+          </div>
         </div>
       </td>
       <td>
@@ -331,6 +336,8 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
         <div css={style.header(theme, win, expand)}>
           <div css={style.headerTitle}>{win ? '승리' : '패배'}</div>
           <div>{timeString}</div>
+          <div>&nbsp;</div>
+          <div>{convertEpochToDate(matchData.info.gameStartTimestamp)}</div>
         </div>
         <div css={style.gameSummaryContainer}>
           <GameSlotSummary version={version} me={me} teamContribution={contribution} />
@@ -355,6 +362,19 @@ function GameSlot({ matchData, puuid }: GameSlotProps) {
       </div>
     </div>
   );
+}
+
+function rankToString(rank: number) {
+  switch (rank) {
+    case 0:
+      return '1st';
+    case 1:
+      return '2nd';
+    case 2:
+      return '3rd';
+    default:
+      return `${rank + 1}th`;
+  }
 }
 
 export default GameSlot;
