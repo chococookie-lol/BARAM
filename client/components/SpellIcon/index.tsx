@@ -1,11 +1,10 @@
 import Image from 'next/image';
 import { css } from '@emotion/react';
 import { useRecoilValueLoadable } from 'recoil';
-import { ddragonSpells, ddragonVersions } from '../../states/ddragon';
+import { ddragonSpells } from '../../states/ddragon';
 import {
   DDRAGON_BASE_URL,
   DEAFULT_PLACEHOLDER,
-  getMajorVersion,
   spellIdToIcon,
 } from '../../utils/ddragon';
 
@@ -17,17 +16,13 @@ interface SpellIconProps {
 }
 
 export default function SpellIcon({ version, id, width, height }: SpellIconProps) {
-  const versions = useRecoilValueLoadable(ddragonVersions);
-  const majorVersion = getMajorVersion(
-    versions.state === 'hasValue' ? versions.contents : [],
-    version,
-  );
-  const spells = useRecoilValueLoadable(ddragonSpells(majorVersion));
+  const spells = useRecoilValueLoadable(ddragonSpells(version));
 
   const src =
     spells.state === 'hasValue'
-      ? `${DDRAGON_BASE_URL}${majorVersion}/img/spell/${spellIdToIcon(spells.contents, id)}`
+      ? `${DDRAGON_BASE_URL}${version}/img/spell/${spellIdToIcon(spells.contents, id)}`
       : DEAFULT_PLACEHOLDER;
+
   return (
     <Image
       css={css`

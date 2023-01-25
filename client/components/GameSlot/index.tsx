@@ -14,6 +14,9 @@ import Percentage from '../Percentage';
 import PercentageBar from '../PercentageBar';
 import React from 'react';
 import DownArrow from '../../assets/downArrow.svg';
+import { getMajorVersion } from '../../utils/ddragon';
+import { useRecoilValue } from 'recoil';
+import { ddragonVersions } from '../../states/ddragon';
 
 interface GameSlotProps {
   matchData: Match;
@@ -187,7 +190,8 @@ const GameSlotDetail = React.memo(function GameSlotDetail({
 
 export default function GameSlot({ matchData, puuid }: GameSlotProps) {
   const { info } = matchData;
-  const version = matchData.info.gameVersion;
+  const versions = useRecoilValue(ddragonVersions);
+  const version = getMajorVersion(versions, matchData.info.gameVersion);
   const { participants, gameDuration } = info;
   const me = participants.find((e) => e.puuid == puuid);
   if (!me) throw Error("can't find summoner in match");

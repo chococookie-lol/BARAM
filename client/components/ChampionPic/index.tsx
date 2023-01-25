@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import { css } from '@emotion/react';
-import { useRecoilValue, useRecoilValueLoadable } from 'recoil';
-import { ddragonChampions, ddragonVersions } from '../../states/ddragon';
-import { DDRAGON_BASE_URL, DEAFULT_PLACEHOLDER, getMajorVersion } from '../../utils/ddragon';
+import { useRecoilValueLoadable } from 'recoil';
+import { ddragonChampions } from '../../states/ddragon';
+import { DDRAGON_BASE_URL, DEAFULT_PLACEHOLDER } from '../../utils/ddragon';
 
 interface ChampionPicProps {
   championKey: string | number;
@@ -26,14 +26,12 @@ export default function ChampionPic({
   height,
   shape = 'round',
 }: ChampionPicProps) {
-  const versions = useRecoilValue(ddragonVersions);
-  const championDic = useRecoilValueLoadable(ddragonChampions(getMajorVersion(versions, version)));
+  const championDic = useRecoilValueLoadable(ddragonChampions(version));
   const src =
     championDic.state === 'hasValue'
-      ? `${DDRAGON_BASE_URL}${getMajorVersion(versions, version)}/img/champion/${
-          championDic.contents[championKey]
-        }.png`
+      ? `${DDRAGON_BASE_URL}${version}/img/champion/${championDic.contents[championKey]}.png`
       : DEAFULT_PLACEHOLDER;
+
   return (
     <Image
       css={style[shape]}
