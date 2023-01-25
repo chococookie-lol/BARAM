@@ -21,9 +21,7 @@ interface RuneIconProps {
 export default function RuneIcon({ version, styleId, runeId, width, height }: RuneIconProps) {
   const versions = useRecoilValueLoadable(ddragonVersions);
   const runes = useRecoilValueLoadable(
-    ddragonRunes(
-      getMajorVersion(versions.state === 'hasValue' ? versions.contents : [], version) ?? '13.1.1',
-    ),
+    ddragonRunes(getMajorVersion(versions.state === 'hasValue' ? versions.contents : [], version)),
   );
   const src =
     runes.state === 'hasValue'

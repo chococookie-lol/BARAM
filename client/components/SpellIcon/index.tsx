@@ -18,8 +18,10 @@ interface SpellIconProps {
 
 export default function SpellIcon({ version, id, width, height }: SpellIconProps) {
   const versions = useRecoilValueLoadable(ddragonVersions);
-  const majorVersion =
-    getMajorVersion(versions.state === 'hasValue' ? versions.contents : [], version) ?? '13.1.1';
+  const majorVersion = getMajorVersion(
+    versions.state === 'hasValue' ? versions.contents : [],
+    version,
+  );
   const spells = useRecoilValueLoadable(ddragonSpells(majorVersion));
 
   const src =

@@ -5,6 +5,7 @@ export const DEAFULT_PLACEHOLDER =
   'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 export const DEAFULT_PLACEHOLDER_GRAY =
   'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==';
+export const DEFAULT_DDRAGON_VERSION = '13.1.1';
 
 export const ddragonAxiosInstance = axios.create({
   baseURL: DDRAGON_BASE_URL,
@@ -53,13 +54,13 @@ export function spellIdToIcon(spells: Spells, id: number): string {
   ].image.full;
 }
 
-export function getMajorVersion(versions: string[], fullVersion: string): string | null {
+export function getMajorVersion(versions: string[], fullVersion: string): string {
   for (const version of versions) {
     if (getVersionDiff(version, fullVersion)) {
       return version;
     }
   }
-  return null;
+  return DEFAULT_DDRAGON_VERSION;
 }
 
 /**

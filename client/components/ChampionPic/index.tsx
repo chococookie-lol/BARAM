@@ -27,12 +27,10 @@ export default function ChampionPic({
   shape = 'round',
 }: ChampionPicProps) {
   const versions = useRecoilValue(ddragonVersions);
-  const championDic = useRecoilValueLoadable(
-    ddragonChampions(getMajorVersion(versions, version) || '13.1.1'),
-  );
+  const championDic = useRecoilValueLoadable(ddragonChampions(getMajorVersion(versions, version)));
   const src =
     championDic.state === 'hasValue'
-      ? `${DDRAGON_BASE_URL}${getMajorVersion(versions, version) || '13.1.1'}/img/champion/${
+      ? `${DDRAGON_BASE_URL}${getMajorVersion(versions, version)}/img/champion/${
           championDic.contents[championKey]
         }.png`
       : DEAFULT_PLACEHOLDER;
