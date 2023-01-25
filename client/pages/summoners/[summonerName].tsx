@@ -97,7 +97,7 @@ export default function SearchPage() {
   );
 }
 
-const SummonerProfilePanel = ({ summonerName }: SummonerProfilePanelProps) => {
+function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
   const [summonerProfile, setSummonerProfile] = useState<SummonerProfile | null>(null);
   const [matchIds, setMatchIds] = useState<SummonerMatchIds>([]);
   const [matches, setMatches] = useState<Match[]>([]);
@@ -293,4 +293,4 @@ const SummonerProfilePanel = ({ summonerName }: SummonerProfilePanelProps) => {
       </main>
     </>
   );
-};
+}

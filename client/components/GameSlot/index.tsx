@@ -44,57 +44,6 @@ interface GameSlotRowProps {
   participant: Participant;
 }
 
-export default function GameSlot({ matchData, puuid }: GameSlotProps) {
-  const { info } = matchData;
-  const version = matchData.info.gameVersion;
-  const { participants, gameDuration } = info;
-  const me = participants.find((e) => e.puuid == puuid);
-  if (!me) throw Error("can't find summoner in match");
-
-  const win = me.win;
-  const timeString = secondsToString(gameDuration);
-
-  const contribution = matchData.info.teams.find((team) => team.teamId === me.teamId)?.contribution;
-  if (!contribution) throw new Error('contribution does not exist');
-
-  const [expand, setExpand] = useState<boolean>(false);
-  const [rendered, setRendered] = useState<boolean>(false);
-  const { theme } = useGlobalTheme();
-
-  return (
-    <div css={style.parent}>
-      <div css={style.container(theme, win, expand)}>
-        <div css={style.header(theme, win, expand)}>
-          <div css={style.headerTitle}>{win ? '승리' : '패배'}</div>
-          <div>{timeString}</div>
-          <div>&nbsp;</div>
-          <div>{convertEpochToDate(matchData.info.gameStartTimestamp)}</div>
-        </div>
-        <div css={style.gameSummaryContainer}>
-          <GameSlotSummary version={version} me={me} teamContribution={contribution} />
-        </div>
-        <div
-          css={style.expand}
-          onClick={() => {
-            setRendered(true);
-            setExpand(!expand);
-          }}
-        >
-          <div css={[style.seperator, style.stickLeft, style.middle]} />
-          <DownArrow css={style.downArrow(expand)} />
-        </div>
-      </div>
-      <div css={detailStyle.visible(expand)}>
-        {rendered ? (
-          <GameSlotDetail participants={participants} teams={info.teams} version={version} />
-        ) : (
-          <></>
-        )}
-      </div>
-    </div>
-  );
-}
-
 const GameSlotSummary = React.memo(function GameSlotSummary({
   version,
   me,
@@ -236,7 +185,58 @@ const GameSlotDetail = React.memo(function GameSlotDetail({
   );
 });
 
-const GameSlotTable = ({ version, win, teamId, participants }: GameSlotTableProps) => {
+export default function GameSlot({ matchData, puuid }: GameSlotProps) {
+  const { info } = matchData;
+  const version = matchData.info.gameVersion;
+  const { participants, gameDuration } = info;
+  const me = participants.find((e) => e.puuid == puuid);
+  if (!me) throw Error("can't find summoner in match");
+
+  const win = me.win;
+  const timeString = secondsToString(gameDuration);
+
+  const contribution = matchData.info.teams.find((team) => team.teamId === me.teamId)?.contribution;
+  if (!contribution) throw new Error('contribution does not exist');
+
+  const [expand, setExpand] = useState<boolean>(false);
+  const [rendered, setRendered] = useState<boolean>(false);
+  const { theme } = useGlobalTheme();
+
+  return (
+    <div css={style.parent}>
+      <div css={style.container(theme, win, expand)}>
+        <div css={style.header(theme, win, expand)}>
+          <div css={style.headerTitle}>{win ? '승리' : '패배'}</div>
+          <div>{timeString}</div>
+          <div>&nbsp;</div>
+          <div>{convertEpochToDate(matchData.info.gameStartTimestamp)}</div>
+        </div>
+        <div css={style.gameSummaryContainer}>
+          <GameSlotSummary version={version} me={me} teamContribution={contribution} />
+        </div>
+        <div
+          css={style.expand}
+          onClick={() => {
+            setRendered(true);
+            setExpand(!expand);
+          }}
+        >
+          <div css={[style.seperator, style.stickLeft, style.middle]} />
+          <DownArrow css={style.downArrow(expand)} />
+        </div>
+      </div>
+      <div css={detailStyle.visible(expand)}>
+        {rendered ? (
+          <GameSlotDetail participants={participants} teams={info.teams} version={version} />
+        ) : (
+          <></>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function GameSlotTable({ version, win, teamId, participants }: GameSlotTableProps) {
   const { theme } = useGlobalTheme();
   return (
     <table css={detailStyle.tableContainer(theme, teamId, win)}>
@@ -260,9 +260,9 @@ const GameSlotTable = ({ version, win, teamId, participants }: GameSlotTableProp
       </tbody>
     </table>
   );
-};
+}
 
-const GameSlotRow = ({ version, participant }: GameSlotRowProps) => {
+function GameSlotRow({ version, participant }: GameSlotRowProps) {
   const primaryPerk = participant.perks.styles.find((e) => e.description == 'primaryStyle');
   const subPerk = participant.perks.styles.find((e) => e.description == 'subStyle');
   if (!primaryPerk || !subPerk) throw 'perk not properly formatted';
@@ -364,9 +364,9 @@ const GameSlotRow = ({ version, participant }: GameSlotRowProps) => {
       </td>
     </tr>
   );
-};
+}
 
-const rankToString = (rank: number) => {
+function rankToString(rank: number) {
   switch (rank) {
     case 0:
       return '1st';
@@ -377,4 +377,4 @@ const rankToString = (rank: number) => {
     default:
       return `${rank + 1}th`;
   }
-};
+}

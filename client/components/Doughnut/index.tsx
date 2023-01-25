@@ -21,23 +21,6 @@ interface DoughnutGraphProps {
   color: string[];
 }
 
-export default function Doughnut({
-  val,
-  label,
-  title,
-  size = 100,
-  color,
-  textColor,
-}: DoughnutProps) {
-  const [hover, setHover] = useState<number | null>(null);
-  return (
-    <div css={style.container}>
-      <div css={style.text(size, textColor)}>{hover === null ? title : label[hover]}</div>
-      <DoughnutGraph val={val} size={size} setHover={setHover} color={color} />
-    </div>
-  );
-}
-
 const DoughnutGraph = React.memo(function DoughnutGraph({
   val,
   size,
@@ -69,3 +52,20 @@ const DoughnutGraph = React.memo(function DoughnutGraph({
     </svg>
   );
 });
+
+export default function Doughnut({
+  val,
+  label,
+  title,
+  size = 100,
+  color,
+  textColor,
+}: DoughnutProps) {
+  const [hover, setHover] = useState<number | null>(null);
+  return (
+    <div css={style.container}>
+      <div css={style.text(size, textColor)}>{hover === null ? title : label[hover]}</div>
+      <DoughnutGraph val={val} size={size} setHover={setHover} color={color} />
+    </div>
+  );
+}

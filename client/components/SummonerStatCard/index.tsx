@@ -83,7 +83,7 @@ export default function SummonerStatCard({
   );
 }
 
-const WinRate = ({ win, lose }: WinRateProps) => {
+function WinRate({ win, lose }: WinRateProps) {
   const { theme } = useGlobalTheme();
 
   const winRate = Math.floor((win / (win + lose)) * 100);
@@ -103,9 +103,9 @@ const WinRate = ({ win, lose }: WinRateProps) => {
       />
     </div>
   );
-};
+}
 
-const KDA = ({ kills, assists, deaths, killContribution }: KDAProps) => {
+function KDA({ kills, assists, deaths, killContribution }: KDAProps) {
   const { theme } = useGlobalTheme();
 
   const kda = (kills + assists) / deaths;
@@ -133,9 +133,9 @@ const KDA = ({ kills, assists, deaths, killContribution }: KDAProps) => {
       </div>
     </div>
   );
-};
+}
 
-const CampStatistic = ({ blue, red }: CampStatisticProps) => {
+function CampStatistic({ blue, red }: CampStatisticProps) {
   const { theme } = useGlobalTheme();
 
   const title = blue >= red ? '블루' : '레드';
@@ -156,9 +156,9 @@ const CampStatistic = ({ blue, red }: CampStatisticProps) => {
       />
     </div>
   );
-};
+}
 
-const GameContribution = ({
+function GameContribution({
   damaged,
   damagedAmount,
   dealt,
@@ -168,7 +168,7 @@ const GameContribution = ({
   heal,
   healAmount,
   rank,
-}: GameContributionProps) => {
+}: GameContributionProps) {
   const { theme } = useGlobalTheme();
 
   return (
@@ -195,4 +195,4 @@ const GameContribution = ({
       </div>
     </>
   );
-};
+}

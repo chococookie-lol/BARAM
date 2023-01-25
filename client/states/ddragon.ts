@@ -6,6 +6,10 @@ import {
   getDdragonVersions,
 } from '../utils/ddragon';
 
+interface ChampionDictionary {
+  [key: string]: string;
+}
+
 export const ddragonVersion = selector<string>({
   key: 'ddragonVersion',
   get: async ({ get }) => {
@@ -17,10 +21,6 @@ export const ddragonRegion = atom<string>({
   key: 'ddragonRegion',
   default: 'ko_KR',
 });
-
-interface ChampionDictionary {
-  [key: string]: string;
-}
 
 export const ddragonChampions = selectorFamily<ChampionDictionary, string>({
   key: 'ddragonChampions',

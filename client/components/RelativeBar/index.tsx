@@ -32,10 +32,10 @@ export default function RelativeBar({
   );
 }
 
-const calculateOffset = (average: number, value: number, maxOffset: number) => {
+function calculateOffset(average: number, value: number, maxOffset: number) {
   const isPositive = value - average > 0;
   const diff = Math.abs(value - average);
   const percent = Math.min(50, (diff / maxOffset) * 35 + 15);
 
   return (isPositive ? 1 : -1) * percent;
-};
+}
