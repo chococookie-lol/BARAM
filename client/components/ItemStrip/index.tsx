@@ -3,7 +3,7 @@ import ItemIcon from '../ItemIcon';
 
 interface ItemStripProps {
   items: number[];
-  version?: string;
+  version: string;
   width: number;
   height: number;
   padding?: number;
