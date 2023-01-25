@@ -11,15 +11,7 @@ interface RelativeBarProps {
   textColor: string;
 }
 
-function offsetHelper(average: number, value: number, maxOffset: number) {
-  const isPositive = value - average > 0;
-  const diff = Math.abs(value - average);
-  const percent = Math.min(50, (diff / maxOffset) * 35 + 15);
-
-  return (isPositive ? 1 : -1) * percent;
-}
-
-function RelativeBar({
+export default function RelativeBar({
   label,
   average,
   value,
@@ -29,7 +21,7 @@ function RelativeBar({
   negativeColor,
   textColor,
 }: RelativeBarProps) {
-  const offset = offsetHelper(average, value, maxOffset);
+  const offset = calculateOffset(average, value, maxOffset);
   return (
     <div css={style.container}>
       <div css={style.bar(positiveColor, negativeColor, offset)} />
@@ -40,4 +32,10 @@ function RelativeBar({
   );
 }
 
-export default RelativeBar;
+function calculateOffset(average: number, value: number, maxOffset: number) {
+  const isPositive = value - average > 0;
+  const diff = Math.abs(value - average);
+  const percent = Math.min(50, (diff / maxOffset) * 35 + 15);
+
+  return (isPositive ? 1 : -1) * percent;
+}

@@ -10,37 +10,29 @@ export const ddragonAxiosInstance = axios.create({
   baseURL: DDRAGON_BASE_URL,
 });
 
-export const getChampionDdragon = async (
+export async function getChampionDdragon(
   version: string,
   region: string,
-): Promise<ChampionDdragonResponse> => {
-  return await (
-    await ddragonAxiosInstance.get(`${version}/data/${region}/champion.json`)
-  ).data;
-};
+): Promise<ChampionDdragonResponse> {
+  return (await ddragonAxiosInstance.get(`${version}/data/${region}/champion.json`)).data;
+}
 
-export const getRuneDdragon = async (
+export async function getRuneDdragon(
   version: string,
   region: string,
-): Promise<RuneDdragonResponse> => {
-  return await (
-    await ddragonAxiosInstance.get(`${version}/data/${region}/runesReforged.json`)
-  ).data;
-};
+): Promise<RuneDdragonResponse> {
+  return (await ddragonAxiosInstance.get(`${version}/data/${region}/runesReforged.json`)).data;
+}
 
-export const getSummonerDdragon = async (
+export async function getSummonerDdragon(
   version: string,
   region: string,
-): Promise<SummonerDdragonResponse> => {
-  return await (
-    await ddragonAxiosInstance.get(`${version}/data/${region}/summoner.json`)
-  ).data;
-};
+): Promise<SummonerDdragonResponse> {
+  return (await ddragonAxiosInstance.get(`${version}/data/${region}/summoner.json`)).data;
+}
 
 export async function getDdragonVersions(): Promise<string[]> {
-  return await (
-    await axios.get(`https://ddragon.leagueoflegends.com/api/versions.json`)
-  ).data;
+  return (await axios.get(`https://ddragon.leagueoflegends.com/api/versions.json`)).data;
 }
 
 export function runeStyleIdToIcon(runeStyles: RuneStyle[], style: number): string {

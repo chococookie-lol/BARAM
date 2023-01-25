@@ -26,9 +26,10 @@ interface GameSlotSummaryProps {
   teamContribution: TeamContribution;
 }
 
-interface GameSlotRowProps {
+interface GameSlotDetailProps {
   version: string;
-  participant: Participant;
+  participants: Participant[];
+  teams: Team[];
 }
 
 interface GameSlotTableProps {
@@ -38,10 +39,201 @@ interface GameSlotTableProps {
   participants: Participant[];
 }
 
-interface GameSlotDetailProps {
+interface GameSlotRowProps {
   version: string;
-  participants: Participant[];
-  teams: Team[];
+  participant: Participant;
+}
+
+const GameSlotSummary = React.memo(function GameSlotSummary({
+  version,
+  me,
+  teamContribution,
+}: GameSlotSummaryProps) {
+  const { theme } = useGlobalTheme();
+  const championId = me.championId;
+  const level = me.champLevel;
+  const spells = [me.summoner1Id, me.summoner2Id];
+  const items = [me.item0, me.item1, me.item2, me.item3, me.item4, me.item5];
+  const primaryPerk = me.perks.styles.find((e) => e.description == 'primaryStyle');
+  const subPerk = me.perks.styles.find((e) => e.description == 'subStyle');
+  if (!primaryPerk || !subPerk) throw 'perk not properly formatted';
+  const primaryRuneStyle = primaryPerk.style;
+  const primaryRune = primaryPerk.selections[0].perk;
+  const secondaryRuneStyle = subPerk.style;
+  const k = me.kills;
+  const d = me.deaths;
+  const a = me.assists;
+
+  const dealMaxOffset = Math.abs(teamContribution.max.dealt - teamContribution.average.dealt);
+  const dealValue = me.totalDamageDealtToChampions;
+  const goldMaxOffset = Math.abs(teamContribution.max.gold - teamContribution.average.gold);
+  const goldValue = me.goldEarned;
+  const deathMaxOffset = Math.abs(teamContribution.max.death - teamContribution.average.death);
+  const deathValue = me.deaths;
+  const csMaxOffset = Math.abs(teamContribution.max.cs - teamContribution.average.cs);
+  const csValue = me.totalMinionsKilled;
+  const healValue = me.contribution.heal;
+  const damagedValue = me.contribution.damaged;
+  const dealMagic = me.magicDamageDealtToChampions;
+  const dealPhysical = me.physicalDamageDealtToChampions;
+  const dealTrue = me.trueDamageDealtToChampions;
+
+  const kda = ((k + a) / d).toFixed(2);
+
+  return (
+    <div css={style.gameSummary}>
+      <div css={[style.item, style.champion]}>
+        <div css={[style.bottomRight, style.level]}>{level}</div>
+        <ChampionPic championKey={championId} version={version} width={80} height={80} />
+      </div>
+      <div css={[style.item]}>
+        <div css={style.summary}>
+          <div css={style.middle}>
+            <SpellStrip
+              version={version}
+              spells={spells}
+              width={25}
+              height={25}
+              direction={'vertical'}
+              padding={3}
+            />
+          </div>
+          <div css={style.middle}>
+            <div css={style.bottomRight}>
+              <RuneIcon version={version} styleId={secondaryRuneStyle} width={20} height={20} />
+            </div>
+            <RuneIcon
+              version={version}
+              styleId={primaryRuneStyle}
+              runeId={primaryRune}
+              width={55}
+              height={55}
+            />
+          </div>
+          <div css={[style.kdaContainer, style.middle]}>
+            <div css={style.kda}>
+              {k}/<p>{d}</p>/{a}
+            </div>
+            <p css={style.kdaverage}>{kda}</p>
+          </div>
+        </div>
+        <ItemStrip items={items} version={version} width={25} height={25} padding={3} />
+      </div>
+      <div css={[style.item]}>
+        <div css={style.seperator} />
+      </div>
+      <div css={[style.item]}>
+        <PercentageStatistics
+          padding={6}
+          dealtPercent={me.contributionPercentage.dealt}
+          dealtAmount={dealValue}
+          healPercent={me.contributionPercentage.heal}
+          healAmount={healValue}
+          damagedPercent={me.contributionPercentage.damaged}
+          damagedAmount={damagedValue}
+          deathPercent={me.contributionPercentage.death}
+          deathAmount={deathValue}
+          color={{ foreground: theme.foreground, background: theme.background }}
+        />
+      </div>
+      <div css={[style.item]}>
+        <RelativeStatistics
+          dealAverage={teamContribution.average.dealt}
+          dealMaxOffset={dealMaxOffset}
+          dealValue={dealValue}
+          goldAverage={teamContribution.average.gold}
+          goldMaxOffset={goldMaxOffset}
+          goldValue={goldValue}
+          deathAverage={teamContribution.average.death}
+          deathMaxOffset={deathMaxOffset}
+          deathValue={deathValue}
+          csAverage={teamContribution.average.cs}
+          csMaxOffset={csMaxOffset}
+          csValue={csValue}
+        />
+      </div>
+      <div css={[style.item]}>
+        <Doughnut
+          val={[dealPhysical, dealTrue, dealMagic]}
+          title={'딜 유형'}
+          label={['물리', '고정', '마법']}
+          color={[GLOBAL_COLOR.red1, 'white', GLOBAL_COLOR.blue1]}
+          textColor={'black'}
+        />
+      </div>
+    </div>
+  );
+});
+
+const GameSlotDetail = React.memo(function GameSlotDetail({
+  version,
+  participants,
+  teams,
+}: GameSlotDetailProps) {
+  const red: Participant[] = [];
+  const blue: Participant[] = [];
+  participants.forEach((e) => {
+    if (e.teamId == 100) blue.push(e);
+    else red.push(e);
+  });
+  const bluewin = teams[0].win;
+  return (
+    <div>
+      <GameSlotTable version={version} win={bluewin} teamId={100} participants={blue} />
+      <GameSlotTable version={version} win={!bluewin} teamId={200} participants={red} />
+    </div>
+  );
+});
+
+export default function GameSlot({ matchData, puuid }: GameSlotProps) {
+  const { info } = matchData;
+  const version = matchData.info.gameVersion;
+  const { participants, gameDuration } = info;
+  const me = participants.find((e) => e.puuid == puuid);
+  if (!me) throw Error("can't find summoner in match");
+
+  const win = me.win;
+  const timeString = secondsToString(gameDuration);
+
+  const contribution = matchData.info.teams.find((team) => team.teamId === me.teamId)?.contribution;
+  if (!contribution) throw new Error('contribution does not exist');
+
+  const [expand, setExpand] = useState<boolean>(false);
+  const [rendered, setRendered] = useState<boolean>(false);
+  const { theme } = useGlobalTheme();
+
+  return (
+    <div css={style.parent}>
+      <div css={style.container(theme, win, expand)}>
+        <div css={style.header(theme, win, expand)}>
+          <div css={style.headerTitle}>{win ? '승리' : '패배'}</div>
+          <div>{timeString}</div>
+          <div>&nbsp;</div>
+          <div>{convertEpochToDate(matchData.info.gameStartTimestamp)}</div>
+        </div>
+        <div css={style.gameSummaryContainer}>
+          <GameSlotSummary version={version} me={me} teamContribution={contribution} />
+        </div>
+        <div
+          css={style.expand}
+          onClick={() => {
+            setRendered(true);
+            setExpand(!expand);
+          }}
+        >
+          <div css={[style.seperator, style.stickLeft, style.middle]} />
+          <DownArrow css={style.downArrow(expand)} />
+        </div>
+      </div>
+      <div css={detailStyle.visible(expand)}>
+        {rendered ? (
+          <GameSlotDetail participants={participants} teams={info.teams} version={version} />
+        ) : (
+          <></>
+        )}
+      </div>
+    </div>
+  );
 }
 
 function GameSlotTable({ version, win, teamId, participants }: GameSlotTableProps) {
@@ -174,198 +366,6 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
   );
 }
 
-const GameSlotDetail = React.memo(function GameSlotDetail({
-  version,
-  participants,
-  teams,
-}: GameSlotDetailProps) {
-  const red: Participant[] = [];
-  const blue: Participant[] = [];
-  participants.forEach((e) => {
-    if (e.teamId == 100) blue.push(e);
-    else red.push(e);
-  });
-  const bluewin = teams[0].win;
-  return (
-    <div>
-      <GameSlotTable version={version} win={bluewin} teamId={100} participants={blue} />
-      <GameSlotTable version={version} win={!bluewin} teamId={200} participants={red} />
-    </div>
-  );
-});
-
-const GameSlotSummary = React.memo(function GameSlotSummary({
-  version,
-  me,
-  teamContribution,
-}: GameSlotSummaryProps) {
-  const { theme } = useGlobalTheme();
-  const championId = me.championId;
-  const level = me.champLevel;
-  const spells = [me.summoner1Id, me.summoner2Id];
-  const items = [me.item0, me.item1, me.item2, me.item3, me.item4, me.item5];
-  const primaryPerk = me.perks.styles.find((e) => e.description == 'primaryStyle');
-  const subPerk = me.perks.styles.find((e) => e.description == 'subStyle');
-  if (!primaryPerk || !subPerk) throw 'perk not properly formatted';
-  const primaryRuneStyle = primaryPerk.style;
-  const primaryRune = primaryPerk.selections[0].perk;
-  const secondaryRuneStyle = subPerk.style;
-  const k = me.kills;
-  const d = me.deaths;
-  const a = me.assists;
-
-  const dealMaxOffset = Math.abs(teamContribution.max.dealt - teamContribution.average.dealt);
-  const dealValue = me.totalDamageDealtToChampions;
-  const goldMaxOffset = Math.abs(teamContribution.max.gold - teamContribution.average.gold);
-  const goldValue = me.goldEarned;
-  const deathMaxOffset = Math.abs(teamContribution.max.death - teamContribution.average.death);
-  const deathValue = me.deaths;
-  const csMaxOffset = Math.abs(teamContribution.max.cs - teamContribution.average.cs);
-  const csValue = me.totalMinionsKilled;
-  const healValue = me.contribution.heal;
-  const damagedValue = me.contribution.damaged;
-  const dealMagic = me.magicDamageDealtToChampions;
-  const dealPhysical = me.physicalDamageDealtToChampions;
-  const dealTrue = me.trueDamageDealtToChampions;
-
-  const kda = ((k + a) / d).toFixed(2);
-
-  return (
-    <div css={style.gameSummary}>
-      <div css={[style.item, style.champion]}>
-        <div css={[style.bottomRight, style.level]}>{level}</div>
-        <ChampionPic championKey={championId} version={version} width={80} height={80} />
-      </div>
-      <div css={[style.item]}>
-        <div css={style.summary}>
-          <div css={style.middle}>
-            <SpellStrip
-              version={version}
-              spells={spells}
-              width={25}
-              height={25}
-              direction={'vertical'}
-              padding={3}
-            />
-          </div>
-          <div css={style.middle}>
-            <div css={style.bottomRight}>
-              <RuneIcon version={version} styleId={secondaryRuneStyle} width={20} height={20} />
-            </div>
-            <RuneIcon
-              version={version}
-              styleId={primaryRuneStyle}
-              runeId={primaryRune}
-              width={55}
-              height={55}
-            />
-          </div>
-          <div css={[style.kdaContainer, style.middle]}>
-            <div css={style.kda}>
-              {k}/<p>{d}</p>/{a}
-            </div>
-            <p css={style.kdaverage}>{kda}</p>
-          </div>
-        </div>
-        <ItemStrip items={items} version={version} width={25} height={25} padding={3} />
-      </div>
-      <div css={[style.item]}>
-        <div css={style.seperator} />
-      </div>
-      <div css={[style.item]}>
-        <PercentageStatistics
-          padding={6}
-          dealtPercent={me.contributionPercentage.dealt}
-          dealtAmount={dealValue}
-          healPercent={me.contributionPercentage.heal}
-          healAmount={healValue}
-          damagedPercent={me.contributionPercentage.damaged}
-          damagedAmount={damagedValue}
-          deathPercent={me.contributionPercentage.death}
-          deathAmount={deathValue}
-          color={{ foreground: theme.foreground, background: theme.background }}
-        />
-      </div>
-      <div css={[style.item]}>
-        <RelativeStatistics
-          dealAverage={teamContribution.average.dealt}
-          dealMaxOffset={dealMaxOffset}
-          dealValue={dealValue}
-          goldAverage={teamContribution.average.gold}
-          goldMaxOffset={goldMaxOffset}
-          goldValue={goldValue}
-          deathAverage={teamContribution.average.death}
-          deathMaxOffset={deathMaxOffset}
-          deathValue={deathValue}
-          csAverage={teamContribution.average.cs}
-          csMaxOffset={csMaxOffset}
-          csValue={csValue}
-        />
-      </div>
-      <div css={[style.item]}>
-        <Doughnut
-          val={[dealPhysical, dealTrue, dealMagic]}
-          title={'딜 유형'}
-          label={['물리', '고정', '마법']}
-          color={[GLOBAL_COLOR.red1, 'white', GLOBAL_COLOR.blue1]}
-          textColor={'black'}
-        />
-      </div>
-    </div>
-  );
-});
-
-function GameSlot({ matchData, puuid }: GameSlotProps) {
-  const { info } = matchData;
-  const version = matchData.info.gameVersion;
-  const { participants, gameDuration } = info;
-  const me = participants.find((e) => e.puuid == puuid);
-  if (!me) throw Error("can't find summoner in match");
-
-  const win = me.win;
-  const timeString = secondsToString(gameDuration);
-
-  const contribution = matchData.info.teams.find((team) => team.teamId === me.teamId)?.contribution;
-  if (!contribution) throw new Error('contribution does not exist');
-
-  const [expand, setExpand] = useState<boolean>(false);
-  const [rendered, setRendered] = useState<boolean>(false);
-  const { theme } = useGlobalTheme();
-
-  return (
-    <div css={style.parent}>
-      <div css={style.container(theme, win, expand)}>
-        <div css={style.header(theme, win, expand)}>
-          <div css={style.headerTitle}>{win ? '승리' : '패배'}</div>
-          <div>{timeString}</div>
-          <div>&nbsp;</div>
-          <div>{convertEpochToDate(matchData.info.gameStartTimestamp)}</div>
-        </div>
-        <div css={style.gameSummaryContainer}>
-          <GameSlotSummary version={version} me={me} teamContribution={contribution} />
-        </div>
-        <div
-          css={style.expand}
-          onClick={() => {
-            setRendered(true);
-            setExpand(!expand);
-          }}
-        >
-          <div css={[style.seperator, style.stickLeft, style.middle]} />
-          <DownArrow css={style.downArrow(expand)} />
-        </div>
-      </div>
-      <div css={detailStyle.visible(expand)}>
-        {rendered ? (
-          <GameSlotDetail participants={participants} teams={info.teams} version={version} />
-        ) : (
-          <></>
-        )}
-      </div>
-    </div>
-  );
-}
-
 function rankToString(rank: number) {
   switch (rank) {
     case 0:
@@ -378,5 +378,3 @@ function rankToString(rank: number) {
       return `${rank + 1}th`;
   }
 }
-
-export default GameSlot;

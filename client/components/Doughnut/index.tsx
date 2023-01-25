@@ -1,7 +1,9 @@
 import React from 'react';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { generatePath } from './pathHelper';
+import { generatePath } from './path';
 import { style } from './style';
+
+const viewBoxSize = 100;
 
 interface DoughnutProps {
   val: number[];
@@ -18,8 +20,6 @@ interface DoughnutGraphProps {
   setHover: Dispatch<SetStateAction<number | null>>;
   color: string[];
 }
-
-const viewBoxSize = 100;
 
 const DoughnutGraph = React.memo(function DoughnutGraph({
   val,
@@ -53,7 +53,14 @@ const DoughnutGraph = React.memo(function DoughnutGraph({
   );
 });
 
-function Doughnut({ val, label, title, size = 100, color, textColor }: DoughnutProps) {
+export default function Doughnut({
+  val,
+  label,
+  title,
+  size = 100,
+  color,
+  textColor,
+}: DoughnutProps) {
   const [hover, setHover] = useState<number | null>(null);
   return (
     <div css={style.container}>
@@ -62,5 +69,3 @@ function Doughnut({ val, label, title, size = 100, color, textColor }: DoughnutP
     </div>
   );
 }
-
-export default Doughnut;

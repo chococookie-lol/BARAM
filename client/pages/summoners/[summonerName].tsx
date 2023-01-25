@@ -23,6 +23,12 @@ import {
   TotalStatistic,
 } from '../../utils/matchStatistic';
 
+const defaultTotalStatistics = getTotalMatchStatistics({});
+
+interface SummonerProfilePanelProps {
+  summonerName: string;
+}
+
 const style = {
   header: css`
     display: flex;
@@ -63,10 +69,32 @@ const style = {
   `,
 };
 
-const defaultTotalStatistics = getTotalMatchStatistics({});
+export default function SearchPage() {
+  const router = useRouter();
+  const [searchText, setSearchText] = useState<string>('');
+  const [summonerName, setSummonerName] = useState<string>('');
 
-interface SummonerProfilePanelProps {
-  summonerName: string;
+  const handleSearch = () => {
+    if (searchText === '') return;
+    router.push(`/summoners/${searchText}`);
+  };
+
+  useEffect(() => {
+    const query = router.query;
+    if (typeof query.summonerName === 'string') {
+      setSummonerName(query.summonerName);
+      setSearchText(query.summonerName);
+    }
+  }, [router.isReady, router.query]);
+  return (
+    <>
+      <header css={style.header}>
+        <Logo width={221} />
+        <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={handleSearch} />
+      </header>
+      <SummonerProfilePanel summonerName={summonerName} />
+    </>
+  );
 }
 
 function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
@@ -263,34 +291,6 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
           </Button>
         )}
       </main>
-    </>
-  );
-}
-
-export default function SearchPage() {
-  const router = useRouter();
-  const [searchText, setSearchText] = useState<string>('');
-  const [summonerName, setSummonerName] = useState<string>('');
-
-  const handleSearch = () => {
-    if (searchText === '') return;
-    router.push(`/summoners/${searchText}`);
-  };
-
-  useEffect(() => {
-    const query = router.query;
-    if (typeof query.summonerName === 'string') {
-      setSummonerName(query.summonerName);
-      setSearchText(query.summonerName);
-    }
-  }, [router.isReady, router.query]);
-  return (
-    <>
-      <header css={style.header}>
-        <Logo width={221} />
-        <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={handleSearch} />
-      </header>
-      <SummonerProfilePanel summonerName={summonerName} />
     </>
   );
 }

@@ -18,7 +18,7 @@ interface RuneIconProps {
   height: number;
 }
 
-function RuneIcon({ version, styleId, runeId, width, height }: RuneIconProps) {
+export default function RuneIcon({ version, styleId, runeId, width, height }: RuneIconProps) {
   const versions = useRecoilValueLoadable(ddragonVersions);
   const runes = useRecoilValueLoadable(
     ddragonRunes(
@@ -39,5 +39,3 @@ function RuneIcon({ version, styleId, runeId, width, height }: RuneIconProps) {
     </div>
   );
 }
-
-export default RuneIcon;

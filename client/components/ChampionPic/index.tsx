@@ -19,7 +19,13 @@ const style = {
   `,
 };
 
-function ChampionPic({ championKey, version, width, height, shape = 'round' }: ChampionPicProps) {
+export default function ChampionPic({
+  championKey,
+  version,
+  width,
+  height,
+  shape = 'round',
+}: ChampionPicProps) {
   const versions = useRecoilValue(ddragonVersions);
   const championDic = useRecoilValueLoadable(
     ddragonChampions(getMajorVersion(versions, version) || '13.1.1'),
@@ -40,5 +46,3 @@ function ChampionPic({ championKey, version, width, height, shape = 'round' }: C
     />
   );
 }
-
-export default ChampionPic;

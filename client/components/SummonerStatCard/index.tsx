@@ -3,6 +3,13 @@ import Doughnut from '../Doughnut';
 import PercentageStatistics from '../PercentageStatistics';
 import { style } from './style';
 
+interface SummonerStatCardProps {
+  winRate: WinRateProps;
+  kda: KDAProps;
+  camp: CampStatisticProps;
+  gameContribution: GameContributionProps;
+}
+
 interface WinRateProps {
   win: number;
   lose: number;
@@ -15,7 +22,7 @@ interface KDAProps {
   killContribution: number;
 }
 
-interface CampProps {
+interface CampStatisticProps {
   blue: number;
   red: number;
 }
@@ -30,13 +37,6 @@ interface GameContributionProps {
   damagedAmount: number;
   death: number;
   deathAmount: number;
-}
-
-interface SummonerStatCardProps {
-  winRate: WinRateProps;
-  kda: KDAProps;
-  camp: CampProps;
-  gameContribution: GameContributionProps;
 }
 
 export default function SummonerStatCard({
@@ -135,7 +135,7 @@ function KDA({ kills, assists, deaths, killContribution }: KDAProps) {
   );
 }
 
-function CampStatistic({ blue, red }: CampProps) {
+function CampStatistic({ blue, red }: CampStatisticProps) {
   const { theme } = useGlobalTheme();
 
   const title = blue >= red ? '블루' : '레드';

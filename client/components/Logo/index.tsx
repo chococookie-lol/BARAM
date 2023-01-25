@@ -7,7 +7,7 @@ interface LogoProps {
   height?: number;
 }
 
-function Logo({ width, height }: LogoProps) {
+export default function Logo({ width, height }: LogoProps) {
   const context = useGlobalTheme();
   return (
     <LogoSvg
@@ -19,5 +19,3 @@ function Logo({ width, height }: LogoProps) {
     />
   );
 }
-
-export default Logo;

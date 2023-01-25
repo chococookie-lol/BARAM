@@ -17,7 +17,7 @@ interface RelativeStatisticsProps {
   csValue: number;
 }
 
-function RelativeStatistics({
+export default function RelativeStatistics({
   dealAverage,
   dealMaxOffset,
   dealValue,
@@ -88,5 +88,3 @@ function RelativeStatistics({
     </div>
   );
 }
-
-export default RelativeStatistics;
