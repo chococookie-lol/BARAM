@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { css } from '@emotion/react';
 import { useRecoilValue, useRecoilValueLoadable } from 'recoil';
-import { ddragonChampions, ddragonVersion, ddragonVersions } from '../../states/ddragon';
+import { ddragonChampions, ddragonVersions } from '../../states/ddragon';
 import { DDRAGON_BASE_URL, DEAFULT_PLACEHOLDER, getMajorVersion } from '../../utils/ddragon';
 
 interface ChampionPicProps {
