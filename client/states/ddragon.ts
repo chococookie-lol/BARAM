@@ -58,7 +58,7 @@ export const ddragonSpells = selectorFamily<Spells, string>({
 
 export const ddragonVersions = selector<string[]>({
   key: 'ddragonVersions',
-  get: async ({ get }) => {
+  get: async ({}) => {
     return await getDdragonVersions();
   },
 });

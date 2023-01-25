@@ -1,3 +1,4 @@
+/* eslint-disable unused-imports/no-unused-vars */
 interface Challenge {
   challengeId: number;
   percentile: number;
