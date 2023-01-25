@@ -10,7 +10,7 @@ interface SummonerProfilePicProps {
   height: number;
 }
 
-function SummonerProfilePic({ id, width, height }: SummonerProfilePicProps) {
+export default function SummonerProfilePic({ id, width, height }: SummonerProfilePicProps) {
   const version = useRecoilValueLoadable(ddragonVersion);
   const src =
     version.state === 'hasValue'
@@ -28,5 +28,3 @@ function SummonerProfilePic({ id, width, height }: SummonerProfilePicProps) {
     />
   );
 }
-
-export default SummonerProfilePic;

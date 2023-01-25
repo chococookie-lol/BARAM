@@ -3,6 +3,13 @@ import Doughnut from '../Doughnut';
 import PercentageStatistics from '../PercentageStatistics';
 import { style } from './style';
 
+interface SummonerStatCardProps {
+  winRate: WinRateProps;
+  kda: KDAProps;
+  camp: CampStatisticProps;
+  gameContribution: GameContributionProps;
+}
+
 interface WinRateProps {
   win: number;
   lose: number;
@@ -15,7 +22,7 @@ interface KDAProps {
   killContribution: number;
 }
 
-interface CampProps {
+interface CampStatisticProps {
   blue: number;
   red: number;
 }
@@ -30,13 +37,6 @@ interface GameContributionProps {
   damagedAmount: number;
   death: number;
   deathAmount: number;
-}
-
-interface SummonerStatCardProps {
-  winRate: WinRateProps;
-  kda: KDAProps;
-  camp: CampProps;
-  gameContribution: GameContributionProps;
 }
 
 export default function SummonerStatCard({
@@ -83,7 +83,7 @@ export default function SummonerStatCard({
   );
 }
 
-function WinRate({ win, lose }: WinRateProps) {
+const WinRate = ({ win, lose }: WinRateProps) => {
   const { theme } = useGlobalTheme();
 
   const winRate = Math.floor((win / (win + lose)) * 100);
@@ -103,9 +103,9 @@ function WinRate({ win, lose }: WinRateProps) {
       />
     </div>
   );
-}
+};
 
-function KDA({ kills, assists, deaths, killContribution }: KDAProps) {
+const KDA = ({ kills, assists, deaths, killContribution }: KDAProps) => {
   const { theme } = useGlobalTheme();
 
   const kda = (kills + assists) / deaths;
@@ -133,9 +133,9 @@ function KDA({ kills, assists, deaths, killContribution }: KDAProps) {
       </div>
     </div>
   );
-}
+};
 
-function CampStatistic({ blue, red }: CampProps) {
+const CampStatistic = ({ blue, red }: CampStatisticProps) => {
   const { theme } = useGlobalTheme();
 
   const title = blue >= red ? '블루' : '레드';
@@ -156,9 +156,9 @@ function CampStatistic({ blue, red }: CampProps) {
       />
     </div>
   );
-}
+};
 
-function GameContribution({
+const GameContribution = ({
   damaged,
   damagedAmount,
   dealt,
@@ -168,7 +168,7 @@ function GameContribution({
   heal,
   healAmount,
   rank,
-}: GameContributionProps) {
+}: GameContributionProps) => {
   const { theme } = useGlobalTheme();
 
   return (
@@ -195,4 +195,4 @@ function GameContribution({
       </div>
     </>
   );
-}
+};

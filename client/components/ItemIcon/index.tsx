@@ -15,7 +15,7 @@ const style = css`
   border-radius: 13%;
 `;
 
-function ItemIcon({ id, version, width, height }: ItemIconProps) {
+export default function ItemIcon({ id, version, width, height }: ItemIconProps) {
   const versions = useRecoilValueLoadable(ddragonVersions);
   const src =
     versions.state === 'hasValue' && version !== undefined && id
@@ -23,5 +23,3 @@ function ItemIcon({ id, version, width, height }: ItemIconProps) {
       : DEAFULT_PLACEHOLDER_GRAY;
   return <Image css={style} src={src} width={width} height={height} alt={id.toString()} />;
 }
-
-export default ItemIcon;

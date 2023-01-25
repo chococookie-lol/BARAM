@@ -1,7 +1,9 @@
 import React from 'react';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { generatePath } from './pathHelper';
+import { generatePath } from './path';
 import { style } from './style';
+
+const viewBoxSize = 100;
 
 interface DoughnutProps {
   val: number[];
@@ -19,7 +21,22 @@ interface DoughnutGraphProps {
   color: string[];
 }
 
-const viewBoxSize = 100;
+export default function Doughnut({
+  val,
+  label,
+  title,
+  size = 100,
+  color,
+  textColor,
+}: DoughnutProps) {
+  const [hover, setHover] = useState<number | null>(null);
+  return (
+    <div css={style.container}>
+      <div css={style.text(size, textColor)}>{hover === null ? title : label[hover]}</div>
+      <DoughnutGraph val={val} size={size} setHover={setHover} color={color} />
+    </div>
+  );
+}
 
 const DoughnutGraph = React.memo(function DoughnutGraph({
   val,
@@ -52,15 +69,3 @@ const DoughnutGraph = React.memo(function DoughnutGraph({
     </svg>
   );
 });
-
-function Doughnut({ val, label, title, size = 100, color, textColor }: DoughnutProps) {
-  const [hover, setHover] = useState<number | null>(null);
-  return (
-    <div css={style.container}>
-      <div css={style.text(size, textColor)}>{hover === null ? title : label[hover]}</div>
-      <DoughnutGraph val={val} size={size} setHover={setHover} color={color} />
-    </div>
-  );
-}
-
-export default Doughnut;

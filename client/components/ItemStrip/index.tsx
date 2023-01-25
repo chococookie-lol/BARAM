@@ -28,7 +28,7 @@ const style = {
   `,
 };
 
-function ItemStrip({
+export default function ItemStrip({
   items,
   version,
   width,
@@ -44,5 +44,3 @@ function ItemStrip({
     </div>
   );
 }
-
-export default ItemStrip;

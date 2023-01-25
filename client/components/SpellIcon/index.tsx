@@ -16,7 +16,7 @@ interface SpellIconProps {
   height: number;
 }
 
-function SpellIcon({ version, id, width, height }: SpellIconProps) {
+export default function SpellIcon({ version, id, width, height }: SpellIconProps) {
   const versions = useRecoilValueLoadable(ddragonVersions);
   const majorVersion =
     getMajorVersion(versions.state === 'hasValue' ? versions.contents : [], version) ?? '13.1.1';
@@ -38,5 +38,3 @@ function SpellIcon({ version, id, width, height }: SpellIconProps) {
     />
   );
 }
-
-export default SpellIcon;

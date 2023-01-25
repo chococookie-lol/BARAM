@@ -27,7 +27,7 @@ const style = {
   `,
 };
 
-function SpellStrip({
+export default function SpellStrip({
   version,
   spells,
   width,
@@ -44,5 +44,3 @@ function SpellStrip({
     </div>
   );
 }
-
-export default SpellStrip;
