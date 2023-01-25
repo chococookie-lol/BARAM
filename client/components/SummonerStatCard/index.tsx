@@ -178,7 +178,9 @@ function GameContribution({
           평균 게임 기여도
         </span>
         <div css={style.contribution}>
-          <p css={[style.fontSize('20px'), style.color(theme.background)]}>{rank + 1}위</p>
+          <p css={[style.fontSize('20px'), style.color(theme.background)]}>
+            {Math.round((rank + 1) * 10) / 10}위
+          </p>
           <PercentageStatistics
             dealtPercent={dealt}
             dealtAmount={dealtAmount}
