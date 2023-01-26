@@ -3,7 +3,7 @@ import ItemIcon from '../ItemIcon';
 
 interface ItemStripProps {
   items: number[];
-  version?: string;
+  version: string;
   width: number;
   height: number;
   padding?: number;
@@ -28,7 +28,7 @@ const style = {
   `,
 };
 
-function ItemStrip({
+export default function ItemStrip({
   items,
   version,
   width,
@@ -44,5 +44,3 @@ function ItemStrip({
     </div>
   );
 }
-
-export default ItemStrip;

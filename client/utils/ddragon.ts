@@ -5,42 +5,35 @@ export const DEAFULT_PLACEHOLDER =
   'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 export const DEAFULT_PLACEHOLDER_GRAY =
   'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==';
+export const DEFAULT_DDRAGON_VERSION = '13.1.1';
 
 export const ddragonAxiosInstance = axios.create({
   baseURL: DDRAGON_BASE_URL,
 });
 
-export const getChampionDdragon = async (
+export async function getChampionDdragon(
   version: string,
   region: string,
-): Promise<ChampionDdragonResponse> => {
-  return await (
-    await ddragonAxiosInstance.get(`${version}/data/${region}/champion.json`)
-  ).data;
-};
+): Promise<ChampionDdragonResponse> {
+  return (await ddragonAxiosInstance.get(`${version}/data/${region}/champion.json`)).data;
+}
 
-export const getRuneDdragon = async (
+export async function getRuneDdragon(
   version: string,
   region: string,
-): Promise<RuneDdragonResponse> => {
-  return await (
-    await ddragonAxiosInstance.get(`${version}/data/${region}/runesReforged.json`)
-  ).data;
-};
+): Promise<RuneDdragonResponse> {
+  return (await ddragonAxiosInstance.get(`${version}/data/${region}/runesReforged.json`)).data;
+}
 
-export const getSummonerDdragon = async (
+export async function getSummonerDdragon(
   version: string,
   region: string,
-): Promise<SummonerDdragonResponse> => {
-  return await (
-    await ddragonAxiosInstance.get(`${version}/data/${region}/summoner.json`)
-  ).data;
-};
+): Promise<SummonerDdragonResponse> {
+  return (await ddragonAxiosInstance.get(`${version}/data/${region}/summoner.json`)).data;
+}
 
 export async function getDdragonVersions(): Promise<string[]> {
-  return await (
-    await axios.get(`https://ddragon.leagueoflegends.com/api/versions.json`)
-  ).data;
+  return (await axios.get(`https://ddragon.leagueoflegends.com/api/versions.json`)).data;
 }
 
 export function runeStyleIdToIcon(runeStyles: RuneStyle[], style: number): string {
@@ -61,13 +54,13 @@ export function spellIdToIcon(spells: Spells, id: number): string {
   ].image.full;
 }
 
-export function getMajorVersion(versions: string[], fullVersion: string): string | null {
+export function getMajorVersion(versions: string[], fullVersion: string): string {
   for (const version of versions) {
     if (getVersionDiff(version, fullVersion)) {
       return version;
     }
   }
-  return null;
+  return DEFAULT_DDRAGON_VERSION;
 }
 
 /**

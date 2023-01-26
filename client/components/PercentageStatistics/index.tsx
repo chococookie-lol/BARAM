@@ -2,11 +2,6 @@ import { useGlobalTheme } from '../../styles/GlobalThemeContext';
 import Percentage from '../Percentage';
 import { style } from './style';
 
-interface ColorProps {
-  background: string;
-  foreground: string;
-}
-
 interface PercentageStatisticsProps {
   dealtPercent: number;
   dealtAmount: number;
@@ -18,6 +13,11 @@ interface PercentageStatisticsProps {
   deathAmount: number;
   padding?: number;
   color?: ColorProps;
+}
+
+interface ColorProps {
+  background: string;
+  foreground: string;
 }
 
 export default function PercentageStatistics({

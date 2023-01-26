@@ -1,9 +1,3 @@
-function degreeToCoord(degree: number, radius: number, viewBoxSize: number): string {
-  const x = Math.cos((degree * Math.PI) / 180);
-  const y = Math.sin((degree * Math.PI) / 180);
-  return `${x * radius + viewBoxSize / 2} ${y * -radius + viewBoxSize / 2}`;
-}
-
 export interface DoughnutPath {
   rotation: number;
   path: string;
@@ -44,3 +38,9 @@ export function generatePath(
   });
   return paths;
 }
+
+const degreeToCoord = (degree: number, radius: number, viewBoxSize: number): string => {
+  const x = Math.cos((degree * Math.PI) / 180);
+  const y = Math.sin((degree * Math.PI) / 180);
+  return `${x * radius + viewBoxSize / 2} ${y * -radius + viewBoxSize / 2}`;
+};

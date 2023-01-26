@@ -1,3 +1,4 @@
+/* eslint-disable unused-imports/no-unused-vars */
 interface Challenge {
   challengeId: number;
   percentile: number;
@@ -106,8 +107,9 @@ interface Participant {
   championTransform: number;
   commandPings: number;
   consumablesPurchased: number;
-  contribution: ParticipantContribution;
-  contributionPercentage: ParticipantParticipation;
+  contribution: Contribution;
+  contributionPercentage: Contribution;
+  contributionPercentageTotal: Contribution;
   damageDealtToBuildings: number;
   damageDealtToObjectives: number;
   damageDealtToTurrets: number;

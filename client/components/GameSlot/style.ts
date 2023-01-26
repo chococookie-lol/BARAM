@@ -260,4 +260,7 @@ export const detailStyle = {
   visible: (visible: boolean) => css`
     display: ${visible ? 'block' : 'none'};
   `,
+  visibleInline: (visible: boolean) => css`
+    display: ${visible ? 'inline' : 'none'};
+  `,
 };

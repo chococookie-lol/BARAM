@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { convertEpochToRelativeTime } from '../../utils/time';
 import Button from '../Button';
 import ChallengeIcon from '../ChallengeIcon';

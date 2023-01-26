@@ -1,4 +1,4 @@
-import mongoose, { Document, HydratedDocument } from 'mongoose';
+import { Document, HydratedDocument } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 
 export type MatchDocument = HydratedDocument<Match>;
@@ -445,9 +445,6 @@ const contributionSchema = SchemaFactory.createForClass(Contribution);
 
 @Schema({ id: false, _id: false })
 class Participant {
-  @Prop({ required: true })
-  contributionRank: number;
-
   @Prop({ required: true })
   allInPings: number;
 

@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PlayModule } from 'src/play/play.module';
-import { PlayService } from 'src/play/play.service';
 import { RiotApiModule } from 'src/riot.api/riot.api.module';
 import { Summoner, SummonerSchema } from 'src/summoners/schemas/summoner.schema';
 import { MatchesController } from './matches.controller';

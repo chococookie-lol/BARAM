@@ -9,17 +9,25 @@ import SummonerProfileCard from '../../components/SummonerProfileCard';
 import SummonerStatCard from '../../components/SummonerStatCard';
 import {
   getMatch,
+  getScoreMultipliers,
   getSummonerMatchIds,
   getSummonerProfile,
   requestFetchSummonerMatches,
   tryToGetSummonerProfile,
 } from '../../utils/api';
 import {
+  calculateContributionRanks,
   getMatchStatistic,
   getTotalMatchStatistics,
   MatchStatistic,
   TotalStatistic,
 } from '../../utils/matchStatistic';
+
+const defaultTotalStatistics = getTotalMatchStatistics({});
+
+interface SummonerProfilePanelProps {
+  summonerName: string;
+}
 
 const style = {
   header: css`
@@ -61,10 +69,32 @@ const style = {
   `,
 };
 
-const defaultTotalStatistics = getTotalMatchStatistics({});
+export default function SearchPage() {
+  const router = useRouter();
+  const [searchText, setSearchText] = useState<string>('');
+  const [summonerName, setSummonerName] = useState<string>('');
 
-interface SummonerProfilePanelProps {
-  summonerName: string;
+  const handleSearch = () => {
+    if (searchText === '') return;
+    router.push(`/summoners/${searchText}`);
+  };
+
+  useEffect(() => {
+    const query = router.query;
+    if (typeof query.summonerName === 'string') {
+      setSummonerName(query.summonerName);
+      setSearchText(query.summonerName);
+    }
+  }, [router.isReady, router.query]);
+  return (
+    <>
+      <header css={style.header}>
+        <Logo width={221} />
+        <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={handleSearch} />
+      </header>
+      <SummonerProfilePanel summonerName={summonerName} />
+    </>
+  );
 }
 
 function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
@@ -76,6 +106,7 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
   const [fetching, setFetching] = useState<boolean>(false);
   const [loadMore, setLoadMore] = useState<boolean>(false);
   const [update, setUpdate] = useState<boolean>(false);
+  const [scoreMultipliers, setScoreMultipliers] = useState<Contribution | null>(null);
 
   useEffect(() => {
     async function tick() {
@@ -141,12 +172,21 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
         console.error(e);
       }
     })();
+
+    (async () => {
+      setScoreMultipliers(await getScoreMultipliers());
+    })();
   }, [summonerName]);
 
   useEffect(() => {
-    if (matchIds.length === 0) return;
+    if (matchIds.length === 0 || !scoreMultipliers) return;
 
-    const promises = matchIds.map((matchId) => getMatch(matchId));
+    const promises = matchIds.map(async (matchId) => {
+      const match = await getMatch(matchId);
+      calculateContributionRanks(match, scoreMultipliers);
+      return match;
+    });
+
     (async () => {
       try {
         const newMatches = await Promise.all(promises);
@@ -155,7 +195,7 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
         console.error(e);
       }
     })();
-  }, [matchIds]);
+  }, [matchIds, scoreMultipliers]);
 
   useEffect(() => {
     if (!summonerProfile || matches.length === 0) return;
@@ -251,34 +291,6 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
           </Button>
         )}
       </main>
-    </>
-  );
-}
-
-export default function SearchPage() {
-  const router = useRouter();
-  const [searchText, setSearchText] = useState<string>('');
-  const [summonerName, setSummonerName] = useState<string>('');
-
-  const handleSearch = () => {
-    if (searchText === '') return;
-    router.push(`/summoners/${searchText}`);
-  };
-
-  useEffect(() => {
-    const query = router.query;
-    if (typeof query.summonerName === 'string') {
-      setSummonerName(query.summonerName);
-      setSearchText(query.summonerName);
-    }
-  }, [router.isReady, router.query]);
-  return (
-    <>
-      <header css={style.header}>
-        <Logo width={221} />
-        <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={handleSearch} />
-      </header>
-      <SummonerProfilePanel summonerName={summonerName} />
     </>
   );
 }

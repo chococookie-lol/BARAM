@@ -1,10 +1,9 @@
 import Image from 'next/image';
 import { useRecoilValueLoadable } from 'recoil';
-import { ddragonRunes, ddragonVersions } from '../../states/ddragon';
+import { ddragonRunes } from '../../states/ddragon';
 import {
   DDRAGON_BASE_URL,
   DEAFULT_PLACEHOLDER,
-  getMajorVersion,
   runeIdToIcon,
   runeStyleIdToIcon,
 } from '../../utils/ddragon';
@@ -18,13 +17,8 @@ interface RuneIconProps {
   height: number;
 }
 
-function RuneIcon({ version, styleId, runeId, width, height }: RuneIconProps) {
-  const versions = useRecoilValueLoadable(ddragonVersions);
-  const runes = useRecoilValueLoadable(
-    ddragonRunes(
-      getMajorVersion(versions.state === 'hasValue' ? versions.contents : [], version) ?? '13.1.1',
-    ),
-  );
+export default function RuneIcon({ version, styleId, runeId, width, height }: RuneIconProps) {
+  const runes = useRecoilValueLoadable(ddragonRunes(version));
   const src =
     runes.state === 'hasValue'
       ? `${DDRAGON_BASE_URL}img/${
@@ -33,11 +27,10 @@ function RuneIcon({ version, styleId, runeId, width, height }: RuneIconProps) {
             : runeStyleIdToIcon(runes.contents, styleId)
         }`
       : DEAFULT_PLACEHOLDER;
+
   return (
     <div css={style(width, height)}>
       <Image src={src} width={width} height={height} alt={'rune'} />
     </div>
   );
 }
-
-export default RuneIcon;

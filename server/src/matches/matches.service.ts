@@ -7,11 +7,6 @@ import { RiotApiService } from 'src/riot.api/riot.api.service';
 import { Summoner, SummonerDocument } from 'src/summoners/schemas/summoner.schema';
 import { Contribution, Match, MatchDocument, TeamContribution } from './schemas/match.schema';
 
-interface Score {
-  index: number;
-  score: number;
-}
-
 @Injectable()
 export class MatchesService {
   private logger = new Logger(MatchesService.name);
@@ -57,8 +52,6 @@ export class MatchesService {
       const id: number = +matchId.substring(3);
 
       const contributionKeys = Object.getOwnPropertyNames(new Contribution());
-
-      const scores: Score[] = [];
 
       // check db
       if (!(await this.matchModel.countDocuments({ 'info.gameId': id }, { limit: 1 }).lean())) {
@@ -138,46 +131,6 @@ export class MatchesService {
           for (const team of match.info.teams) {
             team.contribution.average[key] = team.contribution.total[key] / 5;
           }
-        });
-
-        const scoreMultiplier: Contribution = {
-          dealt: 1,
-          damaged: 1,
-          heal: 1,
-          death: -1,
-          gold: 0,
-          cs: 0,
-          kill: 1,
-          assist: 1,
-        };
-
-        // TODO: scoreMultiplier 수정
-
-        // calculate scores
-        match.info.participants.forEach((participant, index) => {
-          const score: Score = {
-            index: index,
-            score: 0,
-          };
-
-          contributionKeys.forEach((key) => {
-            // calculate individual scores
-            if (scoreMultiplier[key])
-              score.score +=
-                scoreMultiplier[key] *
-                participant.contributionPercentageTotal[key] *
-                (participant.win ? 1 : 0.5);
-          });
-
-          scores.push(score);
-        });
-
-        // sort scores
-        scores.sort((a: Score, b: Score) => (a.score <= b.score ? 1 : -1));
-
-        // set score ranks
-        scores.forEach((score, index) => {
-          match.info.participants[score.index].contributionRank = index;
         });
 
         await this.matchModel.updateOne({ 'info.gameId': id }, match, { upsert: true });

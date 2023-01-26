@@ -3,6 +3,13 @@ import Doughnut from '../Doughnut';
 import PercentageStatistics from '../PercentageStatistics';
 import { style } from './style';
 
+interface SummonerStatCardProps {
+  winRate: WinRateProps;
+  kda: KDAProps;
+  camp: CampStatisticProps;
+  gameContribution: GameContributionProps;
+}
+
 interface WinRateProps {
   win: number;
   lose: number;
@@ -15,7 +22,7 @@ interface KDAProps {
   killContribution: number;
 }
 
-interface CampProps {
+interface CampStatisticProps {
   blue: number;
   red: number;
 }
@@ -30,13 +37,6 @@ interface GameContributionProps {
   damagedAmount: number;
   death: number;
   deathAmount: number;
-}
-
-interface SummonerStatCardProps {
-  winRate: WinRateProps;
-  kda: KDAProps;
-  camp: CampProps;
-  gameContribution: GameContributionProps;
 }
 
 export default function SummonerStatCard({
@@ -135,7 +135,7 @@ function KDA({ kills, assists, deaths, killContribution }: KDAProps) {
   );
 }
 
-function CampStatistic({ blue, red }: CampProps) {
+function CampStatistic({ blue, red }: CampStatisticProps) {
   const { theme } = useGlobalTheme();
 
   const title = blue >= red ? '블루' : '레드';
@@ -178,7 +178,9 @@ function GameContribution({
           평균 게임 기여도
         </span>
         <div css={style.contribution}>
-          <p css={[style.fontSize('20px'), style.color(theme.background)]}>{rank}위</p>
+          <p css={[style.fontSize('20px'), style.color(theme.background)]}>
+            {Math.round((rank + 1) * 10) / 10}위
+          </p>
           <PercentageStatistics
             dealtPercent={dealt}
             dealtAmount={dealtAmount}

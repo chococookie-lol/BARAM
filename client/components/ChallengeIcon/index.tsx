@@ -10,7 +10,7 @@ interface ChallengIconProps {
   height: number;
 }
 
-function ChallengeIcon({ id, tier, value, width, height }: ChallengIconProps) {
+export default function ChallengeIcon({ id, tier, value, width, height }: ChallengIconProps) {
   return (
     <Image
       css={css`
@@ -23,5 +23,3 @@ function ChallengeIcon({ id, tier, value, width, height }: ChallengIconProps) {
     />
   );
 }
-
-export default ChallengeIcon;
