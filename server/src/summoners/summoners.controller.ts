@@ -15,18 +15,4 @@ export class SummonersController {
   async update(@Param('summonerName') summonerName: string) {
     return await this.summonersService.update(summonerName);
   }
-
-  @Get('/:summonerName/matches')
-  async findAllMatches(@Param('summonerName') summonerName: string) {
-    return this.summonersService.findAllMatches(summonerName);
-  }
-
-  @Post('/:summonerName/matches')
-  async updateMatches(
-    @Param('summonerName') summonerName: string,
-    @Query()
-    query: PostMatchesQuery,
-  ) {
-    return await this.summonersService.updateMatches(summonerName, query.after);
-  }
 }

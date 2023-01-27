@@ -44,18 +44,4 @@ export class SummonersService {
       { upsert: true },
     );
   }
-
-  async findAllMatches(summonerName: string) {
-    return {
-      summonerName,
-      matchIds: [6260963449],
-    };
-  }
-
-  async updateMatches(summonerName: string, after?: number) {
-    return {
-      summonerName,
-      after,
-    };
-  }
 }
