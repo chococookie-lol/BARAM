@@ -1,5 +1,4 @@
-import { Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { PostMatchesQuery } from './dtos/post-matches.dto';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import { SummonersService } from './summoners.service';
 
 @Controller('summoners')
