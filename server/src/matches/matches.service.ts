@@ -57,7 +57,6 @@ export class MatchesService {
       if (!(await this.matchModel.countDocuments({ 'info.gameId': id }, { limit: 1 }).lean())) {
         // fetch if not found
         const match = <Match>await this.riotApiService.getMatch(matchId);
-        console.log(match);
         if (!match) throw new NotFoundException(`경기(id:${id}) 를 찾을 수 없습니다.`);
 
         // create property
@@ -125,6 +124,9 @@ export class MatchesService {
 
           participant.contributionPercentage = contributionPercentage;
           participant.contributionPercentageTotal = contributionPercentageTotal;
+
+          // create play
+          await this.playService.create(participant.puuid, id, match.info.gameCreation);
         }
 
         // team contribution : average
@@ -135,7 +137,6 @@ export class MatchesService {
         });
 
         await this.matchModel.updateOne({ 'info.gameId': id }, match, { upsert: true });
-        await this.playService.create(puuid, id, match.info.gameCreation);
       }
       return id;
     });
