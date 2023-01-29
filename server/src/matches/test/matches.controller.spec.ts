@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
-import { MatchesController } from './matches.controller';
+import { MatchesController } from '../matches.controller';
 import { mockLocalMatchData } from './matches.mock';
-import { MatchesService } from './matches.service';
+import { MatchesService } from '../matches.service';
 
 describe('MatchesController', () => {
   const puuid = 'wQ9X1e4FSY47C_MoncM1F6gsc7SkU2fGuw0WpP4dLnj7sbeakbg_x2lUDRbP5bGQEEB_1b7z67_B-Q';

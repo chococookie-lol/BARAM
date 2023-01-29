@@ -1,11 +1,11 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
 import { Model } from 'mongoose';
-import { RiotApiService } from '../riot.api/riot.api.service';
-import { PlayService } from '../play/play.service';
-import { Summoner } from '../summoners/schemas/summoner.schema';
-import { MatchesService } from './matches.service';
-import { Match } from './schemas/match.schema';
+import { RiotApiService } from '../../riot.api/riot.api.service';
+import { PlayService } from '../../play/play.service';
+import { Summoner } from '../../summoners/schemas/summoner.schema';
+import { MatchesService } from '../matches.service';
+import { Match } from '../schemas/match.schema';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import {
   mockLocalMatchData,
@@ -13,7 +13,7 @@ import {
   mockRiotMatchData,
   mockRiotMatchIds,
 } from './matches.mock';
-import { RiotApiException } from '../riot.api/definition/riot.api.exception';
+import { RiotApiException } from '../../riot.api/definition/riot.api.exception';
 
 describe('MatchesService', () => {
   const puuid = 'wQ9X1e4FSY47C_MoncM1F6gsc7SkU2fGuw0WpP4dLnj7sbeakbg_x2lUDRbP5bGQEEB_1b7z67_B-Q';
