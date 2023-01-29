@@ -6319,3 +6319,5 @@ export const mockLocalMatchData = {
 };
 
 export const mockMatchIds = [6300656741];
+
+export const mockRiotMatchIds = ['KR_6300656741'];
