@@ -179,9 +179,6 @@ class Challenges {
   laneMinionsFirst10Minutes: number;
 
   @Prop({ required: true })
-  laningPhaseGoldExpAdvantage: number;
-
-  @Prop({ required: true })
   legendaryCount: number;
 
   @Prop({ required: true })
