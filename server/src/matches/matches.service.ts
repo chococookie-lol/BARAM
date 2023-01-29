@@ -1,10 +1,10 @@
 import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { PlayService } from 'src/play/play.service';
-import { RiotApiException } from 'src/riot.api/definition/riot.api.exception';
-import { RiotApiService } from 'src/riot.api/riot.api.service';
-import { Summoner, SummonerDocument } from 'src/summoners/schemas/summoner.schema';
+import { PlayService } from '../play/play.service';
+import { RiotApiException } from '../riot.api/definition/riot.api.exception';
+import { RiotApiService } from '../riot.api/riot.api.service';
+import { Summoner, SummonerDocument } from '../summoners/schemas/summoner.schema';
 import { Contribution, Match, MatchDocument, TeamContribution } from './schemas/match.schema';
 
 @Injectable()
@@ -57,6 +57,7 @@ export class MatchesService {
       if (!(await this.matchModel.countDocuments({ 'info.gameId': id }, { limit: 1 }).lean())) {
         // fetch if not found
         const match = <Match>await this.riotApiService.getMatch(matchId);
+        console.log(match);
         if (!match) throw new NotFoundException(`경기(id:${id}) 를 찾을 수 없습니다.`);
 
         // create property
