@@ -244,7 +244,7 @@ interface Challenges {
   knockEnemyIntoTeamAndKill: number;
   landSkillShotsEarlyGame: number;
   laneMinionsFirst10Minutes: number;
-  laningPhaseGoldExpAdvantage: number;
+  laningPhaseGoldExpAdvantage?: number;
   legendaryCount: number;
   lostAnInhibitor: number;
   maxCsAdvantageOnLaneOpponent: number;
