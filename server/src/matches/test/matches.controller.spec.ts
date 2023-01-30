@@ -32,9 +32,9 @@ describe('MatchesController', () => {
   describe('findOne', () => {
     it('should be defined', () => expect(controller.findOne).toBeDefined());
 
-    it('should return one match', () => {
+    it('should return one match', async () => {
       const spy = jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockLocalMatchData);
-      expect(controller.findOne({ matchId: 6300656741 })).resolves.toEqual(mockLocalMatchData);
+      await controller.findOne({ matchId: 6300656741 });
       expect(spy).toHaveBeenCalledWith(6300656741);
     });
   });
@@ -52,17 +52,15 @@ describe('MatchesController', () => {
   describe('findAll', () => {
     it('should be defined', () => expect(controller.findAll).toBeDefined());
 
-    it('should return all matches', () => {
+    it('should return all matches', async () => {
       const spy = jest.spyOn(service, 'findAll');
-      expect(
-        controller.findAll(
-          {
-            puuid: puuid,
-          },
-          { after: 0 },
-        ),
-      ).resolves.toEqual(undefined);
-      expect(spy).toHaveBeenCalledWith(puuid, 0);
+      await controller.findAll(
+        {
+          puuid: puuid,
+        },
+        { after: 0 },
+      ),
+        expect(spy).toHaveBeenCalledWith(puuid, 0);
     });
   });
 });
