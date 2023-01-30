@@ -1,10 +1,10 @@
 import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { PlayService } from 'src/play/play.service';
-import { RiotApiException } from 'src/riot.api/definition/riot.api.exception';
-import { RiotApiService } from 'src/riot.api/riot.api.service';
-import { Summoner, SummonerDocument } from 'src/summoners/schemas/summoner.schema';
+import { PlayService } from '../play/play.service';
+import { RiotApiException } from '../riot.api/definition/riot.api.exception';
+import { RiotApiService } from '../riot.api/riot.api.service';
+import { Summoner, SummonerDocument } from '../summoners/schemas/summoner.schema';
 import { Contribution, Match, MatchDocument, TeamContribution } from './schemas/match.schema';
 
 @Injectable()
@@ -124,6 +124,9 @@ export class MatchesService {
 
           participant.contributionPercentage = contributionPercentage;
           participant.contributionPercentageTotal = contributionPercentageTotal;
+
+          // create play
+          await this.playService.create(participant.puuid, id, match.info.gameCreation);
         }
 
         // team contribution : average
@@ -134,7 +137,6 @@ export class MatchesService {
         });
 
         await this.matchModel.updateOne({ 'info.gameId': id }, match, { upsert: true });
-        await this.playService.create(puuid, id, match.info.gameCreation);
       }
       return id;
     });
