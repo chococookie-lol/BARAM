@@ -236,7 +236,7 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
       <div css={style.profile}>
         <SummonerProfileCard
           profileIconId={summonerProfile.profileIconId}
-          summonerName={summonerName}
+          summonerName={summonerProfile.name}
           summonerLevel={summonerProfile.level}
           modifiedAt={new Date(summonerProfile.updatedAt).getTime()}
           challenges={summonerProfile.challenges}
