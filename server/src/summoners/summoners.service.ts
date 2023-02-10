@@ -22,7 +22,9 @@ export class SummonersService {
   }
 
   async update(summonerName: string) {
-    const summonerFromDb = await this.summonerModel.findOne({ name: summonerName }).lean();
+    const summonerFromDb = await this.summonerModel
+      .findOne({ name: { $regex: new RegExp(summonerName, 'i') } })
+      .lean();
     const summonerFromRiot = await (!!summonerFromDb
       ? this.riotApiService.getSummonerByPuuid(summonerFromDb.puuid)
       : this.riotApiService.getSummonerByName(summonerName));
