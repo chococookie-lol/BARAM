@@ -252,7 +252,7 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
       <div css={style.profile}>
         <SummonerProfileCard
           profileIconId={summonerProfile.profileIconId}
-          summonerName={summonerName}
+          summonerName={summonerProfile.name}
           summonerLevel={summonerProfile.level}
           modifiedAt={new Date(summonerProfile.updatedAt).getTime()}
           challenges={summonerProfile.challenges}

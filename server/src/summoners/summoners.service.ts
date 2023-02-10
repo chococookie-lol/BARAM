@@ -12,7 +12,9 @@ export class SummonersService {
   ) {}
 
   async findOne(summonerName: string) {
-    const summoner = await this.summonerModel.findOne({ name: summonerName }).lean();
+    const summoner = await this.summonerModel
+      .findOne({ name: { $regex: new RegExp(summonerName, 'i') } })
+      .lean();
 
     if (!summoner) throw new NotFoundException('해당 소환사가 없습니다.');
 
@@ -20,7 +22,9 @@ export class SummonersService {
   }
 
   async update(summonerName: string) {
-    const summonerFromDb = await this.summonerModel.findOne({ name: summonerName }).lean();
+    const summonerFromDb = await this.summonerModel
+      .findOne({ name: { $regex: new RegExp(summonerName, 'i') } })
+      .lean();
     const summonerFromRiot = await (!!summonerFromDb
       ? this.riotApiService.getSummonerByPuuid(summonerFromDb.puuid)
       : this.riotApiService.getSummonerByName(summonerName));
