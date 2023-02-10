@@ -36,7 +36,7 @@ export class MatchesService {
     };
   }
 
-  async updateMany(puuid: string, after: number) {
+  async updateMany(puuid: string, after?: number) {
     const updateSummoner = await this.summonerModel
       .updateOne({ puuid: puuid, isFetching: false }, { $set: { isFetching: true } })
       .lean();
