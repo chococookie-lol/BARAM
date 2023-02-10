@@ -10,7 +10,7 @@ interface Challenge {
 type SummonerProfileResponse = SummonerProfile;
 
 interface SummonerProfile {
-  userName: string;
+  name: string;
   level: number;
   id: string;
   puuid: string;
