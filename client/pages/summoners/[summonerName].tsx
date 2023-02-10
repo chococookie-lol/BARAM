@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
+import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import Button from '../../components/Button';
 import GameSlot from '../../components/GameSlot';
 import Logo from '../../components/Logo';
@@ -27,6 +28,7 @@ const defaultTotalStatistics = getTotalMatchStatistics({});
 
 interface SummonerProfilePanelProps {
   summonerName: string;
+  setSummonerNotFound: Dispatch<SetStateAction<boolean>>;
 }
 
 const style = {
@@ -67,12 +69,17 @@ const style = {
       margin: 10px 0 0 0;
     }
   `,
+  summonerNotFound: css`
+    font-size: 20px;
+    text-align: center;
+  `,
 };
 
 export default function SearchPage() {
   const router = useRouter();
   const [searchText, setSearchText] = useState<string>('');
   const [summonerName, setSummonerName] = useState<string>('');
+  const [summonerNotFound, setSummonerNotFound] = useState<boolean>(false);
 
   const handleSearch = () => {
     if (searchText === '') return;
@@ -92,12 +99,19 @@ export default function SearchPage() {
         <Logo width={221} />
         <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={handleSearch} />
       </header>
-      <SummonerProfilePanel summonerName={summonerName} />
+      {summonerNotFound ? (
+        <p css={style.summonerNotFound}>소환사가 없습니다.</p>
+      ) : (
+        <SummonerProfilePanel
+          summonerName={summonerName}
+          setSummonerNotFound={setSummonerNotFound}
+        />
+      )}
     </>
   );
 }
 
-function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
+function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerProfilePanelProps) {
   const [summonerProfile, setSummonerProfile] = useState<SummonerProfile | null>(null);
   const [matchIds, setMatchIds] = useState<SummonerMatchIds>([]);
   const [matches, setMatches] = useState<Match[]>([]);
@@ -168,15 +182,17 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
         const newSummonerProfile = await tryToGetSummonerProfile(summonerName);
         setSummonerProfile(newSummonerProfile);
         setMatchIds((await getSummonerMatchIds(newSummonerProfile.puuid)).matchIds);
-      } catch (e) {
-        console.error(e);
+      } catch (err) {
+        if (axios.isAxiosError(err) && err.response?.status === axios.HttpStatusCode.NotFound) {
+          setSummonerNotFound(true);
+        }
       }
     })();
 
     (async () => {
       setScoreMultipliers(await getScoreMultipliers());
     })();
-  }, [summonerName]);
+  }, [setSummonerNotFound, summonerName]);
 
   useEffect(() => {
     if (matchIds.length === 0 || !scoreMultipliers) return;
