@@ -6,6 +6,7 @@ interface PercentageProps {
   foregroundColor: string;
   textColor: string;
   percent: number;
+  maxPercent?: number;
   value: number;
 }
 
@@ -14,6 +15,7 @@ export default function Percentage({
   foregroundColor,
   textColor,
   percent,
+  maxPercent = 40,
   value,
 }: PercentageProps) {
   if (value < 0) {
@@ -37,7 +39,7 @@ export default function Percentage({
       }}
     >
       <div css={style.outer(backgroundColor)}>
-        <div css={style.inner(foregroundColor, `${displayPercent}%`)} />
+        <div css={style.inner(foregroundColor, `${(displayPercent * 100) / maxPercent}%`)} />
       </div>
 
       <div css={style.text(textColor)}>{displayText}</div>
