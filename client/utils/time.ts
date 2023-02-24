@@ -13,6 +13,11 @@ export function convertEpochToRelativeTime(eTime: number): string {
 }
 
 export function secondsToString(seconds: number) {
+  if (seconds > 100000) {
+    const minutes = Math.floor(seconds / 60 / 1000);
+    return `${minutes}분 ${seconds % 60}초`;
+  }
+
   const minutes = Math.floor(seconds / 60);
   return `${minutes}분 ${seconds % 60}초`;
 }
