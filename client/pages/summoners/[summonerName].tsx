@@ -296,8 +296,21 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
                   Math.floor(matches[matches.length - 1].info.gameCreation / 1000),
                 );
                 setLoadMore(true);
+                return;
               } catch (e) {
                 console.error(e);
+              }
+
+              try {
+                // get matches from local (fallback)
+                const lastMatchId = matches.length ? matches[matches.length - 1].info.gameId : 0;
+                const newMatchIds = (
+                  await getSummonerMatchIds(summonerProfile.puuid, lastMatchId)
+                ).matchIds.filter((id) => matchIds.indexOf(id) === -1);
+                setMatchIds(newMatchIds);
+              } catch (e) {
+                console.error(e);
+              } finally {
                 setLoadMore(false);
                 setFetching(false);
               }
