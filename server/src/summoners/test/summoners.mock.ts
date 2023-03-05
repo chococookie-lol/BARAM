@@ -28,11 +28,10 @@ export const mockSummoner = {
       _id: '63c78c013b96d87cb690268d',
     },
   ],
-  isFetching: false,
   level: 123,
   name: 'dolphinlmg',
   profileIconId: 5528,
-  updatedAt: '2023-01-25T07:51:18.986Z',
+  updatedAt: new Date('2023-01-25T07:51:18.986Z'),
 };
 
 const riotApiResponse = {
