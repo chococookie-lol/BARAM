@@ -37,12 +37,19 @@ export class MatchesService {
   }
 
   async updateMany(puuid: string, after?: number) {
-    const updateSummoner = await this.summonerModel
-      .updateOne({ puuid: puuid, isFetching: false }, { $set: { isFetching: true } })
-      .lean();
+    const summoner = await this.summonerModel.findOne({ puuid: puuid }).lean();
+    const timeOffset = after ? 1000 : 60000; // full update delay should be longer
+    const currentTime = new Date();
 
-    if (updateSummoner.matchedCount === 0)
+    if (summoner === null)
       throw new ForbiddenException('해당 소환사에 대한 작업을 완료할 수 없습니다.');
+
+    if (currentTime.getTime() - summoner.updatedAt.getTime() < timeOffset)
+      throw new ForbiddenException('최근에 업데이트를 요청했습니다. 잠시후 다시 시도해 주세요.');
+
+    await this.summonerModel
+      .updateOne({ puuid: puuid }, { updatedAt: currentTime }, { timestamp: false })
+      .lean();
 
     const matches = await this.riotApiService.getMatchesByPuuid(puuid, after, 5);
 
@@ -149,11 +156,11 @@ export class MatchesService {
         else if (r.status === 'rejected') this.logger.error(r.reason);
       });
 
-      await this.summonerModel
-        .updateOne({ puuid: puuid, isFetching: true }, { $set: { isFetching: false } })
-        .lean();
+      await this.summonerModel.updateOne({ puuid: puuid }).lean();
     })();
 
-    return;
+    return {
+      startedAt: currentTime,
+    };
   }
 }

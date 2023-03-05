@@ -24,9 +24,6 @@ export class Summoner extends Document {
   @Prop({ default: new Date().getTime(), type: mongoose.Schema.Types.Date })
   updatedAt: Date;
 
-  @Prop({ required: true, default: false })
-  isFetching: boolean;
-
   @Prop({
     type: [
       {
