@@ -24,13 +24,10 @@ export class PlayService {
   }
 
   async create(puuid: string, matchId: number, gameCreation: number) {
-    await this.playModel.create(
-      {
-        puuid: puuid,
-        matchId: matchId,
-        gameCreation: gameCreation,
-      },
-      { upsert: true },
-    );
+    await this.playModel.create({
+      puuid: puuid,
+      matchId: matchId,
+      gameCreation: gameCreation,
+    });
   }
 }
