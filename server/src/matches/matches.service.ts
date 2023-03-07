@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, MongooseError } from 'mongoose';
+import { Model } from 'mongoose';
 import { PlayService } from '../play/play.service';
 import { RiotApiException } from '../riot.api/definition/riot.api.exception';
 import { RiotApiService } from '../riot.api/riot.api.service';
