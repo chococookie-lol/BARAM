@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, MongooseError } from 'mongoose';
 import { PlayService } from '../play/play.service';
 import { RiotApiException } from '../riot.api/definition/riot.api.exception';
 import { RiotApiService } from '../riot.api/riot.api.service';
@@ -130,7 +130,15 @@ export class MatchesService {
           participant.contributionPercentageTotal = contributionPercentageTotal;
 
           // create play
-          await this.playService.create(participant.puuid, id, match.info.gameCreation);
+          try {
+            await this.playService.create(participant.puuid, id, match.info.gameCreation);
+          } catch (e) {
+            if (e.name === 'MongoServerError' && e.code === 11000) {
+              this.logger.error(e);
+            } else {
+              throw e;
+            }
+          }
         }
 
         // team contribution : average
