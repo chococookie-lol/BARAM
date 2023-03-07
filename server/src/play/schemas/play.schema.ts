@@ -19,6 +19,6 @@ export class Play extends Document {
 }
 
 export const PlaySchema = SchemaFactory.createForClass(Play).index(
-  { puuid: 1, matchId: 1, gameCreation: 1 },
+  { gameCreation: -1, matchId: -1, puuid: 1 },
   { unique: true },
 );
