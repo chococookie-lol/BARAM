@@ -30,7 +30,7 @@ export function getMatchStatistic(match: Match, puuid: string) {
     .kills;
   const me = match.info.participants.find((participant) => participant.puuid === puuid);
 
-  if (!teamId || win === undefined || !totalKill || !me) throw new Error('Match 데이터 오류');
+  if (!teamId || win === undefined || !me) throw new Error('Match 데이터 오류');
 
   const { kills, deaths, assists } = me;
 

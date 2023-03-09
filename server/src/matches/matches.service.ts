@@ -109,24 +109,36 @@ export class MatchesService {
 
           // personal participation statistics (percentage)
           contributionKeys.forEach((key) => {
+            // check zero
+            const teamContributionDivisor =
+              teamContribution.total[key] === 0 ? 1 : teamContribution.total[key];
+            const totalContributionDivisor =
+              match.info.teams[0].contribution.total[key] +
+                match.info.teams[1].contribution.total[key] ===
+              0
+                ? 1
+                : match.info.teams[0].contribution.total[key] +
+                  match.info.teams[1].contribution.total[key];
             // TODO: consider version & optimize : ex) make use of 'KillParticipation'
             contributionPercentage[key] =
-              Math.round((participant.contribution[key] / teamContribution.total[key]) * 1000) /
-              1000;
+              Math.round((participant.contribution[key] / teamContributionDivisor) * 1000) / 1000;
             contributionPercentageTotal[key] =
-              Math.round(
-                (participant.contribution[key] /
-                  (match.info.teams[0].contribution.total[key] +
-                    match.info.teams[1].contribution.total[key])) *
-                  1000,
-              ) / 1000;
+              Math.round((participant.contribution[key] / totalContributionDivisor) * 1000) / 1000;
           });
 
           participant.contributionPercentage = contributionPercentage;
           participant.contributionPercentageTotal = contributionPercentageTotal;
 
           // create play
-          await this.playService.create(participant.puuid, id, match.info.gameCreation);
+          try {
+            await this.playService.create(participant.puuid, id, match.info.gameCreation);
+          } catch (e) {
+            if (e.name === 'MongoServerError' && e.code === 11000) {
+              this.logger.error(e);
+            } else {
+              throw e;
+            }
+          }
         }
 
         // team contribution : average
