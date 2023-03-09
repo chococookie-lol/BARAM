@@ -36,10 +36,13 @@ export async function getSummonerMatchIds(
   ).data;
 }
 
-export async function requestFetchSummonerMatches(puuid: string, after?: number): Promise<number> {
+export async function requestFetchSummonerMatches(
+  puuid: string,
+  after?: number,
+): Promise<CreatedResponse> {
   return (
     await defaultAxiosInstance.post(`/matches/by-puuid/${puuid}${after ? `?after=${after}` : ''}`)
-  ).status;
+  ).data;
 }
 
 export async function getMatch(matchId: number): Promise<MatchResponse> {

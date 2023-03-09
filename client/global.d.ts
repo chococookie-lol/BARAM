@@ -15,9 +15,12 @@ interface SummonerProfile {
   id: string;
   puuid: string;
   profileIconId: number;
-  isFetching: boolean;
   challenges: Challenge[];
-  updatedAt: string;
+  updatedAt: Date;
+}
+
+interface CreatedResponse {
+  startedAt: Date;
 }
 
 type SummonerMatchIds = number[];

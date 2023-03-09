@@ -14,6 +14,7 @@ import {
   mockRiotMatchIds,
 } from './matches.mock';
 import { RiotApiException } from '../../riot.api/definition/riot.api.exception';
+import { mockSummoner } from '../../summoners/test/summoners.mock';
 
 describe('MatchesService', () => {
   const puuid = 'wQ9X1e4FSY47C_MoncM1F6gsc7SkU2fGuw0WpP4dLnj7sbeakbg_x2lUDRbP5bGQEEB_1b7z67_B-Q';
@@ -39,6 +40,7 @@ describe('MatchesService', () => {
           provide: getModelToken(Summoner.name),
           useValue: {
             updateOne: jest.fn(),
+            findOne: jest.fn(),
           },
         },
         {
@@ -111,8 +113,11 @@ describe('MatchesService', () => {
     it('should fetch matches', () => {
       const after = 0;
       const summonerSpy = jest
+        .spyOn(summonerModel, 'findOne')
+        .mockReturnValueOnce({ lean: jest.fn().mockReturnValueOnce(mockSummoner) } as any);
+      const summonerUpdateSpy = jest
         .spyOn(summonerModel, 'updateOne')
-        .mockReturnValueOnce({ lean: jest.fn().mockReturnValueOnce({ matchedCount: 1 }) } as any);
+        .mockReturnValue({ lean: jest.fn().mockReturnValueOnce({ matchedCount: 1 }) } as any);
       const matchCountSpy = jest
         .spyOn(matchModel, 'countDocuments')
         .mockReturnValueOnce({ lean: jest.fn().mockReturnValue(0) } as any);
@@ -129,11 +134,9 @@ describe('MatchesService', () => {
       summonerSpy.mockReturnValueOnce({
         lean: () => {
           // validate puuid
-          expect(summonerSpy).toHaveBeenNthCalledWith(
-            1,
-            { puuid: puuid, isFetching: false },
-            { $set: { isFetching: true } },
-          );
+          expect(summonerSpy).toHaveBeenNthCalledWith(1, { puuid: puuid });
+          // modify updatedAt
+          expect(summonerUpdateSpy).toHaveBeenCalledTimes(2);
           // fetch matchIds
           expect(riotMatchIdsSpy).toHaveBeenCalledWith(puuid, after, 5);
           // check if matchId exists in local db
@@ -157,14 +160,19 @@ describe('MatchesService', () => {
       } as any);
 
       // call returns nothing
-      expect(matchesService.updateMany(puuid, after)).resolves.toBeUndefined();
+      expect(matchesService.updateMany(puuid, after)).resolves.toMatchObject({
+        startedAt: new Date(),
+      });
     });
 
     it('should not fetch existing matches', () => {
       const after = 0;
       const summonerSpy = jest
+        .spyOn(summonerModel, 'findOne')
+        .mockReturnValueOnce({ lean: jest.fn().mockReturnValueOnce(mockSummoner) } as any);
+      const summonerUpdateSpy = jest
         .spyOn(summonerModel, 'updateOne')
-        .mockReturnValueOnce({ lean: jest.fn().mockReturnValueOnce({ matchedCount: 1 }) } as any);
+        .mockReturnValue({ lean: jest.fn().mockReturnValueOnce({ matchedCount: 1 }) } as any);
       const matchCountSpy = jest
         .spyOn(matchModel, 'countDocuments')
         .mockReturnValueOnce({ lean: jest.fn().mockReturnValue(1) } as any);
@@ -181,11 +189,9 @@ describe('MatchesService', () => {
       summonerSpy.mockReturnValueOnce({
         lean: () => {
           // validate puuid
-          expect(summonerSpy).toHaveBeenNthCalledWith(
-            1,
-            { puuid: puuid, isFetching: false },
-            { $set: { isFetching: true } },
-          );
+          expect(summonerSpy).toHaveBeenNthCalledWith(1, { puuid: puuid });
+          // modify updatedAt
+          expect(summonerUpdateSpy).toHaveBeenCalledTimes(2);
           // fetch matchIds
           expect(riotMatchIdsSpy).toHaveBeenCalledWith(puuid, after, 5);
           // check if matchId exists in local db : exists
@@ -209,14 +215,16 @@ describe('MatchesService', () => {
       } as any);
 
       // call returns nothing
-      expect(matchesService.updateMany(puuid, after)).resolves.toBeUndefined();
+      expect(matchesService.updateMany(puuid, after)).resolves.toMatchObject({
+        startedAt: new Date(),
+      });
     });
 
     it('should throw if puuid is not valid', () => {
       const after = 0;
       jest
-        .spyOn(summonerModel, 'updateOne')
-        .mockReturnValueOnce({ lean: jest.fn().mockReturnValueOnce({ matchedCount: 0 }) } as any);
+        .spyOn(summonerModel, 'findOne')
+        .mockReturnValueOnce({ lean: jest.fn().mockReturnValueOnce(null) } as any);
 
       // call returns nothing
       expect(matchesService.updateMany(puuid, after)).rejects.toThrow(
@@ -227,9 +235,11 @@ describe('MatchesService', () => {
     it('should throw if matchId not found', () => {
       const after = 0;
       jest
+        .spyOn(summonerModel, 'findOne')
+        .mockReturnValueOnce({ lean: jest.fn().mockReturnValueOnce(mockSummoner) } as any);
+      jest
         .spyOn(summonerModel, 'updateOne')
-        .mockReturnValueOnce({ lean: jest.fn().mockReturnValueOnce({ matchedCount: 1 }) } as any);
-      jest.spyOn(riotApiService, 'getMatchesByPuuid').mockResolvedValueOnce(undefined);
+        .mockReturnValue({ lean: jest.fn().mockReturnValueOnce({ matchedCount: 1 }) } as any);
 
       // call returns nothing
       expect(matchesService.updateMany(puuid, after)).rejects.toThrow(
@@ -240,13 +250,17 @@ describe('MatchesService', () => {
     it('should not update match if fetch failed', () => {
       const after = 0;
       const summonerSpy = jest
+        .spyOn(summonerModel, 'findOne')
+        .mockReturnValueOnce({ lean: jest.fn().mockReturnValueOnce(mockSummoner) } as any);
+      jest
         .spyOn(summonerModel, 'updateOne')
-        .mockReturnValueOnce({ lean: jest.fn().mockReturnValueOnce({ matchedCount: 1 }) } as any);
+        .mockReturnValue({ lean: jest.fn().mockReturnValueOnce({ matchedCount: 1 }) } as any);
       jest
         .spyOn(matchModel, 'countDocuments')
         .mockReturnValueOnce({ lean: jest.fn().mockReturnValue(0) } as any);
       jest.spyOn(riotApiService, 'getMatchesByPuuid').mockResolvedValueOnce(mockRiotMatchIds);
       jest.spyOn(riotApiService, 'getMatch').mockResolvedValueOnce(undefined);
+
       const matchUpdateSpy = jest.spyOn(matchModel, 'updateOne');
       const playCreateSpy = jest.spyOn(playService, 'create');
 
@@ -258,16 +272,14 @@ describe('MatchesService', () => {
           // create play for all participants
           expect(playCreateSpy).not.toHaveBeenCalled();
           // update summoner
-          expect(summonerSpy).toHaveBeenNthCalledWith(
-            2,
-            { puuid: puuid, isFetching: true },
-            { $set: { isFetching: false } },
-          );
+          expect(summonerSpy).toHaveBeenNthCalledWith(2, { puuid: puuid });
         },
       } as any);
 
-      // call returns nothing
-      expect(matchesService.updateMany(puuid, after)).resolves.toBeUndefined();
+      // call returns timestamp
+      expect(matchesService.updateMany(puuid, after)).resolves.toMatchObject({
+        startedAt: new Date(),
+      });
     });
   });
 });

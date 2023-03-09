@@ -117,7 +117,7 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
   const [matches, setMatches] = useState<Match[]>([]);
   const [matchStatistics, setMatchStatistics] = useState<{ [key: string]: MatchStatistic }>({});
   const [totalStatistics, setTotalStatistics] = useState<TotalStatistic | null>(null);
-  const [fetching, setFetching] = useState<boolean>(false);
+  const [fetching, setFetching] = useState<Date | null>(null);
   const [loadMore, setLoadMore] = useState<boolean>(false);
   const [update, setUpdate] = useState<boolean>(false);
   const [scoreMultipliers, setScoreMultipliers] = useState<Contribution | null>(null);
@@ -125,7 +125,7 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
   useEffect(() => {
     async function tick() {
       const newSummonerProfile = await getSummonerProfile(summonerName);
-      if (!newSummonerProfile.isFetching) {
+      if (fetching != newSummonerProfile.updatedAt) {
         setSummonerProfile(newSummonerProfile);
         const lastMatchId = matches.length ? matches[matches.length - 1].info.gameId : 0;
 
@@ -144,12 +144,12 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
         clearInterval(timer);
       };
     }
-  }, [loadMore, summonerName, matchIds, matches]);
+  }, [loadMore, summonerName, matchIds, matches, fetching]);
 
   useEffect(() => {
     async function tick() {
       const newSummonerProfile = await getSummonerProfile(summonerName);
-      if (!newSummonerProfile.isFetching) {
+      if (fetching != newSummonerProfile.updatedAt) {
         setSummonerProfile(newSummonerProfile);
         setMatches([]);
         setMatchIds((await getSummonerMatchIds(newSummonerProfile.puuid)).matchIds);
@@ -161,14 +161,14 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
       const timer = setInterval(tick, 1000);
       return () => clearInterval(timer);
     }
-  }, [update, summonerName]);
+  }, [update, summonerName, fetching]);
 
   // on summoner change
   useEffect(() => {
     // reset previous summoner data
     setUpdate(false);
     setLoadMore(false);
-    setFetching(false);
+    setFetching(null);
     setTotalStatistics(defaultTotalStatistics);
     setSummonerProfile(null);
     setMatchIds([]);
@@ -236,7 +236,7 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
     if (matchStatistics) {
       setTotalStatistics(getTotalMatchStatistics(matchStatistics));
     }
-    setFetching(false);
+    setFetching(null);
   }, [matchStatistics]);
 
   // before loading router
@@ -258,16 +258,15 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
           challenges={summonerProfile.challenges}
           onClick={async () => {
             try {
-              setFetching(true);
-              await requestFetchSummonerMatches(summonerProfile.puuid);
+              setFetching((await requestFetchSummonerMatches(summonerProfile.puuid)).startedAt);
               setUpdate(true);
             } catch (e) {
               console.error(e);
               setUpdate(false);
-              setFetching(false);
+              setFetching(null);
             }
           }}
-          fetching={fetching}
+          fetching={fetching !== null}
         />
         <SummonerStatCard
           winRate={winRate}
@@ -290,10 +289,13 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
             enabled={!fetching}
             onClick={async () => {
               try {
-                setFetching(true);
-                await requestFetchSummonerMatches(
-                  summonerProfile.puuid,
-                  Math.floor(matches[matches.length - 1].info.gameCreation / 1000),
+                setFetching(
+                  (
+                    await requestFetchSummonerMatches(
+                      summonerProfile.puuid,
+                      Math.floor(matches[matches.length - 1].info.gameCreation / 1000),
+                    )
+                  ).startedAt,
                 );
                 setLoadMore(true);
                 return;
@@ -312,7 +314,7 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
                 console.error(e);
               } finally {
                 setLoadMore(false);
-                setFetching(false);
+                setFetching(null);
               }
             }}
           >
