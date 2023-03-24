@@ -168,7 +168,7 @@ export class MatchesService {
         else if (r.status === 'rejected') this.logger.error(r.reason);
       });
 
-      await this.summonerModel.updateOne({ puuid: puuid }).lean();
+      await this.summonerModel.updateOne({ puuid: puuid }, {}).lean();
     })();
 
     return {
