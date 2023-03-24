@@ -483,3 +483,10 @@ interface Spell {
 
 type Champions = { [key: string]: Champion };
 type Spells = { [key: string]: Spell };
+
+interface PercentMax {
+  dealt: number;
+  heal: number;
+  damaged: number;
+  death: number;
+}
