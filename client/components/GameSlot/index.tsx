@@ -17,6 +17,7 @@ import DownArrow from '../../assets/downArrow.svg';
 import { getMajorVersion } from '../../utils/ddragon';
 import { useRecoilValue } from 'recoil';
 import { ddragonVersions } from '../../states/ddragon';
+import GameSlotProvider, { useGameSlot } from './GameSlotContext';
 
 interface GameSlotProps {
   matchData: Match;
@@ -27,12 +28,14 @@ interface GameSlotSummaryProps {
   version: string;
   me: Participant;
   teamContribution: TeamContribution;
+  // percentMax: PercentMax;
 }
 
 interface GameSlotDetailProps {
   version: string;
   participants: Participant[];
   teams: Team[];
+  // percentMax: PercentMax;
 }
 
 interface GameSlotTableProps {
@@ -45,6 +48,84 @@ interface GameSlotTableProps {
 interface GameSlotRowProps {
   version: string;
   participant: Participant;
+}
+
+export default function GameSlot({ matchData, puuid }: GameSlotProps) {
+  const { info } = matchData;
+  const versions = useRecoilValue(ddragonVersions);
+  const version = getMajorVersion(versions, matchData.info.gameVersion);
+  const { participants, gameDuration } = info;
+  const me = participants.find((e) => e.puuid == puuid);
+  if (!me) throw Error("can't find summoner in match");
+
+  const win = me.win;
+  const timeString = secondsToString(gameDuration);
+
+  const contribution = matchData.info.teams.find((team) => team.teamId === me.teamId)?.contribution;
+  if (!contribution) throw new Error('contribution does not exist');
+
+  const [expand, setExpand] = useState<boolean>(false);
+  const [rendered, setRendered] = useState<boolean>(false);
+  const { theme } = useGlobalTheme();
+
+  const percentMax = {
+    dealt: 0,
+    heal: 0,
+    damaged: 0,
+    death: 0,
+  };
+
+  percentMax.dealt = matchData.info.participants.reduce((acc, cur) => {
+    const percent = cur.contributionPercentage.dealt * 100;
+    return Math.max(acc, percent);
+  }, 0);
+  percentMax.heal = matchData.info.participants.reduce((acc, cur) => {
+    const percent = cur.contributionPercentage.heal * 100;
+    return Math.max(acc, percent);
+  }, 0);
+  percentMax.damaged = matchData.info.participants.reduce((acc, cur) => {
+    const percent = cur.contributionPercentage.damaged * 100;
+    return Math.max(acc, percent);
+  }, 0);
+  percentMax.death = matchData.info.participants.reduce((acc, cur) => {
+    const percent = cur.contributionPercentage.death * 100;
+    return Math.max(acc, percent);
+  }, 0);
+
+  return (
+    <GameSlotProvider percentMax={percentMax}>
+      <div css={style.parent}>
+        <div css={style.container(theme, win, expand)}>
+          <div css={style.header(theme, win, expand)}>
+            <div css={style.headerTitle}>{win ? '승리' : '패배'}</div>
+            <div>{timeString}</div>
+            <div>&nbsp;</div>
+            <div>{convertEpochToDate(matchData.info.gameStartTimestamp)}</div>
+          </div>
+          <div css={style.gameSummaryContainer}>
+            <GameSlotSummary version={version} me={me} teamContribution={contribution} />
+          </div>
+          <div
+            css={style.expand}
+            onClick={() => {
+              setRendered(true);
+              setExpand(!expand);
+            }}
+          >
+            <div css={[style.seperator, style.stickLeft, style.middle]} />
+            <DownArrow css={style.downArrow(expand)} />
+          </div>
+        </div>
+        <div css={detailStyle.visible(expand)}>
+          {rendered ? (
+            <GameSlotDetail participants={participants} teams={info.teams} version={version} />
+          ) : (
+            <></>
+          )}
+        </div>
+      </div>
+    </GameSlotProvider>
+  );
 }
 
 const GameSlotSummary = React.memo(function GameSlotSummary({
@@ -82,6 +163,8 @@ const GameSlotSummary = React.memo(function GameSlotSummary({
   const dealTrue = me.trueDamageDealtToChampions;
 
   const kda = ((k + a) / d).toFixed(2);
+
+  const { percentMax } = useGameSlot();
 
   return (
     <div css={style.gameSummary}>
@@ -137,6 +220,7 @@ const GameSlotSummary = React.memo(function GameSlotSummary({
           deathPercent={me.contributionPercentage.death}
           deathAmount={deathValue}
           color={{ foreground: theme.foreground, background: theme.background }}
+          percentMax={percentMax}
         />
       </div>
       <div css={[style.item]}>
@@ -188,58 +272,6 @@ const GameSlotDetail = React.memo(function GameSlotDetail({
   );
 });
 
-export default function GameSlot({ matchData, puuid }: GameSlotProps) {
-  const { info } = matchData;
-  const versions = useRecoilValue(ddragonVersions);
-  const version = getMajorVersion(versions, matchData.info.gameVersion);
-  const { participants, gameDuration } = info;
-  const me = participants.find((e) => e.puuid == puuid);
-  if (!me) throw Error("can't find summoner in match");
-
-  const win = me.win;
-  const timeString = secondsToString(gameDuration);
-
-  const contribution = matchData.info.teams.find((team) => team.teamId === me.teamId)?.contribution;
-  if (!contribution) throw new Error('contribution does not exist');
-
-  const [expand, setExpand] = useState<boolean>(false);
-  const [rendered, setRendered] = useState<boolean>(false);
-  const { theme } = useGlobalTheme();
-
-  return (
-    <div css={style.parent}>
-      <div css={style.container(theme, win, expand)}>
-        <div css={style.header(theme, win, expand)}>
-          <div css={style.headerTitle}>{win ? '승리' : '패배'}</div>
-          <div>{timeString}</div>
-          <div>&nbsp;</div>
-          <div>{convertEpochToDate(matchData.info.gameStartTimestamp)}</div>
-        </div>
-        <div css={style.gameSummaryContainer}>
-          <GameSlotSummary version={version} me={me} teamContribution={contribution} />
-        </div>
-        <div
-          css={style.expand}
-          onClick={() => {
-            setRendered(true);
-            setExpand(!expand);
-          }}
-        >
-          <div css={[style.seperator, style.stickLeft, style.middle]} />
-          <DownArrow css={style.downArrow(expand)} />
-        </div>
-      </div>
-      <div css={detailStyle.visible(expand)}>
-        {rendered ? (
-          <GameSlotDetail participants={participants} teams={info.teams} version={version} />
-        ) : (
-          <></>
-        )}
-      </div>
-    </div>
-  );
-}
-
 function GameSlotTable({ version, win, teamId, participants }: GameSlotTableProps) {
   const { theme } = useGlobalTheme();
   return (
@@ -271,6 +303,8 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
   const subPerk = participant.perks.styles.find((e) => e.description == 'subStyle');
   if (!primaryPerk || !subPerk) throw 'perk not properly formatted';
   const { theme } = useGlobalTheme();
+  const { percentMax } = useGameSlot();
+
   return (
     <tr css={detailStyle.container}>
       <td>
@@ -345,6 +379,7 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
           textColor={theme.background}
           percent={participant.contributionPercentage.dealt}
           value={participant.contribution.dealt}
+          maxPercent={percentMax.dealt}
         />
       </td>
       <td css={detailStyle.percentage}>
@@ -354,6 +389,7 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
           textColor={theme.background}
           percent={participant.contributionPercentage.damaged}
           value={participant.contribution.damaged}
+          maxPercent={percentMax.damaged}
         />
       </td>
       <td css={detailStyle.percentage}>
