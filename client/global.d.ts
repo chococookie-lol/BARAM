@@ -10,14 +10,17 @@ interface Challenge {
 type SummonerProfileResponse = SummonerProfile;
 
 interface SummonerProfile {
-  userName: string;
+  name: string;
   level: number;
   id: string;
   puuid: string;
   profileIconId: number;
-  isFetching: boolean;
   challenges: Challenge[];
-  updatedAt: string;
+  updatedAt: Date;
+}
+
+interface CreatedResponse {
+  startedAt: Date;
 }
 
 type SummonerMatchIds = number[];
@@ -480,3 +483,10 @@ interface Spell {
 
 type Champions = { [key: string]: Champion };
 type Spells = { [key: string]: Spell };
+
+interface PercentMax {
+  dealt: number;
+  heal: number;
+  damaged: number;
+  death: number;
+}

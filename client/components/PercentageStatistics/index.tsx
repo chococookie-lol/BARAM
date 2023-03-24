@@ -11,6 +11,7 @@ interface PercentageStatisticsProps {
   damagedAmount: number;
   deathPercent: number;
   deathAmount: number;
+  percentMax?: PercentMax;
   padding?: number;
   color?: ColorProps;
 }
@@ -29,6 +30,7 @@ export default function PercentageStatistics({
   damagedAmount,
   deathPercent,
   deathAmount,
+  percentMax,
   padding = 1,
   color,
 }: PercentageStatisticsProps) {
@@ -45,6 +47,7 @@ export default function PercentageStatistics({
           foregroundColor={theme.accent1}
           textColor={background}
           percent={dealtPercent}
+          maxPercent={percentMax?.dealt}
           value={dealtAmount}
         />
       </div>
@@ -55,6 +58,7 @@ export default function PercentageStatistics({
           foregroundColor={theme.accent1}
           textColor={background}
           percent={healPercent}
+          maxPercent={percentMax?.heal}
           value={healAmount}
         />
       </div>
@@ -65,6 +69,7 @@ export default function PercentageStatistics({
           foregroundColor={theme.accent1}
           textColor={background}
           percent={damagedPercent}
+          maxPercent={percentMax?.damaged}
           value={damagedAmount}
         />
       </div>
@@ -75,6 +80,7 @@ export default function PercentageStatistics({
           foregroundColor={theme.red3}
           textColor={background}
           percent={deathPercent}
+          maxPercent={percentMax?.death}
           value={deathAmount}
         />
       </div>

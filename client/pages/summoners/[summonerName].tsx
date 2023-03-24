@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
+import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import Button from '../../components/Button';
 import GameSlot from '../../components/GameSlot';
 import Logo from '../../components/Logo';
@@ -27,6 +28,7 @@ const defaultTotalStatistics = getTotalMatchStatistics({});
 
 interface SummonerProfilePanelProps {
   summonerName: string;
+  setSummonerNotFound: Dispatch<SetStateAction<boolean>>;
 }
 
 const style = {
@@ -67,12 +69,17 @@ const style = {
       margin: 10px 0 0 0;
     }
   `,
+  summonerNotFound: css`
+    font-size: 20px;
+    text-align: center;
+  `,
 };
 
 export default function SearchPage() {
   const router = useRouter();
   const [searchText, setSearchText] = useState<string>('');
   const [summonerName, setSummonerName] = useState<string>('');
+  const [summonerNotFound, setSummonerNotFound] = useState<boolean>(false);
 
   const handleSearch = () => {
     if (searchText === '') return;
@@ -92,18 +99,25 @@ export default function SearchPage() {
         <Logo width={221} />
         <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={handleSearch} />
       </header>
-      <SummonerProfilePanel summonerName={summonerName} />
+      {summonerNotFound ? (
+        <p css={style.summonerNotFound}>소환사가 없습니다.</p>
+      ) : (
+        <SummonerProfilePanel
+          summonerName={summonerName}
+          setSummonerNotFound={setSummonerNotFound}
+        />
+      )}
     </>
   );
 }
 
-function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
+function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerProfilePanelProps) {
   const [summonerProfile, setSummonerProfile] = useState<SummonerProfile | null>(null);
   const [matchIds, setMatchIds] = useState<SummonerMatchIds>([]);
   const [matches, setMatches] = useState<Match[]>([]);
   const [matchStatistics, setMatchStatistics] = useState<{ [key: string]: MatchStatistic }>({});
   const [totalStatistics, setTotalStatistics] = useState<TotalStatistic | null>(null);
-  const [fetching, setFetching] = useState<boolean>(false);
+  const [fetching, setFetching] = useState<Date | null>(null);
   const [loadMore, setLoadMore] = useState<boolean>(false);
   const [update, setUpdate] = useState<boolean>(false);
   const [scoreMultipliers, setScoreMultipliers] = useState<Contribution | null>(null);
@@ -111,7 +125,7 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
   useEffect(() => {
     async function tick() {
       const newSummonerProfile = await getSummonerProfile(summonerName);
-      if (!newSummonerProfile.isFetching) {
+      if (fetching != newSummonerProfile.updatedAt) {
         setSummonerProfile(newSummonerProfile);
         const lastMatchId = matches.length ? matches[matches.length - 1].info.gameId : 0;
 
@@ -130,12 +144,12 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
         clearInterval(timer);
       };
     }
-  }, [loadMore, summonerName, matchIds, matches]);
+  }, [loadMore, summonerName, matchIds, matches, fetching]);
 
   useEffect(() => {
     async function tick() {
       const newSummonerProfile = await getSummonerProfile(summonerName);
-      if (!newSummonerProfile.isFetching) {
+      if (fetching != newSummonerProfile.updatedAt) {
         setSummonerProfile(newSummonerProfile);
         setMatches([]);
         setMatchIds((await getSummonerMatchIds(newSummonerProfile.puuid)).matchIds);
@@ -147,14 +161,14 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
       const timer = setInterval(tick, 1000);
       return () => clearInterval(timer);
     }
-  }, [update, summonerName]);
+  }, [update, summonerName, fetching]);
 
   // on summoner change
   useEffect(() => {
     // reset previous summoner data
     setUpdate(false);
     setLoadMore(false);
-    setFetching(false);
+    setFetching(null);
     setTotalStatistics(defaultTotalStatistics);
     setSummonerProfile(null);
     setMatchIds([]);
@@ -168,15 +182,17 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
         const newSummonerProfile = await tryToGetSummonerProfile(summonerName);
         setSummonerProfile(newSummonerProfile);
         setMatchIds((await getSummonerMatchIds(newSummonerProfile.puuid)).matchIds);
-      } catch (e) {
-        console.error(e);
+      } catch (err) {
+        if (axios.isAxiosError(err) && err.response?.status === axios.HttpStatusCode.NotFound) {
+          setSummonerNotFound(true);
+        }
       }
     })();
 
     (async () => {
       setScoreMultipliers(await getScoreMultipliers());
     })();
-  }, [summonerName]);
+  }, [setSummonerNotFound, summonerName]);
 
   useEffect(() => {
     if (matchIds.length === 0 || !scoreMultipliers) return;
@@ -220,7 +236,7 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
     if (matchStatistics) {
       setTotalStatistics(getTotalMatchStatistics(matchStatistics));
     }
-    setFetching(false);
+    setFetching(null);
   }, [matchStatistics]);
 
   // before loading router
@@ -236,22 +252,21 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
       <div css={style.profile}>
         <SummonerProfileCard
           profileIconId={summonerProfile.profileIconId}
-          summonerName={summonerName}
+          summonerName={summonerProfile.name}
           summonerLevel={summonerProfile.level}
           modifiedAt={new Date(summonerProfile.updatedAt).getTime()}
           challenges={summonerProfile.challenges}
           onClick={async () => {
             try {
-              setFetching(true);
-              await requestFetchSummonerMatches(summonerProfile.puuid);
+              setFetching((await requestFetchSummonerMatches(summonerProfile.puuid)).startedAt);
               setUpdate(true);
             } catch (e) {
               console.error(e);
               setUpdate(false);
-              setFetching(false);
+              setFetching(null);
             }
           }}
-          fetching={fetching}
+          fetching={fetching !== null}
         />
         <SummonerStatCard
           winRate={winRate}
@@ -274,16 +289,32 @@ function SummonerProfilePanel({ summonerName }: SummonerProfilePanelProps) {
             enabled={!fetching}
             onClick={async () => {
               try {
-                setFetching(true);
-                await requestFetchSummonerMatches(
-                  summonerProfile.puuid,
-                  Math.floor(matches[matches.length - 1].info.gameCreation / 1000),
+                setFetching(
+                  (
+                    await requestFetchSummonerMatches(
+                      summonerProfile.puuid,
+                      Math.floor(matches[matches.length - 1].info.gameCreation / 1000),
+                    )
+                  ).startedAt,
                 );
                 setLoadMore(true);
+                return;
               } catch (e) {
                 console.error(e);
+              }
+
+              try {
+                // get matches from local (fallback)
+                const lastMatchId = matches.length ? matches[matches.length - 1].info.gameId : 0;
+                const newMatchIds = (
+                  await getSummonerMatchIds(summonerProfile.puuid, lastMatchId)
+                ).matchIds.filter((id) => matchIds.indexOf(id) === -1);
+                setMatchIds(newMatchIds);
+              } catch (e) {
+                console.error(e);
+              } finally {
                 setLoadMore(false);
-                setFetching(false);
+                setFetching(null);
               }
             }}
           >

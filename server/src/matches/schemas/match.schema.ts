@@ -19,337 +19,337 @@ const metaDataSchema = SchemaFactory.createForClass(Metadata);
 
 @Schema({ id: false, _id: false })
 class Challenges {
-  @Prop({ required: true })
+  @Prop({ required: false })
   '12AssistStreakCount': number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   abilityUses: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   acesBefore15Minutes: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   alliedJungleMonsterKills: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   baronTakedowns: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   blastConeOppositeOpponentCount: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   bountyGold: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   buffsStolen: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   completeSupportQuestInTime: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   controlWardsPlaced: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   damagePerMinute: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   damageTakenOnTeamPercentage: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   dancedWithRiftHerald: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   deathsByEnemyChamps: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   dodgeSkillShotsSmallWindow: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   doubleAces: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   dragonTakedowns: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   earlyLaningPhaseGoldExpAdvantage: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   effectiveHealAndShielding: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   elderDragonKillsWithOpposingSoul: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   elderDragonMultikills: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   enemyChampionImmobilizations: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   enemyJungleMonsterKills: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   epicMonsterKillsNearEnemyJungler: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   epicMonsterKillsWithin30SecondsOfSpawn: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   epicMonsterSteals: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   epicMonsterStolenWithoutSmite: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   firstTurretKilledTime?: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   flawlessAces: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   fullTeamTakedown: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   gameLength: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   getTakedownsInAllLanesEarlyJungleAsLaner: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   goldPerMinute: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   hadOpenNexus: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   highestCrowdControlScore?: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   immobilizeAndKillWithAlly: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   initialBuffCount: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   initialCrabCount: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   jungleCsBefore10Minutes: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   junglerTakedownsNearDamagedEpicMonster: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   kTurretsDestroyedBeforePlatesFall: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   kda: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   killAfterHiddenWithAlly: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   killParticipation: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   killedChampTookFullTeamDamageSurvived: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   killsNearEnemyTurret: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   killsOnOtherLanesEarlyJungleAsLaner: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   killsOnRecentlyHealedByAramPack: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   killsUnderOwnTurret: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   killsWithHelpFromEpicMonster: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   knockEnemyIntoTeamAndKill: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   landSkillShotsEarlyGame: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   laneMinionsFirst10Minutes: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   legendaryCount: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   lostAnInhibitor: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   maxCsAdvantageOnLaneOpponent: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   maxKillDeficit: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   maxLevelLeadLaneOpponent: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   moreEnemyJungleThanOpponent: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   multiKillOneSpell: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   multiTurretRiftHeraldCount: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   multikills: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   multikillsAfterAggressiveFlash: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   mythicItemUsed?: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   outerTurretExecutesBefore10Minutes: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   outnumberedKills: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   outnumberedNexusKill: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   perfectDragonSoulsTaken: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   perfectGame: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   pickKillWithAlly: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   poroExplosions: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   quickCleanse: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   quickFirstTurret: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   quickSoloKills: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   riftHeraldTakedowns: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   saveAllyFromDeath: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   scuttleCrabKills: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   shortestTimeToAceFromFirstTakedown?: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   skillshotsDodged: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   skillshotsHit: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   snowballsHit: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   soloBaronKills: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   soloKills: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   stealthWardsPlaced: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   survivedSingleDigitHpCount: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   survivedThreeImmobilizesInFight: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   takedownOnFirstTurret: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   takedowns: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   takedownsAfterGainingLevelAdvantage: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   takedownsBeforeJungleMinionSpawn: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   takedownsFirstXMinutes: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   takedownsInAlcove: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   takedownsInEnemyFountain: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   teamBaronKills: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   teamDamagePercentage: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   teamElderDragonKills: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   teamRiftHeraldKills: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   threeWardsOneSweeperCount: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   tookLargeDamageSurvived: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   turretPlatesTaken: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   turretTakedowns: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   turretsTakenWithRiftHerald: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   twentyMinionsIn3SecondsCount: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   unseenRecalls: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   visionScoreAdvantageLaneOpponent: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   visionScorePerMinute: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   wardTakedowns: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   wardTakedownsBefore20M: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   wardsGuarded: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   killingSprees?: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   highestChampionDamage?: number;
 }
 
