@@ -5,7 +5,7 @@ export type SummonerDocument = HydratedDocument<Summoner>;
 
 @Schema({
   id: true,
-  timestamps: { updatedAt: 'updatedAt', createdAt: false },
+  timestamps: { updatedAt: 'updatedAt', createdAt: 'createdAt' },
   collection: 'summoner',
 })
 export class Summoner extends Document {
@@ -23,6 +23,9 @@ export class Summoner extends Document {
 
   @Prop({ default: new Date().getTime(), type: mongoose.Schema.Types.Date })
   updatedAt: Date;
+
+  @Prop({ default: new Date().getTime(), type: mongoose.Schema.Types.Date })
+  createdAt: Date;
 
   @Prop({
     type: [
