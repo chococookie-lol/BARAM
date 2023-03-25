@@ -32,6 +32,7 @@ export const mockSummoner = {
   name: 'dolphinlmg',
   profileIconId: 5528,
   updatedAt: new Date('2023-01-25T07:51:18.986Z'),
+  createdAt: new Date('2023-01-25T07:51:18.986Z'),
 };
 
 const riotApiResponse = {
