@@ -48,7 +48,7 @@ export class MatchesService {
       throw new ForbiddenException('최근에 업데이트를 요청했습니다. 잠시후 다시 시도해 주세요.');
 
     await this.summonerModel
-      .updateOne({ puuid: puuid }, { updatedAt: currentTime }, { timestamp: false })
+      .updateOne({ puuid: puuid }, { updatedAt: currentTime }, { timestamps: false })
       .lean();
 
     const matches = await this.riotApiService.getMatchesByPuuid(puuid, after, 5);
@@ -169,7 +169,7 @@ export class MatchesService {
       });
 
       await this.summonerModel
-        .updateOne({ puuid: puuid }, { updatedAt: new Date().getTime() }, { timestamp: false })
+        .updateOne({ puuid: puuid }, { updatedAt: new Date() }, { timestamps: false })
         .lean();
     })();
 
