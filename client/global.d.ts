@@ -17,6 +17,7 @@ interface SummonerProfile {
   profileIconId: number;
   challenges: Challenge[];
   updatedAt: Date;
+  createdAt: Date;
 }
 
 interface CreatedResponse {

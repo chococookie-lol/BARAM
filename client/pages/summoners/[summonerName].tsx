@@ -83,6 +83,8 @@ export default function SearchPage() {
 
   const handleSearch = () => {
     if (searchText === '') return;
+    setSummonerNotFound(false);
+    setSummonerName('');
     router.push(`/summoners/${searchText}`);
   };
 
@@ -93,6 +95,7 @@ export default function SearchPage() {
       setSearchText(query.summonerName);
     }
   }, [router.isReady, router.query]);
+
   return (
     <>
       <header css={style.header}>
@@ -118,8 +121,8 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
   const [matchStatistics, setMatchStatistics] = useState<{ [key: string]: MatchStatistic }>({});
   const [totalStatistics, setTotalStatistics] = useState<TotalStatistic | null>(null);
   const [fetching, setFetching] = useState<Date | null>(null);
-  const [loadMore, setLoadMore] = useState<boolean>(false);
-  const [update, setUpdate] = useState<boolean>(false);
+  const [loadMore, setLoadMore] = useState<number | null>(null);
+  const [update, setUpdate] = useState<number | null>(null);
   const [scoreMultipliers, setScoreMultipliers] = useState<Contribution | null>(null);
 
   useEffect(() => {
@@ -134,15 +137,13 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
         ).matchIds.filter((id) => matchIds.indexOf(id) === -1);
 
         setMatchIds(newMatchIds);
-        setLoadMore(false);
-      }
+        setLoadMore(null);
+      } else if (loadMore !== null) setLoadMore(loadMore + 1);
     }
 
-    if (loadMore) {
-      const timer = setInterval(tick, 1000);
-      return () => {
-        clearInterval(timer);
-      };
+    if (loadMore !== null) {
+      const timer = setTimeout(tick, 1000);
+      return () => clearTimeout(timer);
     }
   }, [loadMore, summonerName, matchIds, matches, fetching]);
 
@@ -153,21 +154,21 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
         setSummonerProfile(newSummonerProfile);
         setMatches([]);
         setMatchIds((await getSummonerMatchIds(newSummonerProfile.puuid)).matchIds);
-        setUpdate(false);
-      }
+        setUpdate(null);
+      } else if (update !== null) setUpdate(update + 1);
     }
 
-    if (update) {
-      const timer = setInterval(tick, 1000);
-      return () => clearInterval(timer);
+    if (update !== null) {
+      const timer = setTimeout(tick, 1000);
+      return () => clearTimeout(timer);
     }
   }, [update, summonerName, fetching]);
 
   // on summoner change
   useEffect(() => {
     // reset previous summoner data
-    setUpdate(false);
-    setLoadMore(false);
+    setUpdate(null);
+    setLoadMore(null);
     setFetching(null);
     setTotalStatistics(defaultTotalStatistics);
     setSummonerProfile(null);
@@ -259,10 +260,10 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
           onClick={async () => {
             try {
               setFetching((await requestFetchSummonerMatches(summonerProfile.puuid)).startedAt);
-              setUpdate(true);
+              setUpdate(0);
             } catch (e) {
               console.error(e);
-              setUpdate(false);
+              setUpdate(null);
               setFetching(null);
             }
           }}
@@ -297,7 +298,7 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
                     )
                   ).startedAt,
                 );
-                setLoadMore(true);
+                setLoadMore(0);
                 return;
               } catch (e) {
                 console.error(e);
@@ -313,7 +314,7 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
               } catch (e) {
                 console.error(e);
               } finally {
-                setLoadMore(false);
+                setLoadMore(null);
                 setFetching(null);
               }
             }}
