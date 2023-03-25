@@ -44,7 +44,10 @@ export class MatchesService {
     if (summoner === null)
       throw new ForbiddenException('해당 소환사에 대한 작업을 완료할 수 없습니다.');
 
-    if (currentTime.getTime() - summoner.updatedAt.getTime() < timeOffset)
+    if (
+      summoner.updatedAt.getTime() != summoner.createdAt.getTime() &&
+      currentTime.getTime() - summoner.updatedAt.getTime() < timeOffset
+    )
       throw new ForbiddenException('최근에 업데이트를 요청했습니다. 잠시후 다시 시도해 주세요.');
 
     await this.summonerModel
