@@ -139,6 +139,7 @@ export const detailStyle = {
     border-collapse: collapse;
     text-align: center;
     table-layout: fixed;
+    border-radius: 0 0 ${teamId === 200 ? '10px 10px' : '0 0'};
     thead {
       background-color: ${theme.neutral};
       font-size: 12px;
