@@ -83,6 +83,8 @@ export default function SearchPage() {
 
   const handleSearch = () => {
     if (searchText === '') return;
+    setSummonerNotFound(false);
+    setSummonerName('');
     router.push(`/summoners/${searchText}`);
   };
 
@@ -93,6 +95,7 @@ export default function SearchPage() {
       setSearchText(query.summonerName);
     }
   }, [router.isReady, router.query]);
+
   return (
     <>
       <header css={style.header}>
