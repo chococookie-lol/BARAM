@@ -13,7 +13,7 @@ interface LazyImageProps {
 
 const style = (loading: boolean) => css`
   * {
-    transition: opacity 2s linear;
+    transition: opacity 0.3s linear;
     opacity: ${loading ? 0 : 1};
   }
 `;
