@@ -1,5 +1,6 @@
-import { SerializedStyles } from '@emotion/react';
+import { css, SerializedStyles } from '@emotion/react';
 import Image from 'next/image';
+import { useState } from 'react';
 
 interface LazyImageProps {
   src: string;
@@ -7,12 +8,35 @@ interface LazyImageProps {
   height?: number;
   alt: string;
   innerCss?: SerializedStyles;
+  load?: boolean;
 }
 
-export default function LazyImage({ src, width, height, alt, innerCss }: LazyImageProps) {
+const style = (loading: boolean) => css`
+  * {
+    transition: opacity 2s linear;
+    opacity: ${loading ? 0 : 1};
+  }
+`;
+
+export default function LazyImage({
+  src,
+  width,
+  height,
+  alt,
+  innerCss,
+  load = true,
+}: LazyImageProps) {
+  const [loading, setLoading] = useState<boolean>(load);
   return (
-    <div>
-      <Image src={src} width={width} height={height} alt={alt} css={innerCss} />
+    <div css={style(loading)}>
+      <Image
+        src={src}
+        width={width}
+        height={height}
+        alt={alt}
+        css={innerCss}
+        onLoadingComplete={() => setLoading(false)}
+      />
     </div>
   );
 }

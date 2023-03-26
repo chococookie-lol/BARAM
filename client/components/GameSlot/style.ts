@@ -53,6 +53,9 @@ export const style = {
     right: 0;
     bottom: 0;
   `,
+  front: css`
+    z-index: 1;
+  `,
   level: css`
     background-color: #000000ce;
     width: 20px;
