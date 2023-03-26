@@ -1,8 +1,8 @@
-import Image from 'next/image';
 import { css } from '@emotion/react';
 import { useRecoilValueLoadable } from 'recoil';
 import { ddragonChampions } from '../../states/ddragon';
 import { DDRAGON_BASE_URL, DEAFULT_PLACEHOLDER } from '../../utils/ddragon';
+import LazyImage from '../LazyImage';
 
 interface ChampionPicProps {
   championKey: string | number;
@@ -33,8 +33,8 @@ export default function ChampionPic({
       : DEAFULT_PLACEHOLDER;
 
   return (
-    <Image
-      css={style[shape]}
+    <LazyImage
+      innerCss={style[shape]}
       src={src}
       width={width}
       height={height}

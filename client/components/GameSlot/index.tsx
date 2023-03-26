@@ -169,7 +169,7 @@ const GameSlotSummary = React.memo(function GameSlotSummary({
   return (
     <div css={style.gameSummary}>
       <div css={[style.item, style.champion]}>
-        <div css={[style.bottomRight, style.level]}>{level}</div>
+        <div css={[style.bottomRight, style.level, style.front]}>{level}</div>
         <ChampionPic championKey={championId} version={version} width={80} height={80} />
       </div>
       <div css={[style.item]}>
@@ -185,7 +185,7 @@ const GameSlotSummary = React.memo(function GameSlotSummary({
             />
           </div>
           <div css={style.middle}>
-            <div css={style.bottomRight}>
+            <div css={[style.bottomRight, style.front]}>
               <RuneIcon version={version} styleId={secondaryRuneStyle} width={20} height={20} />
             </div>
             <RuneIcon
@@ -309,7 +309,7 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
     <tr css={detailStyle.container}>
       <td>
         <div css={detailStyle.champion}>
-          <div css={detailStyle.level}>{participant.champLevel}</div>
+          <div css={[detailStyle.level, style.front]}>{participant.champLevel}</div>
           <ChampionPic
             championKey={participant.championId}
             version={version}

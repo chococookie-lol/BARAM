@@ -1,8 +1,8 @@
 import { css } from '@emotion/react';
-import Image from 'next/image';
 import { useRecoilValueLoadable } from 'recoil';
 import { ddragonVersion } from '../../states/ddragon';
 import { DDRAGON_BASE_URL, DEAFULT_PLACEHOLDER } from '../../utils/ddragon';
+import LazyImage from '../LazyImage';
 
 interface SummonerProfilePicProps {
   id: number;
@@ -17,8 +17,8 @@ export default function SummonerProfilePic({ id, width, height }: SummonerProfil
       ? `${DDRAGON_BASE_URL}${version.contents}/img/profileicon/${id}.png`
       : DEAFULT_PLACEHOLDER;
   return (
-    <Image
-      css={css`
+    <LazyImage
+      innerCss={css`
         border-radius: 10px;
       `}
       src={src}
