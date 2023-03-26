@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
-import Image from 'next/image';
 import { DDRAGON_BASE_URL } from '../../utils/ddragon';
+import LazyImage from '../LazyImage';
 
 interface ChallengIconProps {
   id: number;
@@ -12,8 +12,8 @@ interface ChallengIconProps {
 
 export default function ChallengeIcon({ id, tier, value, width, height }: ChallengIconProps) {
   return (
-    <Image
-      css={css`
+    <LazyImage
+      innerCss={css`
         border-radius: 50%;
       `}
       src={`${DDRAGON_BASE_URL}img/challenges-images/${id}-${tier}.png`}

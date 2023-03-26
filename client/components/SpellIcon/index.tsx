@@ -1,12 +1,8 @@
-import Image from 'next/image';
 import { css } from '@emotion/react';
 import { useRecoilValueLoadable } from 'recoil';
 import { ddragonSpells } from '../../states/ddragon';
-import {
-  DDRAGON_BASE_URL,
-  DEAFULT_PLACEHOLDER,
-  spellIdToIcon,
-} from '../../utils/ddragon';
+import { DDRAGON_BASE_URL, DEAFULT_PLACEHOLDER, spellIdToIcon } from '../../utils/ddragon';
+import LazyImage from '../LazyImage';
 
 interface SpellIconProps {
   version: string;
@@ -24,8 +20,8 @@ export default function SpellIcon({ version, id, width, height }: SpellIconProps
       : DEAFULT_PLACEHOLDER;
 
   return (
-    <Image
-      css={css`
+    <LazyImage
+      innerCss={css`
         border-radius: 13%;
       `}
       src={src}
