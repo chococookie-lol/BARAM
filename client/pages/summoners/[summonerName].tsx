@@ -251,6 +251,56 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
 
   const { winRate, kda, camp, gameContribution } = totalStatistics;
 
+  const onUpdate = () => {
+    setFetching(true);
+    (async () => {
+      try {
+        setPollStart((await requestFetchSummonerMatches(summonerProfile.puuid)).startedAt);
+        setUpdate(0);
+      } catch (e) {
+        console.error(e);
+        setUpdate(null);
+        setPollStart(null);
+        setFetching(false);
+      }
+    })();
+  };
+
+  const onLoadMore = () => {
+    setFetching(true);
+    (async () => {
+      try {
+        setPollStart(
+          (
+            await requestFetchSummonerMatches(
+              summonerProfile.puuid,
+              Math.floor(matches[matches.length - 1].info.gameCreation / 1000),
+            )
+          ).startedAt,
+        );
+        setLoadMore(0);
+        return;
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        // get matches from local (fallback)
+        const lastMatchId = matches.length ? matches[matches.length - 1].info.gameId : 0;
+        const newMatchIds = (
+          await getSummonerMatchIds(summonerProfile.puuid, lastMatchId)
+        ).matchIds.filter((id) => matchIds.indexOf(id) === -1);
+        setMatchIds(newMatchIds);
+      } catch (e) {
+        console.error(e);
+        setFetching(false);
+      } finally {
+        setLoadMore(null);
+        setPollStart(null);
+      }
+    })();
+  };
+
   return (
     <>
       <div css={style.profile}>
@@ -260,20 +310,7 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
           summonerLevel={summonerProfile.level}
           modifiedAt={new Date(summonerProfile.updatedAt).getTime()}
           challenges={summonerProfile.challenges}
-          onClick={() => {
-            setFetching(true);
-            (async () => {
-              try {
-                setPollStart((await requestFetchSummonerMatches(summonerProfile.puuid)).startedAt);
-                setUpdate(0);
-              } catch (e) {
-                console.error(e);
-                setUpdate(null);
-                setPollStart(null);
-                setFetching(false);
-              }
-            })();
-          }}
+          onClick={onUpdate}
           fetching={fetching}
         />
         <SummonerStatCard
@@ -292,44 +329,7 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
           />
         ))}
         {matches.length !== 0 && (
-          <Button
-            width={'100%'}
-            enabled={!pollStart}
-            onClick={() => {
-              setFetching(true);
-              (async () => {
-                try {
-                  setPollStart(
-                    (
-                      await requestFetchSummonerMatches(
-                        summonerProfile.puuid,
-                        Math.floor(matches[matches.length - 1].info.gameCreation / 1000),
-                      )
-                    ).startedAt,
-                  );
-                  setLoadMore(0);
-                  return;
-                } catch (e) {
-                  console.error(e);
-                }
-
-                try {
-                  // get matches from local (fallback)
-                  const lastMatchId = matches.length ? matches[matches.length - 1].info.gameId : 0;
-                  const newMatchIds = (
-                    await getSummonerMatchIds(summonerProfile.puuid, lastMatchId)
-                  ).matchIds.filter((id) => matchIds.indexOf(id) === -1);
-                  setMatchIds(newMatchIds);
-                } catch (e) {
-                  console.error(e);
-                  setFetching(false);
-                } finally {
-                  setLoadMore(null);
-                  setPollStart(null);
-                }
-              })();
-            }}
-          >
+          <Button width={'100%'} enabled={!fetching} onClick={onLoadMore}>
             {fetching ? '...' : '더보기'}
           </Button>
         )}
