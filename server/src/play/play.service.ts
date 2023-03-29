@@ -13,11 +13,11 @@ export class PlayService {
           .find({ puuid: puuid }, {}, { sort: { gameCreation: -1 } })
           .where('matchId')
           .lt(after)
-          .limit(5)
+          .limit(10)
           .lean()
       : await this.playModel
           .find({ puuid: puuid }, {}, { sort: { gameCreation: -1 } })
-          .limit(5)
+          .limit(10)
           .lean();
 
     return plays.map((play) => play.matchId);

@@ -54,7 +54,7 @@ export class MatchesService {
       .updateOne({ puuid: puuid }, { updatedAt: currentTime }, { timestamps: false })
       .lean();
 
-    const matches = await this.riotApiService.getMatchesByPuuid(puuid, after, 5);
+    const matches = await this.riotApiService.getMatchesByPuuid(puuid, after, 10);
 
     if (!matches) throw new RiotApiException(404, '경기를 찾을 수 없습니다.');
 
