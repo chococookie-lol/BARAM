@@ -15,16 +15,6 @@ const style = css`
 
 export default function ItemIcon({ id, version, width, height }: ItemIconProps) {
   const src = id ? `${DDRAGON_BASE_URL}${version}/img/item/${id}.png` : DEAFULT_PLACEHOLDER_GRAY;
-  const load = id !== 0;
 
-  return (
-    <LazyImage
-      innerCss={style}
-      src={src}
-      width={width}
-      height={height}
-      alt={id.toString()}
-      load={load}
-    />
-  );
+  return <LazyImage innerCss={style} src={src} width={width} height={height} alt={id.toString()} />;
 }
