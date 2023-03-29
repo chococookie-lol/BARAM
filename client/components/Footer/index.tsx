@@ -4,7 +4,7 @@ import { Theme } from '../../styles/theme';
 import Github from '/assets/github-mark.svg';
 
 const style = (theme: Theme) => css`
-  height: 40px;
+  height: 100px;
   width: auto;
   margin-top: 30px;
   padding: 0 40px 0 40px;
@@ -24,6 +24,11 @@ const style = (theme: Theme) => css`
     margin-right: 5px;
     height: 20px;
   }
+  p {
+    margin: 0;
+    line-height: 40px;
+    font-size: 12px;
+  }
 `;
 
 export default function Footer() {
@@ -37,6 +42,13 @@ export default function Footer() {
       <span>·</span>
       <Github href={github} />
       <a href={github}>Github</a>
+      <br />
+      <p>
+        BARAM isn&apos;t endorsed by Riot Games and doesn&apos;t reflect the views or opinions of
+        Riot Games or anyone officially involved in producing or managing Riot Games properties.
+        Riot Games, and all associated properties are trademarks or registered trademarks of Riot
+        Games, Inc.
+      </p>
     </div>
   );
 }
