@@ -8,6 +8,7 @@ const style = (theme: Theme) => css`
   width: auto;
   margin-top: 30px;
   padding: 0 40px 0 40px;
+  user-select: none;
 
   text-align: center;
   * {
