@@ -1,6 +1,5 @@
 import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import { useGlobalTheme } from '../../styles/GlobalThemeContext';
 import LogoSvg from '/assets/logo.svg';
 
