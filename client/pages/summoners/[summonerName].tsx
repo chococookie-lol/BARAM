@@ -120,7 +120,8 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
   const [matches, setMatches] = useState<Match[]>([]);
   const [matchStatistics, setMatchStatistics] = useState<{ [key: string]: MatchStatistic }>({});
   const [totalStatistics, setTotalStatistics] = useState<TotalStatistic | null>(null);
-  const [fetching, setFetching] = useState<Date | null>(null);
+  const [fetching, setFetching] = useState<boolean>(false);
+  const [pollStart, setPollStart] = useState<Date | null>(null);
   const [loadMore, setLoadMore] = useState<number | null>(null);
   const [update, setUpdate] = useState<number | null>(null);
   const [scoreMultipliers, setScoreMultipliers] = useState<Contribution | null>(null);
@@ -128,7 +129,7 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
   useEffect(() => {
     async function tick() {
       const newSummonerProfile = await getSummonerProfile(summonerName);
-      if (fetching != newSummonerProfile.updatedAt) {
+      if (pollStart != newSummonerProfile.updatedAt) {
         setSummonerProfile(newSummonerProfile);
         const lastMatchId = matches.length ? matches[matches.length - 1].info.gameId : 0;
 
@@ -145,12 +146,12 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
       const timer = setTimeout(tick, 1000);
       return () => clearTimeout(timer);
     }
-  }, [loadMore, summonerName, matchIds, matches, fetching]);
+  }, [loadMore, summonerName, matchIds, matches, pollStart]);
 
   useEffect(() => {
     async function tick() {
       const newSummonerProfile = await getSummonerProfile(summonerName);
-      if (fetching != newSummonerProfile.updatedAt) {
+      if (pollStart != newSummonerProfile.updatedAt) {
         setSummonerProfile(newSummonerProfile);
         setMatches([]);
         setMatchIds((await getSummonerMatchIds(newSummonerProfile.puuid)).matchIds);
@@ -162,14 +163,15 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
       const timer = setTimeout(tick, 1000);
       return () => clearTimeout(timer);
     }
-  }, [update, summonerName, fetching]);
+  }, [update, summonerName, pollStart]);
 
   // on summoner change
   useEffect(() => {
     // reset previous summoner data
+    setFetching(false);
     setUpdate(null);
     setLoadMore(null);
-    setFetching(null);
+    setPollStart(null);
     setTotalStatistics(defaultTotalStatistics);
     setSummonerProfile(null);
     setMatchIds([]);
@@ -237,7 +239,8 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
     if (matchStatistics) {
       setTotalStatistics(getTotalMatchStatistics(matchStatistics));
     }
-    setFetching(null);
+    setPollStart(null);
+    setFetching(false);
   }, [matchStatistics]);
 
   // before loading router
@@ -248,6 +251,56 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
 
   const { winRate, kda, camp, gameContribution } = totalStatistics;
 
+  const onUpdate = () => {
+    setFetching(true);
+    (async () => {
+      try {
+        setPollStart((await requestFetchSummonerMatches(summonerProfile.puuid)).startedAt);
+        setUpdate(0);
+      } catch (e) {
+        console.error(e);
+        setUpdate(null);
+        setPollStart(null);
+        setFetching(false);
+      }
+    })();
+  };
+
+  const onLoadMore = () => {
+    setFetching(true);
+    (async () => {
+      try {
+        setPollStart(
+          (
+            await requestFetchSummonerMatches(
+              summonerProfile.puuid,
+              Math.floor(matches[matches.length - 1].info.gameCreation / 1000),
+            )
+          ).startedAt,
+        );
+        setLoadMore(0);
+        return;
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        // get matches from local (fallback)
+        const lastMatchId = matches.length ? matches[matches.length - 1].info.gameId : 0;
+        const newMatchIds = (
+          await getSummonerMatchIds(summonerProfile.puuid, lastMatchId)
+        ).matchIds.filter((id) => matchIds.indexOf(id) === -1);
+        setMatchIds(newMatchIds);
+      } catch (e) {
+        console.error(e);
+        setFetching(false);
+      } finally {
+        setLoadMore(null);
+        setPollStart(null);
+      }
+    })();
+  };
+
   return (
     <>
       <div css={style.profile}>
@@ -257,17 +310,8 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
           summonerLevel={summonerProfile.level}
           modifiedAt={new Date(summonerProfile.updatedAt).getTime()}
           challenges={summonerProfile.challenges}
-          onClick={async () => {
-            try {
-              setFetching((await requestFetchSummonerMatches(summonerProfile.puuid)).startedAt);
-              setUpdate(0);
-            } catch (e) {
-              console.error(e);
-              setUpdate(null);
-              setFetching(null);
-            }
-          }}
-          fetching={fetching !== null}
+          onClick={onUpdate}
+          fetching={fetching}
         />
         <SummonerStatCard
           winRate={winRate}
@@ -285,40 +329,7 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
           />
         ))}
         {matches.length !== 0 && (
-          <Button
-            width={'100%'}
-            enabled={!fetching}
-            onClick={async () => {
-              try {
-                setFetching(
-                  (
-                    await requestFetchSummonerMatches(
-                      summonerProfile.puuid,
-                      Math.floor(matches[matches.length - 1].info.gameCreation / 1000),
-                    )
-                  ).startedAt,
-                );
-                setLoadMore(0);
-                return;
-              } catch (e) {
-                console.error(e);
-              }
-
-              try {
-                // get matches from local (fallback)
-                const lastMatchId = matches.length ? matches[matches.length - 1].info.gameId : 0;
-                const newMatchIds = (
-                  await getSummonerMatchIds(summonerProfile.puuid, lastMatchId)
-                ).matchIds.filter((id) => matchIds.indexOf(id) === -1);
-                setMatchIds(newMatchIds);
-              } catch (e) {
-                console.error(e);
-              } finally {
-                setLoadMore(null);
-                setFetching(null);
-              }
-            }}
-          >
+          <Button width={'100%'} enabled={!fetching} onClick={onLoadMore}>
             {fetching ? '...' : '더보기'}
           </Button>
         )}
