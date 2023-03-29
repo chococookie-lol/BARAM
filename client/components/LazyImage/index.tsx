@@ -12,17 +12,15 @@ interface LazyImageProps {
 
 export default function LazyImage({ src, width, height, alt, innerCss }: LazyImageProps) {
   return (
-    <div>
-      <Image
-        src={src}
-        width={width}
-        height={height}
-        alt={alt}
-        css={innerCss}
-        placeholder="blur"
-        blurDataURL={DEAFULT_PLACEHOLDER_GRAY}
-        loading="lazy"
-      />
-    </div>
+    <Image
+      src={src}
+      width={width}
+      height={height}
+      alt={alt}
+      css={innerCss}
+      placeholder="blur"
+      blurDataURL={DEAFULT_PLACEHOLDER_GRAY}
+      loading="lazy"
+    />
   );
 }
