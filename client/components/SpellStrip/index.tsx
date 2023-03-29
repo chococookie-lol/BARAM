@@ -13,14 +13,14 @@ interface SpellStripProps {
 const style = {
   vertical: (padding: number) => css`
     margin-top: -${padding}px;
-    div > img {
+    & > img {
       display: block;
       margin-top: ${padding}px;
     }
   `,
   horizontal: (padding: number) => css`
     margin-left: -${padding}px;
-    div > img {
+    & > img {
       display: inline-block;
       margin-left: ${padding}px;
     }
