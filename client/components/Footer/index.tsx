@@ -33,6 +33,8 @@ export default function Footer() {
     <div css={style(theme)}>
       <span>© 2023 BARAM</span>
       <span>·</span>
+      <a href="mailto: lol.chococookie@gmail.com">lol.chococookie@gmail.com</a>
+      <span>·</span>
       <Github href={github} />
       <a href={github}>Github</a>
     </div>
