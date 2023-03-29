@@ -8,17 +8,9 @@ interface LazyImageProps {
   height?: number;
   alt: string;
   innerCss?: SerializedStyles;
-  load?: boolean;
 }
 
-export default function LazyImage({
-  src,
-  width,
-  height,
-  alt,
-  innerCss,
-  load = true,
-}: LazyImageProps) {
+export default function LazyImage({ src, width, height, alt, innerCss }: LazyImageProps) {
   return (
     <div>
       <Image
