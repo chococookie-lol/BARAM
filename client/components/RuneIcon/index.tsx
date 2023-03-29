@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { useRecoilValueLoadable } from 'recoil';
 import { ddragonRunes } from '../../states/ddragon';
 import {
@@ -7,6 +6,7 @@ import {
   runeIdToIcon,
   runeStyleIdToIcon,
 } from '../../utils/ddragon';
+import LazyImage from '../LazyImage';
 import { style } from './style';
 
 interface RuneIconProps {
@@ -30,7 +30,7 @@ export default function RuneIcon({ version, styleId, runeId, width, height }: Ru
 
   return (
     <div css={style(width, height)}>
-      <Image src={src} width={width} height={height} alt={'rune'} />
+      <LazyImage src={src} width={width} height={height} alt={'rune'} />
     </div>
   );
 }
