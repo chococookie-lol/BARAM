@@ -99,11 +99,6 @@ export default function SearchPage() {
 
   return (
     <>
-      {summonerName !== '' && (
-        <Head>
-          <title>{summonerName} 게임 전적 - BARAM</title>
-        </Head>
-      )}
       <header css={style.header}>
         <Logo width={221} />
         <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={handleSearch} />
@@ -309,6 +304,11 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
 
   return (
     <>
+      {summonerProfile && (
+        <Head>
+          <title>{summonerProfile.name} 게임 전적 - BARAM</title>
+        </Head>
+      )}
       <div css={style.profile}>
         <SummonerProfileCard
           profileIconId={summonerProfile.profileIconId}
