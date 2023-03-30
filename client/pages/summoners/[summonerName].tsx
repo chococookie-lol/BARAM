@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import axios from 'axios';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import Button from '../../components/Button';
@@ -98,6 +99,11 @@ export default function SearchPage() {
 
   return (
     <>
+      {summonerName !== '' && (
+        <Head>
+          <title>{summonerName} 게임 전적 - BARAM</title>
+        </Head>
+      )}
       <header css={style.header}>
         <Logo width={221} />
         <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={handleSearch} />

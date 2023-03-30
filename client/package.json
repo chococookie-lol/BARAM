@@ -26,6 +26,7 @@
   "devDependencies": {
     "@emotion/babel-preset-css-prop": "^11.10.0",
     "@svgr/webpack": "^6.5.1",
+    "@types/gtag.js": "^0.0.12",
     "eslint-plugin-unused-imports": "^2.0.0"
   }
 }
