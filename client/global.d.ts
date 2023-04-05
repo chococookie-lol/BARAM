@@ -485,9 +485,10 @@ interface Spell {
 type Champions = { [key: string]: Champion };
 type Spells = { [key: string]: Spell };
 
-interface PercentMax {
-  dealt: number;
-  heal: number;
-  damaged: number;
-  death: number;
+// GameSlot에서 Contribution 계산시 필요한 추가적인 값들
+interface GameContribution {
+  totalMax: Contribution;
+  percentageMax: Contribution;
+  blueScale: Contribution;
+  redScale: Contribution;
 }

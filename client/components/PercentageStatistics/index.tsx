@@ -11,7 +11,7 @@ interface PercentageStatisticsProps {
   damagedAmount: number;
   deathPercent: number;
   deathAmount: number;
-  percentMax?: PercentMax;
+  percentMax?: Contribution;
   padding?: number;
   color?: ColorProps;
 }

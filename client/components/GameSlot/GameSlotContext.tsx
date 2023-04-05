@@ -1,22 +1,24 @@
 import { createContext, Dispatch, SetStateAction, useContext, useState } from 'react';
 
 interface GameSlotContextProps {
-  percentMax: PercentMax;
-  setPercentMax: Dispatch<SetStateAction<PercentMax>>;
+  gameContribution: GameContribution;
+  setGameContribution: Dispatch<SetStateAction<GameContribution>>;
 }
 
 const GameSlotContext = createContext<GameSlotContextProps | null>(null);
 
 interface GameSlotProviderProps {
-  percentMax: PercentMax;
+  gameContribution: GameContribution;
   children: React.ReactNode;
 }
 
 export default function GameSlotProvider(props: GameSlotProviderProps) {
-  const [percentMax, setPercentMax] = useState<PercentMax>(props.percentMax);
+  const [gameContribution, setGameContribution] = useState<GameContribution>(
+    props.gameContribution,
+  );
 
   return (
-    <GameSlotContext.Provider value={{ percentMax, setPercentMax }}>
+    <GameSlotContext.Provider value={{ gameContribution, setGameContribution }}>
       {props.children}
     </GameSlotContext.Provider>
   );
