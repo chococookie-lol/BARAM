@@ -6,6 +6,7 @@ import { RiotApiException } from '../riot.api/definition/riot.api.exception';
 import { RiotApiService } from '../riot.api/riot.api.service';
 import { Summoner, SummonerDocument } from '../summoners/schemas/summoner.schema';
 import { Contribution, Match, MatchDocument, TeamContribution } from './schemas/match.schema';
+import { SummonersService } from '../summoners/summoners.service';
 
 @Injectable()
 export class MatchesService {
@@ -17,6 +18,7 @@ export class MatchesService {
     @InjectModel(Summoner.name) private summonerModel: Model<SummonerDocument>,
     private readonly riotApiService: RiotApiService,
     private readonly playService: PlayService,
+    private readonly summonerService: SummonersService,
   ) {}
 
   async findOne(matchId: number) {
@@ -171,9 +173,7 @@ export class MatchesService {
         else if (r.status === 'rejected') this.logger.error(r.reason);
       });
 
-      await this.summonerModel
-        .updateOne({ puuid: puuid }, { updatedAt: new Date() }, { timestamps: false })
-        .lean();
+      this.summonerService.update(summoner.name);
     })();
 
     return {
