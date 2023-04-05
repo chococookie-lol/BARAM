@@ -18,6 +18,7 @@ import { getMajorVersion } from '../../utils/ddragon';
 import { useRecoilValue } from 'recoil';
 import { ddragonVersions } from '../../states/ddragon';
 import GameSlotProvider, { useGameSlot } from './GameSlotContext';
+import Link from 'next/link';
 
 interface GameSlotProps {
   matchData: Match;
@@ -365,7 +366,9 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
           <span css={detailStyle.visibleInline(!isNaN(participant.contributionRank))}>
             {rankToString(participant.contributionRank)}
           </span>
-          {participant.summonerName}
+          <Link href={`/summoners/${participant.summonerName}`} prefetch={false}>
+            {participant.summonerName}
+          </Link>
         </div>
       </td>
       <td css={detailStyle.summonerSettings}>

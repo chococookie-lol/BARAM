@@ -201,6 +201,10 @@ export const detailStyle = {
     padding-left: 4px;
     line-height: 33px;
     font-size: 12px;
+    a {
+      text-decoration: none;
+      color: black;
+    }
     & > span {
       font-size: 11px;
       background-color: ${GLOBAL_COLOR.mediumPurple};
