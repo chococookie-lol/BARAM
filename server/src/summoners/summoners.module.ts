@@ -12,5 +12,6 @@ import { SummonersService } from './summoners.service';
   ],
   controllers: [SummonersController],
   providers: [SummonersService],
+  exports: [SummonersService],
 })
 export class SummonersModule {}
