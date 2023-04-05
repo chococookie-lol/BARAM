@@ -75,22 +75,12 @@ export default function GameSlot({ matchData, puuid }: GameSlotProps) {
     death: 0,
   };
 
-  percentMax.dealt = matchData.info.participants.reduce((acc, cur) => {
-    const percent = cur.contributionPercentage.dealt * 100;
-    return Math.max(acc, percent);
-  }, 0);
-  percentMax.heal = matchData.info.participants.reduce((acc, cur) => {
-    const percent = cur.contributionPercentage.heal * 100;
-    return Math.max(acc, percent);
-  }, 0);
-  percentMax.damaged = matchData.info.participants.reduce((acc, cur) => {
-    const percent = cur.contributionPercentage.damaged * 100;
-    return Math.max(acc, percent);
-  }, 0);
-  percentMax.death = matchData.info.participants.reduce((acc, cur) => {
-    const percent = cur.contributionPercentage.death * 100;
-    return Math.max(acc, percent);
-  }, 0);
+  matchData.info.teams.forEach((e) => {
+    percentMax.dealt = (e.contribution.max.dealt / e.contribution.total.dealt) * 100;
+    percentMax.heal = (e.contribution.max.heal / e.contribution.total.heal) * 100;
+    percentMax.damaged = (e.contribution.max.damaged / e.contribution.total.damaged) * 100;
+    percentMax.death = (e.contribution.max.death / e.contribution.total.death) * 100;
+  });
 
   return (
     <GameSlotProvider percentMax={percentMax}>
