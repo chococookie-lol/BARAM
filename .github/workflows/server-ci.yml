@@ -1,36 +1,13 @@
-name: CI
+name: Server CI
 
-on: 
+on:
   pull_request:
     branches: [main, dev]
     types: [opened, synchronize, reopened]
-    
-jobs:
-  client-ci:
-    defaults: 
-      run:
-        working-directory: client
-    
-    name: Client CI
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with: 
-          node-version: 18
-          
-      - name: Install Dependecies
-        run: yarn install --frozen-lockfile
-        
-      - name: Lint
-        run: yarn lint
-        
-      - name: Build
-        run: yarn build
+    paths:
+      - server/**
 
+jobs:
   server-ci:
     defaults:
       run:
