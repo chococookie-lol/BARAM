@@ -1,4 +1,4 @@
-name: 'deploy'
+name: 'Server Deploy'
 
 on:
   push:
@@ -8,11 +8,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  server-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: deploy
+      - name: Server Deploy
         uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.SSH_HOST }}
