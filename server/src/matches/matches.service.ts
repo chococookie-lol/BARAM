@@ -6,7 +6,7 @@ import { RiotApiException } from '../riot.api/definition/riot.api.exception';
 import { RiotApiService } from '../riot.api/riot.api.service';
 import { Summoner, SummonerDocument } from '../summoners/schemas/summoner.schema';
 import { Contribution, Match, MatchDocument, TeamContribution } from './schemas/match.schema';
-import { SummonersService } from 'src/summoners/summoners.service';
+import { SummonersService } from '../summoners/summoners.service';
 
 @Injectable()
 export class MatchesService {

@@ -15,6 +15,7 @@ import {
 } from './matches.mock';
 import { RiotApiException } from '../../riot.api/definition/riot.api.exception';
 import { mockSummoner } from '../../summoners/test/summoners.mock';
+import { SummonersService } from '../../summoners/summoners.service';
 
 describe('MatchesService', () => {
   const puuid = 'wQ9X1e4FSY47C_MoncM1F6gsc7SkU2fGuw0WpP4dLnj7sbeakbg_x2lUDRbP5bGQEEB_1b7z67_B-Q';
@@ -55,6 +56,12 @@ describe('MatchesService', () => {
           useValue: {
             create: jest.fn(),
             findMany: jest.fn(),
+          },
+        },
+        {
+          provide: SummonersService,
+          useValue: {
+            update: jest.fn(),
           },
         },
       ],
