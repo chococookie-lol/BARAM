@@ -1,18 +1,20 @@
 import { css } from '@emotion/react';
 
 export const style = {
-  container: css`
+  container: (backgroundColor: string) => css`
     position: relative;
     height: 16px;
     width: 118px;
+    border-radius: 11px;
+    background-color: ${backgroundColor};
   `,
-  outer: (backgroundColor: string) => css`
+  outer: (backgroundColor: string, scale: number) => css`
     position: absolute;
     background-color: ${backgroundColor};
     border-radius: 11px;
     top: 0;
     left: 0;
-    width: 100%;
+    width: ${Math.ceil(100 * scale) % 101}%;
     height: 100%;
     box-sizing: border-box;
     overflow: hidden;

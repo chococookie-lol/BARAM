@@ -28,14 +28,12 @@ interface GameSlotSummaryProps {
   version: string;
   me: Participant;
   teamContribution: TeamContribution;
-  // percentMax: PercentMax;
 }
 
 interface GameSlotDetailProps {
   version: string;
   participants: Participant[];
-  teams: Team[];
-  // percentMax: PercentMax;
+  blueWin: boolean;
 }
 
 interface GameSlotTableProps {
@@ -68,32 +66,75 @@ export default function GameSlot({ matchData, puuid }: GameSlotProps) {
   const [rendered, setRendered] = useState<boolean>(false);
   const { theme } = useGlobalTheme();
 
-  const percentMax = {
-    dealt: 0,
-    heal: 0,
-    damaged: 0,
-    death: 0,
+  const blueTeam = matchData.info.teams[0];
+  const redTeam = matchData.info.teams[1];
+  const gameContribution = {
+    totalMax: {
+      dealt: Math.max(blueTeam.contribution.total.dealt, redTeam.contribution.total.dealt),
+      damaged: Math.max(blueTeam.contribution.total.damaged, redTeam.contribution.total.damaged),
+      heal: Math.max(blueTeam.contribution.total.heal, redTeam.contribution.total.heal),
+      death: Math.max(blueTeam.contribution.total.death, redTeam.contribution.total.death),
+      gold: 0,
+      cs: 0,
+      kill: 0,
+    },
+    percentageMax: {
+      dealt:
+        Math.max(
+          blueTeam.contribution.max.dealt / blueTeam.contribution.total.dealt,
+          redTeam.contribution.max.dealt / redTeam.contribution.total.dealt,
+        ) * 100,
+      damaged:
+        Math.max(
+          blueTeam.contribution.max.damaged / blueTeam.contribution.total.damaged,
+          redTeam.contribution.max.damaged / redTeam.contribution.total.damaged,
+        ) * 100,
+      heal:
+        Math.max(
+          blueTeam.contribution.max.heal / blueTeam.contribution.total.heal,
+          redTeam.contribution.max.heal / redTeam.contribution.total.heal,
+        ) * 100,
+      death:
+        Math.max(
+          blueTeam.contribution.max.death / blueTeam.contribution.total.death,
+          redTeam.contribution.max.death / redTeam.contribution.total.death,
+        ) * 100,
+      gold: 0,
+      cs: 0,
+      kill: 0,
+    },
+    blueScale: {
+      dealt: 1,
+      damaged: 1,
+      heal: 0,
+      death: 0,
+      gold: 0,
+      cs: 0,
+      kill: 0,
+    },
+    redScale: {
+      dealt: 1,
+      damaged: 1,
+      heal: 0,
+      death: 0,
+      gold: 0,
+      cs: 0,
+      kill: 0,
+    },
   };
 
-  percentMax.dealt = matchData.info.participants.reduce((acc, cur) => {
-    const percent = cur.contributionPercentage.dealt * 100;
-    return Math.max(acc, percent);
-  }, 0);
-  percentMax.heal = matchData.info.participants.reduce((acc, cur) => {
-    const percent = cur.contributionPercentage.heal * 100;
-    return Math.max(acc, percent);
-  }, 0);
-  percentMax.damaged = matchData.info.participants.reduce((acc, cur) => {
-    const percent = cur.contributionPercentage.damaged * 100;
-    return Math.max(acc, percent);
-  }, 0);
-  percentMax.death = matchData.info.participants.reduce((acc, cur) => {
-    const percent = cur.contributionPercentage.death * 100;
-    return Math.max(acc, percent);
-  }, 0);
+  gameContribution.blueScale.dealt =
+    blueTeam.contribution.total.dealt / gameContribution.totalMax.dealt;
+  gameContribution.blueScale.damaged =
+    blueTeam.contribution.total.damaged / gameContribution.totalMax.damaged;
+
+  gameContribution.redScale.dealt =
+    redTeam.contribution.total.dealt / gameContribution.totalMax.dealt;
+  gameContribution.redScale.damaged =
+    redTeam.contribution.total.damaged / gameContribution.totalMax.damaged;
 
   return (
-    <GameSlotProvider percentMax={percentMax}>
+    <GameSlotProvider gameContribution={gameContribution}>
       <div css={style.parent}>
         <div css={style.container(theme, win, expand)}>
           <div css={style.header(theme, win, expand)}>
@@ -118,7 +159,7 @@ export default function GameSlot({ matchData, puuid }: GameSlotProps) {
         </div>
         <div css={detailStyle.visible(expand)}>
           {rendered ? (
-            <GameSlotDetail participants={participants} teams={info.teams} version={version} />
+            <GameSlotDetail participants={participants} version={version} blueWin={blueTeam.win} />
           ) : (
             <></>
           )}
@@ -164,7 +205,7 @@ const GameSlotSummary = React.memo(function GameSlotSummary({
 
   const kda = ((k + a) / d).toFixed(2);
 
-  const { percentMax } = useGameSlot();
+  const { gameContribution } = useGameSlot();
 
   return (
     <div css={style.gameSummary}>
@@ -220,7 +261,7 @@ const GameSlotSummary = React.memo(function GameSlotSummary({
           deathPercent={me.contributionPercentage.death}
           deathAmount={deathValue}
           color={{ foreground: theme.foreground, background: theme.background }}
-          percentMax={percentMax}
+          percentMax={gameContribution.percentageMax}
         />
       </div>
       <div css={[style.item]}>
@@ -255,7 +296,7 @@ const GameSlotSummary = React.memo(function GameSlotSummary({
 const GameSlotDetail = React.memo(function GameSlotDetail({
   version,
   participants,
-  teams,
+  blueWin,
 }: GameSlotDetailProps) {
   const red: Participant[] = [];
   const blue: Participant[] = [];
@@ -263,11 +304,11 @@ const GameSlotDetail = React.memo(function GameSlotDetail({
     if (e.teamId == 100) blue.push(e);
     else red.push(e);
   });
-  const bluewin = teams[0].win;
+
   return (
     <div>
-      <GameSlotTable version={version} win={bluewin} teamId={100} participants={blue} />
-      <GameSlotTable version={version} win={!bluewin} teamId={200} participants={red} />
+      <GameSlotTable version={version} win={blueWin} teamId={100} participants={blue} />
+      <GameSlotTable version={version} win={!blueWin} teamId={200} participants={red} />
     </div>
   );
 });
@@ -303,7 +344,10 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
   const subPerk = participant.perks.styles.find((e) => e.description == 'subStyle');
   if (!primaryPerk || !subPerk) throw 'perk not properly formatted';
   const { theme } = useGlobalTheme();
-  const { percentMax } = useGameSlot();
+  const { gameContribution } = useGameSlot();
+
+  const teamScale =
+    participant.teamId == 100 ? gameContribution.blueScale : gameContribution.redScale;
 
   return (
     <tr css={detailStyle.container}>
@@ -379,7 +423,8 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
           textColor={theme.background}
           percent={participant.contributionPercentage.dealt}
           value={participant.contribution.dealt}
-          maxPercent={percentMax.dealt}
+          maxPercent={gameContribution.percentageMax.dealt}
+          scale={teamScale.dealt}
         />
       </td>
       <td css={detailStyle.percentage}>
@@ -389,7 +434,8 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
           textColor={theme.background}
           percent={participant.contributionPercentage.damaged}
           value={participant.contribution.damaged}
-          maxPercent={percentMax.damaged}
+          maxPercent={gameContribution.percentageMax.damaged}
+          scale={teamScale.damaged}
         />
       </td>
       <td css={detailStyle.percentage}>
