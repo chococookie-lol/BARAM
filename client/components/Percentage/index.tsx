@@ -8,6 +8,7 @@ interface PercentageProps {
   percent: number;
   maxPercent?: number;
   value: number;
+  scale?: number;
 }
 
 export default function Percentage({
@@ -17,6 +18,7 @@ export default function Percentage({
   percent,
   maxPercent = 40,
   value,
+  scale = 1,
 }: PercentageProps) {
   if (value < 0) {
     throw new Error('value must be positive');
@@ -38,7 +40,7 @@ export default function Percentage({
         setDisplayText(`${displayPercent}%`);
       }}
     >
-      <div css={style.outer(backgroundColor)}>
+      <div css={style.outer(backgroundColor, scale)}>
         <div css={style.inner(foregroundColor, `${(displayPercent * 100) / maxPercent}%`)} />
       </div>
 

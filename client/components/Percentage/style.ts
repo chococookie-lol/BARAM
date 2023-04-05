@@ -6,13 +6,13 @@ export const style = {
     height: 16px;
     width: 118px;
   `,
-  outer: (backgroundColor: string) => css`
+  outer: (backgroundColor: string, scale: number) => css`
     position: absolute;
     background-color: ${backgroundColor};
     border-radius: 11px;
     top: 0;
     left: 0;
-    width: 100%;
+    width: ${Math.ceil(100 * scale) % 101}%;
     height: 100%;
     box-sizing: border-box;
     overflow: hidden;
