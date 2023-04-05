@@ -2,21 +2,25 @@ import { useEffect, useState } from 'react';
 import { style } from './style';
 
 interface PercentageProps {
+  containerBackgroundColor?: string;
   backgroundColor: string;
   foregroundColor: string;
   textColor: string;
   percent: number;
   maxPercent?: number;
   value: number;
+  scale?: number;
 }
 
 export default function Percentage({
+  containerBackgroundColor = 'lightgray',
   backgroundColor,
   foregroundColor,
   textColor,
   percent,
   maxPercent = 40,
   value,
+  scale = 1,
 }: PercentageProps) {
   if (value < 0) {
     throw new Error('value must be positive');
@@ -30,7 +34,7 @@ export default function Percentage({
 
   return (
     <div
-      css={style.container}
+      css={style.container(containerBackgroundColor)}
       onMouseEnter={() => {
         setDisplayText(value.toString());
       }}
@@ -38,7 +42,7 @@ export default function Percentage({
         setDisplayText(`${displayPercent}%`);
       }}
     >
-      <div css={style.outer(backgroundColor)}>
+      <div css={style.outer(backgroundColor, scale)}>
         <div css={style.inner(foregroundColor, `${(displayPercent * 100) / maxPercent}%`)} />
       </div>
 
