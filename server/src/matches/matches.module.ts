@@ -6,6 +6,7 @@ import { Summoner, SummonerSchema } from '../summoners/schemas/summoner.schema';
 import { MatchesController } from './matches.controller';
 import { MatchesService } from './matches.service';
 import { Match, matchSchema } from './schemas/match.schema';
+import { SummonersModule } from '../summoners/summoners.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { Match, matchSchema } from './schemas/match.schema';
     MongooseModule.forFeature([{ name: Summoner.name, schema: SummonerSchema }]),
     RiotApiModule,
     PlayModule,
+    SummonersModule,
   ],
   controllers: [MatchesController],
   providers: [MatchesService],
