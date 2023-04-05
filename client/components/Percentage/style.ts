@@ -1,10 +1,12 @@
 import { css } from '@emotion/react';
 
 export const style = {
-  container: css`
+  container: (backgroundColor: string) => css`
     position: relative;
     height: 16px;
     width: 118px;
+    border-radius: 11px;
+    background-color: ${backgroundColor};
   `,
   outer: (backgroundColor: string, scale: number) => css`
     position: absolute;

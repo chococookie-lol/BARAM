@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { style } from './style';
 
 interface PercentageProps {
+  containerBackgroundColor?: string;
   backgroundColor: string;
   foregroundColor: string;
   textColor: string;
@@ -12,6 +13,7 @@ interface PercentageProps {
 }
 
 export default function Percentage({
+  containerBackgroundColor = 'lightgray',
   backgroundColor,
   foregroundColor,
   textColor,
@@ -32,7 +34,7 @@ export default function Percentage({
 
   return (
     <div
-      css={style.container}
+      css={style.container(containerBackgroundColor)}
       onMouseEnter={() => {
         setDisplayText(value.toString());
       }}
