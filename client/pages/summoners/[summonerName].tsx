@@ -259,6 +259,13 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
         setPollStart((await requestFetchSummonerMatches(summonerProfile.puuid)).startedAt);
         setUpdate(0);
       } catch (e) {
+        if (axios.isAxiosError(e)) {
+          if (e.response?.status === 503) {
+            alert('현재 Riot API가 동작하지 않습니다. 다음에 다시 시도해 주세요.');
+          } else {
+            alert(e.response?.data.message);
+          }
+        }
         console.error(e);
         setUpdate(null);
         setPollStart(null);
