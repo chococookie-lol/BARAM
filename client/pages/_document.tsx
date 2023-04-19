@@ -11,6 +11,8 @@ export default function Document() {
           rel="stylesheet"
           type="text/css"
         />
+        <meta name="description" content="칼바람 나락 전적검색 BARAM" />
+        <meta name="keywords" content="ARAM, 칼바람, 전적검색" />
       </Head>
       <body>
         {/* Global Site Tag (gtag.js) - Google Analytics */}
