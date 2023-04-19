@@ -1,5 +1,8 @@
 import { css } from '@emotion/react';
 import axios from 'axios';
+import { GetServerSideProps } from 'next';
+import { NextSeo } from 'next-seo';
+import { OpenGraph } from 'next-seo/lib/types';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
@@ -76,11 +79,41 @@ const style = {
   `,
 };
 
-export default function SearchPage() {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { summonerName } = context.query;
+
+  return {
+    props: {
+      name: summonerName,
+    },
+  };
+};
+
+interface SearchPageProps {
+  name: string;
+}
+
+export default function SearchPage({ name }: SearchPageProps) {
   const router = useRouter();
   const [searchText, setSearchText] = useState<string>('');
   const [summonerName, setSummonerName] = useState<string>('');
   const [summonerNotFound, setSummonerNotFound] = useState<boolean>(false);
+
+  const openGraph: OpenGraph = {
+    type: 'website',
+    siteName: 'BARAM',
+    title: 'BARAM',
+    description: `${name} 게임 전적`,
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/BARAM.png` ?? '',
+        width: 250,
+        height: 234,
+        alt: 'BARAM',
+        type: 'image/png',
+      },
+    ],
+  };
 
   const handleSearch = () => {
     if (searchText === '') return;
@@ -99,6 +132,7 @@ export default function SearchPage() {
 
   return (
     <>
+      <NextSeo openGraph={openGraph} />
       <header css={style.header}>
         <Logo width={221} />
         <SearchBar text={searchText} setText={setSearchText} onSearchButtonClick={handleSearch} />
