@@ -100,10 +100,11 @@ export default function SearchPage({ name }: SearchPageProps) {
   const [summonerNotFound, setSummonerNotFound] = useState<boolean>(false);
 
   const openGraph: OpenGraph = {
+    url: `https://baram.ga/${name}`,
     type: 'website',
     siteName: 'BARAM',
     title: 'BARAM',
-    description: `${name} 게임 전적`,
+    description: `${name} 게임 전적 - BARAM`,
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/BARAM.png` ?? '',
