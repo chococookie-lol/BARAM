@@ -19,16 +19,16 @@ export default function SearchPanel() {
   };
 
   const deleteUser = (userName: string) => {
-      const newUser = users.filter((user) => user.userName !== userName);
-      setUsers(newUser);
+    const newUser = users.filter((user) => user.userName !== userName);
+    setUsers(newUser);
     setUsersToLocalStorage(newUser);
   };
 
   const toggleStarUser = (userName: string) => {
-      const newUser = users.map((user) => {
-        if (user.userName === userName) user.isStarred = !user.isStarred;
-        return user;
-      });
+    const newUser = users.map((user) => {
+      if (user.userName === userName) user.isStarred = !user.isStarred;
+      return user;
+    });
     setUsersToLocalStorage(newUser);
 
     if (isRecentList) {
@@ -80,10 +80,20 @@ export default function SearchPanel() {
                     width={27}
                     height={27}
                     fill="#fdac09"
-                    onClick={() => toggleStarUser(user.userName)}
+                    onClick={(e: MouseEvent) => {
+                      toggleStarUser(user.userName);
+                      e.stopPropagation();
+                    }}
                   />
                 ) : (
-                  <Star width={24} height={24} onClick={() => toggleStarUser(user.userName)} />
+                  <Star
+                    width={24}
+                    height={24}
+                    onClick={(e: MouseEvent) => {
+                      toggleStarUser(user.userName);
+                      e.stopPropagation();
+                    }}
+                  />
                 )}
                 <button onClick={() => deleteUser(user.userName)}>✕</button>
               </div>
