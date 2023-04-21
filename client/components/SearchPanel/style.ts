@@ -27,6 +27,7 @@ export const style = {
     list-style: none;
     padding: 0;
     margin: 0;
+    border-radius: 0 0 4px 4px;
 
     & > li {
       padding: 8px 24px;
@@ -64,6 +65,10 @@ export const style = {
           }
         }
       }
+    }
+
+    & > li:last-child {
+      border-radius: 0 0 4px 4px;
     }
   `,
 };

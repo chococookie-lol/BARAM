@@ -492,3 +492,8 @@ interface GameContribution {
   blueScale: Contribution;
   redScale: Contribution;
 }
+
+interface SavedUser {
+  userName: string;
+  isStarred: boolean;
+}
