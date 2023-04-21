@@ -95,7 +95,14 @@ export default function SearchPanel() {
                     }}
                   />
                 )}
-                <button onClick={() => deleteUser(user.userName)}>✕</button>
+                <button
+                  onClick={(e) => {
+                    deleteUser(user.userName);
+                    e.stopPropagation();
+                  }}
+                >
+                  ✕
+                </button>
               </div>
             </li>
           ))
