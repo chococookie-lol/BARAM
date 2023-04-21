@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useGlobalTheme } from '../../styles/GlobalThemeContext';
+import { getUsersFromLocalStorage, setUsersToLocalStorage } from '../../utils/localStorage';
 import { style } from './style';
 import Star from '/assets/star.svg';
 import StarFilled from '/assets/star_fill.svg';
@@ -17,48 +18,31 @@ export default function SearchPanel() {
     }
   };
 
-  const getUsers: () => SavedUser[] = () => {
-    try {
-      const savedUsers: SavedUser[] = JSON.parse(window.localStorage.getItem('savedUser') ?? '[]');
-      return savedUsers;
-    } catch (e) {
-      console.error('저장된 유저를 가져오는데 실패했습니다.');
-    }
-    return [];
-  };
-
   const deleteUser = (userName: string) => {
-    try {
       const newUser = users.filter((user) => user.userName !== userName);
       setUsers(newUser);
-      window.localStorage.setItem('savedUser', JSON.stringify(newUser));
-    } catch (e) {
-      console.error('유저를 저장하는데 실패했습니다.');
-    }
+    setUsersToLocalStorage(newUser);
   };
 
   const toggleStarUser = (userName: string) => {
-    try {
       const newUser = users.map((user) => {
         if (user.userName === userName) user.isStarred = !user.isStarred;
         return user;
       });
-      window.localStorage.setItem('savedUser', JSON.stringify(newUser));
-    } catch (e) {
-      console.error('유저를 저장하는데 실패했습니다.');
-    }
+    setUsersToLocalStorage(newUser);
+
     if (isRecentList) {
-      setUsers(getUsers());
+      setUsers(getUsersFromLocalStorage());
     } else {
-      setUsers(getUsers().filter((user) => user.isStarred));
+      setUsers(getUsersFromLocalStorage().filter((user) => user.isStarred));
     }
   };
 
   useEffect(() => {
     if (isRecentList) {
-      setUsers(getUsers());
+      setUsers(getUsersFromLocalStorage());
     } else {
-      setUsers(getUsers().filter((user) => user.isStarred));
+      setUsers(getUsersFromLocalStorage().filter((user) => user.isStarred));
     }
   }, [isRecentList]);
 
