@@ -20,6 +20,7 @@ import {
   requestFetchSummonerMatches,
   tryToGetSummonerProfile,
 } from '../../utils/api';
+import { getUsersFromLocalStorage, setUsersToLocalStorage } from '../../utils/localStorage';
 import {
   calculateContributionRanks,
   getMatchStatistic,
@@ -114,6 +115,16 @@ export default function SearchPage({ name }: SearchPageProps) {
       },
     ],
   };
+
+  useEffect(() => {
+    const users = getUsersFromLocalStorage();
+    const oldUser = users.find((user) => user.userName === name);
+    const newUser: SavedUser = {
+      userName: name,
+      isStarred: oldUser?.isStarred ?? false,
+    };
+    setUsersToLocalStorage([newUser, ...users.filter((user) => user.userName !== name)]);
+  }, [name]);
 
   const handleSearch = () => {
     if (searchText === '') return;
