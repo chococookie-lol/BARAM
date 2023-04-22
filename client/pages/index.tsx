@@ -29,10 +29,11 @@ const style = {
 };
 
 const openGraph: OpenGraph = {
+  url: 'https://baram.ga',
   type: 'website',
   siteName: 'BARAM',
   title: 'BARAM',
-  description: '칼바람 나락 전적검색',
+  description: '칼바람 나락 전적검색 - BARAM',
   images: [
     {
       url: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/BARAM.png` ?? '',
