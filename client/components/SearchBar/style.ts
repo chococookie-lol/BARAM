@@ -1,6 +1,9 @@
 import { css } from '@emotion/react';
 
 export const style = {
+  wrapper: css`
+    position: relative;
+  `,
   container: (color: string = 'white') => css`
     width: 740px;
     height: 60px;
@@ -37,5 +40,13 @@ export const style = {
   `,
   search: css`
     transform: translate(50%, 50%);
+  `,
+  panelContainer: css`
+    margin-left: 25px;
+    margin-top: 1px;
+    z-index: 1000;
+    position: absolute;
+    top: 62px;
+    left: 0;
   `,
 };
