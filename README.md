@@ -25,7 +25,7 @@
 
 <div align="center">
   
-  ![BARAM-기술스택](https://github.com/chococookie-lol/BARAM/assets/39158895/3cda78bf-4085-45a5-879f-23de3b2567e7)
+  ![BARAM-기술스택](https://github.com/chococookie-lol/BARAM/assets/39158895/bcb725c9-7e52-4b4f-9aea-5a894f8c3226)
 
 </div>
 
