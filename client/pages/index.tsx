@@ -29,7 +29,7 @@ const style = {
 };
 
 const openGraph: OpenGraph = {
-  url: 'https://baram.ga',
+  url: process.env.NEXT_PUBLIC_FRONTEND_URL,
   type: 'website',
   siteName: 'BARAM',
   title: 'BARAM',
