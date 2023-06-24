@@ -1,25 +1,3 @@
-interface Score {
-  index: number;
-  score: number;
-}
-
-export function calculateContributionRanks(match: Match, scoreMultipliers: Contribution) {
-  const scores: Score[] = [];
-  const keys = Object.keys(scoreMultipliers) as Array<keyof Contribution>;
-  match.info.participants.forEach((p, i) => {
-    let score = keys.reduce((total, key) => {
-      return total + p.contributionPercentageTotal[key] * scoreMultipliers[key];
-    }, 0);
-    scores.push({ index: i, score: score });
-  });
-
-  scores.sort((a, b) => b.score - a.score);
-
-  scores.forEach((score, i) => {
-    match.info.participants[score.index].contributionRank = i;
-  });
-}
-
 export function getMatchStatistic(match: Match, puuid: string) {
   const teamId = match.info.participants.find((participant) => {
     return participant.puuid === puuid;

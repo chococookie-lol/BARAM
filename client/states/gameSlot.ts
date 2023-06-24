@@ -10,11 +10,19 @@ interface MatchesSelector {
   blueTeamWin: boolean;
 }
 
+export const scoreMultipliersState = selector<Contribution>({
+  key: 'scoreMultipliers',
+  get: async ({}) => {
+    return await getScoreMultipliers();
+  },
+});
+
 export const matchStateFamily = selectorFamily<MatchesSelector, number>({
   key: 'matches',
   get:
     (id: number) =>
     async ({ get }) => {
+      const scoreMultipliers = get(scoreMultipliersState);
       const match = await getMatch(id);
       const { info } = match;
       const version = getMajorVersion(get(ddragonVersions), info.gameVersion);
@@ -77,6 +85,21 @@ export const matchStateFamily = selectorFamily<MatchesSelector, number>({
           kill: 0,
         },
       };
+
+      const scores: { index: number; score: number }[] = [];
+      const keys = Object.keys(scoreMultipliers) as Array<keyof Contribution>;
+      match.info.participants.forEach((p, i) => {
+        let score = keys.reduce((total, key) => {
+          return total + p.contributionPercentageTotal[key] * scoreMultipliers[key];
+        }, 0);
+        scores.push({ index: i, score: score });
+      });
+
+      scores.sort((a, b) => b.score - a.score);
+
+      scores.forEach((score, i) => {
+        match.info.participants[score.index].contributionRank = i;
+      });
 
       return {
         match,
