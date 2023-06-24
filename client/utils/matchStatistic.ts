@@ -131,4 +131,17 @@ export function getTotalMatchStatistics(matchStatistic: { [index: string]: Match
   };
 }
 
+export function rankToString(rank: number) {
+  switch (rank) {
+    case 0:
+      return '1st';
+    case 1:
+      return '2nd';
+    case 2:
+      return '3rd';
+    default:
+      return `${rank + 1}th`;
+  }
+}
+
 export type TotalStatistic = ReturnType<typeof getTotalMatchStatistics>;
