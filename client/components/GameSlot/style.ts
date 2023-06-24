@@ -22,6 +22,20 @@ export const style = {
       overflow: hidden;
     }
   `,
+  fallback: (theme: Theme) => css`
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    height: 120px;
+    width: 777px;
+    background-color: ${theme.accent3};
+    border-radius: 10px 10px 10px 10px;
+    color: ${theme.background};
+    * {
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+  `,
   gameSummary: css`
     position: relative;
     height: 120px;

@@ -14,8 +14,9 @@ interface GameSlotProps {
 }
 
 export default function GameSlot(props: GameSlotProps) {
+  const { theme } = useGlobalTheme();
   return (
-    <React.Suspense fallback={<p>loading...</p>}>
+    <React.Suspense fallback={<div css={style.fallback(theme)}></div>}>
       <Slot {...props} />
     </React.Suspense>
   );
