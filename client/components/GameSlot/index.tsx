@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { matches } from '../../states/gameSlot';
+import { matchStateFamily } from '../../states/gameSlot';
 import { convertEpochToDate, secondsToString } from '../../utils/time';
 import { useGlobalTheme } from '../../styles/GlobalThemeContext';
 import { detailStyle, style } from './style';
@@ -22,7 +22,9 @@ export default function GameSlot(props: GameSlotProps) {
 }
 
 function Slot({ matchId, puuid }: GameSlotProps) {
-  const { match, version, gameContribution, blueTeamWin } = useRecoilValue(matches(matchId));
+  const { match, version, gameContribution, blueTeamWin } = useRecoilValue(
+    matchStateFamily(matchId),
+  );
   const { info } = match;
   const { participants, gameDuration } = info;
   const timeString = secondsToString(gameDuration);

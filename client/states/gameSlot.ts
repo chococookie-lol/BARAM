@@ -10,7 +10,7 @@ interface MatchesSelector {
   blueTeamWin: boolean;
 }
 
-export const matches = selectorFamily<MatchesSelector, number>({
+export const matchStateFamily = selectorFamily<MatchesSelector, number>({
   key: 'matches',
   get:
     (id: number) =>
