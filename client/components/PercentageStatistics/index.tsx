@@ -1,4 +1,4 @@
-import { useGlobalTheme } from '../../styles/GlobalThemeContext';
+import { useGlobalTheme } from '../../styles/GlobalThemeContextLegacy';
 import Percentage from '../Percentage';
 import { style } from './style';
 

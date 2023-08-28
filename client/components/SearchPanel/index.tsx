@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useGlobalTheme } from '../../styles/GlobalThemeContext';
+import { useGlobalTheme } from '../../styles/GlobalThemeContextLegacy';
 import { getUsersFromLocalStorage, setUsersToLocalStorage } from '../../utils/localStorage';
 import { style } from './style';
 import Star from '/assets/star.svg';

@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { useGlobalTheme } from '../../styles/GlobalThemeContext';
+import { useGlobalTheme } from '../../styles/GlobalThemeContextLegacy';
 import { Theme } from '../../styles/theme';
 import Github from '/assets/github-mark.svg';
 

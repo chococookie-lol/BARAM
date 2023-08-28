@@ -1,4 +1,4 @@
-import { useGlobalTheme } from '../../styles/GlobalThemeContext';
+import { useGlobalTheme } from '../../styles/GlobalThemeContextLegacy';
 import Doughnut from '../Doughnut';
 import PercentageStatistics from '../PercentageStatistics';
 import { style } from './style';

@@ -1,5 +1,5 @@
 import { ChangeEvent, Dispatch, KeyboardEvent, SetStateAction, useState } from 'react';
-import { useGlobalTheme } from '../../styles/GlobalThemeContext';
+import { useGlobalTheme } from '../../styles/GlobalThemeContextLegacy';
 import SearchPanel from '../SearchPanel';
 import { style } from './style';
 import Search from '/assets/search.svg';

@@ -1,6 +1,6 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
-import GlobalThemeProvider from '../styles/GlobalThemeContext';
+import GlobalThemeProvider from '../styles/GlobalThemeContextLegacy';
 import { RecoilRoot } from 'recoil';
 import Footer from '../components/Footer';
 import Head from 'next/head';

@@ -1,4 +1,4 @@
-import { useGlobalTheme } from '../../styles/GlobalThemeContext';
+import { useGlobalTheme } from '../../styles/GlobalThemeContextLegacy';
 import { GLOBAL_COLOR } from '../../utils/color';
 import ChampionPic from '../ChampionPic';
 import Doughnut from '../Doughnut';

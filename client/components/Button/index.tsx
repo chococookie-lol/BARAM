@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { useGlobalTheme } from '../../styles/GlobalThemeContext';
+import { useGlobalTheme } from '../../styles/GlobalThemeContextLegacy';
 
 interface ButtonProps {
   children: string;
