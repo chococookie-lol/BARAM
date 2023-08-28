@@ -1,21 +1,22 @@
-import { css } from '@emotion/react';
+import { Theme, css } from '@emotion/react';
 
 export const style = {
-  container: (background: string) => css`
+  container: (theme: Theme) => css`
     width: 777px;
     height: 219px;
-    background-color: ${background};
+    background-color: ${theme.foreground};
     border-radius: 10px;
     user-select: none;
   `,
-  noMatchesText: (textColor: string) => css`
+  noMatchesText: (theme: Theme) => css`
     line-height: 219px;
-    color: ${textColor};
+    color: ${theme.neutral};
     text-align: center;
   `,
-  title: css`
+  title: (theme: Theme) => css`
     margin: 0;
     padding: 20px 0 20px 20px;
+    color: ${theme.background};
   `,
   flexBox: css`
     display: flex;
@@ -35,8 +36,10 @@ export const style = {
   fontSize: (size: string) => css`
     font-size: ${size};
   `,
-  statTitle: css`
+  statTitle: (theme: Theme) => css`
     margin-bottom: 10px;
+    color: ${theme.background};
+    font-size: 13px;
   `,
   resetMargin: css`
     margin: 0;

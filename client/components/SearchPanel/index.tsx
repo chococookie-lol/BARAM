@@ -1,13 +1,13 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useGlobalTheme } from '../../styles/GlobalThemeContextLegacy';
 import { getUsersFromLocalStorage, setUsersToLocalStorage } from '../../utils/localStorage';
 import { style } from './style';
 import Star from '/assets/star.svg';
 import StarFilled from '/assets/star_fill.svg';
+import { useTheme } from '@emotion/react';
 
 export default function SearchPanel() {
-  const { theme } = useGlobalTheme();
+  const theme = useTheme();
   const router = useRouter();
   const [users, setUsers] = useState<SavedUser[]>([]);
   const [isRecentList, setRecentList] = useState<boolean>(true);
@@ -62,7 +62,7 @@ export default function SearchPanel() {
           즐겨찾기
         </button>
       </div>
-      <ul css={style.ul(theme.background, theme.foreground)}>
+      <ul css={style.ul}>
         {users.length === 0 ? (
           <li>{isRecentList ? '최근 검색' : '즐겨찾기'} 목록이 없습니다.</li>
         ) : (

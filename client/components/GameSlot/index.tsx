@@ -1,4 +1,3 @@
-import { useGlobalTheme } from '../../styles/GlobalThemeContextLegacy';
 import { GLOBAL_COLOR } from '../../utils/color';
 import ChampionPic from '../ChampionPic';
 import Doughnut from '../Doughnut';
@@ -19,6 +18,7 @@ import { useRecoilValue } from 'recoil';
 import { ddragonVersions } from '../../states/ddragon';
 import GameSlotProvider, { useGameSlot } from './GameSlotContext';
 import Link from 'next/link';
+import { useTheme } from '@emotion/react';
 
 interface GameSlotProps {
   matchData: Match;
@@ -65,7 +65,6 @@ export default function GameSlot({ matchData, puuid }: GameSlotProps) {
 
   const [expand, setExpand] = useState<boolean>(false);
   const [rendered, setRendered] = useState<boolean>(false);
-  const { theme } = useGlobalTheme();
 
   const blueTeam = matchData.info.teams[0];
   const redTeam = matchData.info.teams[1];
@@ -137,8 +136,8 @@ export default function GameSlot({ matchData, puuid }: GameSlotProps) {
   return (
     <GameSlotProvider gameContribution={gameContribution}>
       <div css={style.parent}>
-        <div css={style.container(theme, win, expand)}>
-          <div css={style.header(theme, win, expand)}>
+        <div css={style.container(win, expand)}>
+          <div css={style.header(win, expand)}>
             <div css={style.headerTitle}>{win ? '승리' : '패배'}</div>
             <div>{timeString}</div>
             <div>&nbsp;</div>
@@ -175,7 +174,7 @@ const GameSlotSummary = React.memo(function GameSlotSummary({
   me,
   teamContribution,
 }: GameSlotSummaryProps) {
-  const { theme } = useGlobalTheme();
+  const theme = useTheme();
   const championId = me.championId;
   const level = me.champLevel;
   const spells = [me.summoner1Id, me.summoner2Id];
@@ -315,12 +314,11 @@ const GameSlotDetail = React.memo(function GameSlotDetail({
 });
 
 function GameSlotTable({ version, win, teamId, participants }: GameSlotTableProps) {
-  const { theme } = useGlobalTheme();
   return (
-    <table css={detailStyle.tableContainer(theme, teamId, win)}>
+    <table css={detailStyle.tableContainer(teamId, win)}>
       <thead>
         <tr>
-          <th css={detailStyle.thFirst(theme, win)}>
+          <th css={detailStyle.thFirst(win)}>
             <span>{win ? '승리' : '패배'}</span> ({teamId === 100 ? '블루' : '레드'}팀)
           </th>
           <th css={detailStyle.width('5%')}>룬</th>
@@ -344,7 +342,7 @@ function GameSlotRow({ version, participant }: GameSlotRowProps) {
   const primaryPerk = participant.perks.styles.find((e) => e.description == 'primaryStyle');
   const subPerk = participant.perks.styles.find((e) => e.description == 'subStyle');
   if (!primaryPerk || !subPerk) throw 'perk not properly formatted';
-  const { theme } = useGlobalTheme();
+  const theme = useTheme();
   const { gameContribution } = useGameSlot();
 
   const teamScale =

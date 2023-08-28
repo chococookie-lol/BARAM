@@ -1,6 +1,4 @@
-import { css } from '@emotion/react';
-import { useGlobalTheme } from '../../styles/GlobalThemeContextLegacy';
-import { Theme } from '../../styles/theme';
+import { css, Theme } from '@emotion/react';
 import Github from '/assets/github-mark.svg';
 
 const style = (theme: Theme) => css`
@@ -32,10 +30,9 @@ const style = (theme: Theme) => css`
 `;
 
 export default function Footer() {
-  const { theme } = useGlobalTheme();
   const github = 'https://github.com/chococookie-lol/BARAM/';
   return (
-    <div css={style(theme)}>
+    <div css={style}>
       <span>© 2023 BARAM</span>
       <span>·</span>
       <a href="mailto: lol.chococookie@gmail.com">lol.chococookie@gmail.com</a>

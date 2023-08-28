@@ -1,6 +1,5 @@
-import { css } from '@emotion/react';
+import { css, useTheme } from '@emotion/react';
 import { useRouter } from 'next/router';
-import { useGlobalTheme } from '../../styles/GlobalThemeContextLegacy';
 import LogoSvg from '/assets/logo.svg';
 
 interface LogoProps {
@@ -9,7 +8,7 @@ interface LogoProps {
 }
 
 export default function Logo({ width, height }: LogoProps) {
-  const context = useGlobalTheme();
+  const theme = useTheme();
   const router = useRouter();
 
   return (
@@ -25,7 +24,7 @@ export default function Logo({ width, height }: LogoProps) {
           ${width ? `width: ${width}px;` : null}
           ${height ? `height: ${height}px;` : null}
         `}
-        fill={context.theme.accent1}
+        fill={theme.accent1}
       />
     </div>
   );

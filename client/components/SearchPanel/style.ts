@@ -1,4 +1,4 @@
-import { css } from '@emotion/react';
+import { Theme, css } from '@emotion/react';
 
 export const style = {
   container: css`
@@ -23,7 +23,7 @@ export const style = {
       filter: brightness(0.95);
     }
   `,
-  ul: (backgroundColor: string, fontColor: string) => css`
+  ul: (theme: Theme) => css`
     list-style: none;
     padding: 0;
     margin: 0;
@@ -35,8 +35,8 @@ export const style = {
       display: flex;
       justify-content: space-between;
 
-      color: ${fontColor};
-      background: ${backgroundColor};
+      color: ${theme.foreground};
+      background: ${theme.background};
 
       &:hover {
         filter: brightness(0.95);
@@ -55,7 +55,7 @@ export const style = {
           border: none;
           outline: none;
           background: inherit;
-          color: ${fontColor};
+          color: ${theme.foreground};
           padding-top: 4px;
           user-select: none;
 
