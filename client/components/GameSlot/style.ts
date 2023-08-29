@@ -1,5 +1,4 @@
-import { css } from '@emotion/react';
-import { Theme } from '../../styles/theme';
+import { Theme, css } from '@emotion/react';
 import { GLOBAL_COLOR } from '../../utils/color';
 
 export const style = {
@@ -8,20 +7,21 @@ export const style = {
     position: relative;
     width: 777px;
   `,
-  container: (theme: Theme, win: boolean, expand: boolean) => css`
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    height: 120px;
-    width: 777px;
-    background-color: ${win ? theme.blue4 : theme.red4};
-    border-radius: 10px 10px ${expand ? 0 : 10}px 10px;
-    color: ${theme.background};
-    * {
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-  `,
+  container: (win: boolean, expand: boolean) => (theme: Theme) =>
+    css`
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      height: 120px;
+      width: 777px;
+      background-color: ${win ? theme.blue4 : theme.red4};
+      border-radius: 10px 10px ${expand ? 0 : 10}px 10px;
+      color: ${theme.background};
+      * {
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+    `,
   fallback: (theme: Theme) => css`
     position: relative;
     display: flex;
@@ -47,14 +47,15 @@ export const style = {
   gameSummaryContainer: css`
     flex-grow: 1;
   `,
-  header: (theme: Theme, win: boolean, expand: boolean) => css`
-    width: 70px;
-    height: 100%;
-    border-radius: 10px 0 0 ${expand ? 0 : 10}px;
-    font-size: 11px;
-    padding: 8px 6px;
-    background-color: ${win ? theme.blue3 : theme.red2};
-  `,
+  header: (win: boolean, expand: boolean) => (theme: Theme) =>
+    css`
+      width: 70px;
+      height: 100%;
+      border-radius: 10px 0 0 ${expand ? 0 : 10}px;
+      font-size: 11px;
+      padding: 8px 6px;
+      background-color: ${win ? theme.blue3 : theme.red2};
+    `,
   expand: css`
     width: 40px;
     height: 100%;
@@ -150,29 +151,31 @@ export const style = {
 };
 
 export const detailStyle = {
-  tableContainer: (theme: Theme, teamId: 100 | 200, win: boolean) => css`
-    width: 100%;
-    background-color: ${win ? theme.blue4 : theme.red4};
-    border-collapse: collapse;
-    text-align: center;
-    table-layout: fixed;
-    border-radius: 0 0 ${teamId === 200 ? '10px 10px' : '0 0'};
-    thead {
-      background-color: ${theme.neutral};
-      font-size: 12px;
-    }
-    th {
-      height: 22px;
-    }
-  `,
-  thFirst: (theme: Theme, win: boolean) => css`
-    text-align: left;
-    color: ${theme.foreground};
-    span {
-      color: ${win ? theme.blue2 : theme.red2};
-    }
-    width: 20%;
-  `,
+  tableContainer: (teamId: 100 | 200, win: boolean) => (theme: Theme) =>
+    css`
+      width: 100%;
+      background-color: ${win ? theme.blue4 : theme.red4};
+      border-collapse: collapse;
+      text-align: center;
+      table-layout: fixed;
+      border-radius: 0 0 ${teamId === 200 ? '10px 10px' : '0 0'};
+      thead {
+        background-color: ${theme.neutral};
+        font-size: 12px;
+      }
+      th {
+        height: 22px;
+      }
+    `,
+  thFirst: (win: boolean) => (theme: Theme) =>
+    css`
+      text-align: left;
+      color: ${theme.foreground};
+      span {
+        color: ${win ? theme.blue2 : theme.red2};
+      }
+      width: 20%;
+    `,
   width: (width: string) => css`
     width: ${width};
   `,

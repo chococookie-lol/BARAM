@@ -1,4 +1,4 @@
-import { useGlobalTheme } from '../../styles/GlobalThemeContext';
+import { useTheme } from '@emotion/react';
 import { GLOBAL_COLOR } from '../../utils/color';
 import ChampionPic from '../ChampionPic';
 import Doughnut from '../Doughnut';
@@ -22,7 +22,7 @@ export default function GameSlotSummary({
   teamContribution,
   gameContribution,
 }: GameSlotSummaryProps) {
-  const { theme } = useGlobalTheme();
+  const theme = useTheme();
   const championId = me.championId;
   const level = me.champLevel;
   const spells = [me.summoner1Id, me.summoner2Id];

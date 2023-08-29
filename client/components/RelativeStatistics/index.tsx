@@ -1,5 +1,4 @@
-import { css } from '@emotion/react';
-import { useGlobalTheme } from '../../styles/GlobalThemeContext';
+import { css, useTheme } from '@emotion/react';
 import RelativeBar from '../RelativeBar';
 
 interface RelativeStatisticsProps {
@@ -31,7 +30,7 @@ export default function RelativeStatistics({
   csMaxOffset,
   csValue,
 }: RelativeStatisticsProps) {
-  const { theme } = useGlobalTheme();
+  const theme = useTheme();
   const neg = theme.red3;
   const pos = theme.accent1;
   const fg = theme.foreground;

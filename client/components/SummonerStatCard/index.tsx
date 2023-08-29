@@ -1,5 +1,5 @@
 import { useRecoilValue } from 'recoil';
-import { useGlobalTheme } from '../../styles/GlobalThemeContext';
+import { useTheme } from '@emotion/react';
 import Doughnut from '../Doughnut';
 import PercentageStatistics from '../PercentageStatistics';
 import { style } from './style';
@@ -36,8 +36,6 @@ interface GameContributionProps {
 }
 
 export default function SummonerStatCard() {
-  const { theme } = useGlobalTheme();
-
   const { camp, winRate, kda, gameContribution } = useRecoilValue(totalStatisticsState);
   const [totalGameCount, setTotalGameCount] = useState<number>(0);
 
@@ -46,15 +44,11 @@ export default function SummonerStatCard() {
   }, [camp]);
 
   if (!totalGameCount)
-    return (
-      <div css={[style.container(theme.foreground), style.noMatchesText(theme.neutral)]}>
-        해당하는 경기가 없습니다
-      </div>
-    );
+    return <div css={[style.container, style.noMatchesText]}>해당하는 경기가 없습니다</div>;
 
   return (
-    <div css={style.container(theme.foreground)}>
-      <p css={[style.title, style.color(theme.background)]}>최근 {totalGameCount}게임 통계</p>
+    <div css={style.container}>
+      <p css={style.title}>최근 {totalGameCount}게임 통계</p>
       <div css={style.flexBox}>
         <WinRate win={winRate.win} lose={winRate.lose} />
         <KDA
@@ -81,15 +75,13 @@ export default function SummonerStatCard() {
 }
 
 function WinRate({ win, lose }: WinRateProps) {
-  const { theme } = useGlobalTheme();
+  const theme = useTheme();
 
   const winRate = Math.floor((win / (win + lose)) * 100);
 
   return (
     <div css={style.winrateContainer}>
-      <span css={[style.color(theme.background), style.fontSize('13px'), style.statTitle]}>
-        승률
-      </span>
+      <span css={style.statTitle}>승률</span>
       <Doughnut
         label={['승리', '패배']}
         val={[win, lose]}
@@ -103,16 +95,14 @@ function WinRate({ win, lose }: WinRateProps) {
 }
 
 function KDA({ kills, assists, deaths, killContribution }: KDAProps) {
-  const { theme } = useGlobalTheme();
+  const theme = useTheme();
 
   const kda = (kills + assists) / deaths;
   const kdaStr = isFinite(kda) ? kda.toFixed(2) : '∞';
 
   return (
     <div css={style.kdaContainer}>
-      <span css={[style.color(theme.background), style.fontSize('13px'), style.statTitle]}>
-        KDA
-      </span>
+      <span css={style.statTitle}>KDA</span>
       <div css={style.kda}>
         <p css={[style.color(theme.background), style.resetMargin]}>
           {kills}&nbsp;
@@ -133,16 +123,14 @@ function KDA({ kills, assists, deaths, killContribution }: KDAProps) {
 }
 
 function CampStatistic({ blue, red }: CampStatisticProps) {
-  const { theme } = useGlobalTheme();
+  const theme = useTheme();
 
   const title = blue >= red ? '블루' : '레드';
   const [major, minor] = blue >= red ? [blue, red] : [red, blue];
 
   return (
     <div css={style.winrateContainer}>
-      <span css={[style.color(theme.background), style.fontSize('13px'), style.statTitle]}>
-        진영
-      </span>
+      <span css={style.statTitle}>진영</span>
       <Doughnut
         label={['블루', '레드']}
         val={[blue, red]}
@@ -166,14 +154,12 @@ function GameContribution({
   healAmount,
   rank,
 }: GameContributionProps) {
-  const { theme } = useGlobalTheme();
+  const theme = useTheme();
 
   return (
     <>
       <div css={style.contributionContainer}>
-        <span css={[style.color(theme.background), style.fontSize('13px'), style.statTitle]}>
-          평균 게임 기여도
-        </span>
+        <span css={style.statTitle}>평균 게임 기여도</span>
         <div css={style.contribution}>
           <p css={[style.fontSize('20px'), style.color(theme.background)]}>
             {Math.round((rank + 1) * 10) / 10}위

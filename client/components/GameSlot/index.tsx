@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { matchStateFamily, matchStatisticState } from '../../states/gameSlot';
 import { convertEpochToDate, secondsToString } from '../../utils/time';
-import { useGlobalTheme } from '../../styles/GlobalThemeContext';
 import { detailStyle, style } from './style';
 import DownArrow from '../../assets/downArrow.svg';
 import GameSlotSummary from './GameSlotSummary';
@@ -15,9 +14,8 @@ interface GameSlotProps {
 }
 
 export default function GameSlot(props: GameSlotProps) {
-  const { theme } = useGlobalTheme();
   return (
-    <React.Suspense fallback={<div css={style.fallback(theme)}></div>}>
+    <React.Suspense fallback={<div css={style.fallback}></div>}>
       <Slot {...props} />
     </React.Suspense>
   );
@@ -41,8 +39,6 @@ function Slot({ matchId, puuid }: GameSlotProps) {
   const [expand, setExpand] = useState<boolean>(false);
   const [rendered, setRendered] = useState<boolean>(false);
 
-  const { theme } = useGlobalTheme();
-
   // to set match statistics
   useEffect(() => {
     setMatchStatistics((statistics) => {
@@ -54,8 +50,8 @@ function Slot({ matchId, puuid }: GameSlotProps) {
 
   return (
     <div css={style.parent}>
-      <div css={style.container(theme, me.win, expand)}>
-        <div css={style.header(theme, me.win, expand)}>
+      <div css={style.container(me.win, expand)}>
+        <div css={style.header(me.win, expand)}>
           <div css={style.headerTitle}>{me.win ? '승리' : '패배'}</div>
           <div>{timeString}</div>
           <div>&nbsp;</div>

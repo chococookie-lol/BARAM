@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { useGlobalTheme } from '../../styles/GlobalThemeContext';
 import { GLOBAL_COLOR } from '../../utils/color';
 import ChampionPic from '../ChampionPic';
 import ItemStrip from '../ItemStrip';
@@ -9,6 +8,7 @@ import { detailStyle, style } from './style';
 import SpellStrip from '../SpellStrip';
 import RuneIcon from '../RuneIcon';
 import { rankToString } from '../../utils/matchStatistic';
+import { useTheme } from '@emotion/react';
 
 interface GameSlotDetailProps {
   version: string;
@@ -65,12 +65,11 @@ function GameSlotTable({
   participants,
   gameContribution,
 }: GameSlotTableProps) {
-  const { theme } = useGlobalTheme();
   return (
-    <table css={detailStyle.tableContainer(theme, teamId, win)}>
+    <table css={detailStyle.tableContainer(teamId, win)}>
       <thead>
         <tr>
-          <th css={detailStyle.thFirst(theme, win)}>
+          <th css={detailStyle.thFirst(win)}>
             <span>{win ? '승리' : '패배'}</span> ({teamId === 100 ? '블루' : '레드'}팀)
           </th>
           <th css={detailStyle.width('5%')}>룬</th>
@@ -107,7 +106,8 @@ function GameSlotRow({ version, participant, gameContribution }: GameSlotRowProp
   const primaryPerk = participant.perks.styles.find((e) => e.description == 'primaryStyle');
   const subPerk = participant.perks.styles.find((e) => e.description == 'subStyle');
   if (!primaryPerk || !subPerk) throw 'perk not properly formatted';
-  const { theme } = useGlobalTheme();
+
+  const theme = useTheme();
 
   const teamScale =
     participant.teamId == 100 ? gameContribution.blueScale : gameContribution.redScale;
