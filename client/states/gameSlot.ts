@@ -1,7 +1,8 @@
-import { selector, selectorFamily } from 'recoil';
+import { atom, selector, selectorFamily } from 'recoil';
 import { getMatch, getScoreMultipliers } from '../utils/api';
 import { getMajorVersion } from '../utils/ddragon';
 import { ddragonVersions } from './ddragon';
+import { MatchStatistic, TotalStatistic, getTotalMatchStatistics } from '../utils/matchStatistic';
 
 interface MatchesSelector {
   match: Match;
@@ -108,4 +109,16 @@ export const matchStateFamily = selectorFamily<MatchesSelector, number>({
         blueTeamWin: blueTeam.win,
       };
     },
+});
+
+export const matchStatisticState = atom<{ [key: string]: MatchStatistic }>({
+  key: 'matchStatistics',
+  default: {},
+});
+
+export const totalStatisticsState = selector<TotalStatistic>({
+  key: 'totalStatistics',
+  get: ({ get }) => {
+    return getTotalMatchStatistics(get(matchStatisticState));
+  },
 });

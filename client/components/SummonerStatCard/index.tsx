@@ -1,14 +1,10 @@
+import { useRecoilValue } from 'recoil';
 import { useGlobalTheme } from '../../styles/GlobalThemeContext';
 import Doughnut from '../Doughnut';
 import PercentageStatistics from '../PercentageStatistics';
 import { style } from './style';
-
-interface SummonerStatCardProps {
-  winRate: WinRateProps;
-  kda: KDAProps;
-  camp: CampStatisticProps;
-  gameContribution: GameContributionProps;
-}
+import { totalStatisticsState } from '../../states/gameSlot';
+import { useEffect, useState } from 'react';
 
 interface WinRateProps {
   win: number;
@@ -39,14 +35,15 @@ interface GameContributionProps {
   deathAmount: number;
 }
 
-export default function SummonerStatCard({
-  winRate,
-  kda,
-  camp,
-  gameContribution,
-}: SummonerStatCardProps) {
+export default function SummonerStatCard() {
   const { theme } = useGlobalTheme();
-  const totalGameCount = camp.blue + camp.red;
+
+  const { camp, winRate, kda, gameContribution } = useRecoilValue(totalStatisticsState);
+  const [totalGameCount, setTotalGameCount] = useState<number>(0);
+
+  useEffect(() => {
+    setTotalGameCount(camp.blue + camp.red);
+  }, [camp]);
 
   if (!totalGameCount)
     return (

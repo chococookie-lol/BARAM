@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import { useRecoilValue } from 'recoil';
-import { matchStateFamily } from '../../states/gameSlot';
+import React, { useEffect, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { matchStateFamily, matchStatisticState } from '../../states/gameSlot';
 import { convertEpochToDate, secondsToString } from '../../utils/time';
 import { useGlobalTheme } from '../../styles/GlobalThemeContext';
 import { detailStyle, style } from './style';
 import DownArrow from '../../assets/downArrow.svg';
 import GameSlotSummary from './GameSlotSummary';
 import GameSlotDetail from './GameSlotDetail';
+import { getMatchStatistic } from '../../utils/matchStatistic';
 
 interface GameSlotProps {
   matchId: number;
@@ -26,6 +27,7 @@ function Slot({ matchId, puuid }: GameSlotProps) {
   const { match, version, gameContribution, blueTeamWin } = useRecoilValue(
     matchStateFamily(matchId),
   );
+  const [, setMatchStatistics] = useRecoilState(matchStatisticState);
   const { info } = match;
   const { participants, gameDuration } = info;
   const timeString = secondsToString(gameDuration);
@@ -40,6 +42,15 @@ function Slot({ matchId, puuid }: GameSlotProps) {
   const [rendered, setRendered] = useState<boolean>(false);
 
   const { theme } = useGlobalTheme();
+
+  // to set match statistics
+  useEffect(() => {
+    setMatchStatistics((statistics) => {
+      const newStatistics = { ...statistics };
+      newStatistics[match.metadata.matchId] = getMatchStatistic(match, puuid);
+      return newStatistics;
+    });
+  }, [match, puuid, setMatchStatistics]);
 
   return (
     <div css={style.parent}>

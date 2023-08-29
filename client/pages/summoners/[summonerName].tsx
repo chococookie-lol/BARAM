@@ -21,15 +21,8 @@ import {
   tryToGetSummonerProfile,
 } from '../../utils/api';
 import { getUsersFromLocalStorage, setUsersToLocalStorage } from '../../utils/localStorage';
-import {
-  calculateContributionRanks,
-  getMatchStatistic,
-  getTotalMatchStatistics,
-  MatchStatistic,
-  TotalStatistic,
-} from '../../utils/matchStatistic';
-
-const defaultTotalStatistics = getTotalMatchStatistics({});
+import { useRecoilState } from 'recoil';
+import { matchStatisticState } from '../../states/gameSlot';
 
 interface SummonerProfilePanelProps {
   summonerName: string;
@@ -173,14 +166,14 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
   const [summonerProfile, setSummonerProfile] = useState<SummonerProfile | null>(null);
   const [matchIds, setMatchIds] = useState<SummonerMatchIds>([]);
   const [matches, setMatches] = useState<Match[]>([]);
-  const [matchStatistics, setMatchStatistics] = useState<{ [key: string]: MatchStatistic }>({});
-  const [totalStatistics, setTotalStatistics] = useState<TotalStatistic | null>(null);
   const [fetching, setFetching] = useState<boolean>(false);
   const [pollStart, setPollStart] = useState<Date | null>(null);
   const [loadMore, setLoadMore] = useState<number | null>(null);
   const [update, setUpdate] = useState<number | null>(null);
   const [scoreMultipliers, setScoreMultipliers] = useState<Contribution | null>(null);
+  const [, setMatchStatistics] = useRecoilState(matchStatisticState);
 
+  // tick for load more
   useEffect(() => {
     async function tick() {
       const newSummonerProfile = await getSummonerProfile(summonerName);
@@ -203,6 +196,7 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
     }
   }, [loadMore, summonerName, matchIds, matches, pollStart]);
 
+  // tick for update user
   useEffect(() => {
     async function tick() {
       const newSummonerProfile = await getSummonerProfile(summonerName);
@@ -227,7 +221,6 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
     setUpdate(null);
     setLoadMore(null);
     setPollStart(null);
-    setTotalStatistics(defaultTotalStatistics);
     setSummonerProfile(null);
     setMatchIds([]);
     setMatches([]);
@@ -250,14 +243,13 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
     (async () => {
       setScoreMultipliers(await getScoreMultipliers());
     })();
-  }, [setSummonerNotFound, summonerName]);
+  }, [setMatchStatistics, setSummonerNotFound, summonerName]);
 
   useEffect(() => {
     if (matchIds.length === 0 || !scoreMultipliers) return;
 
     const promises = matchIds.map(async (matchId) => {
       const match = await getMatch(matchId);
-      calculateContributionRanks(match, scoreMultipliers);
       return match;
     });
 
@@ -271,40 +263,11 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
     })();
   }, [matchIds, scoreMultipliers]);
 
-  useEffect(() => {
-    if (!summonerProfile || matches.length === 0) return;
-
-    // sort
-    matches.sort((a: Match, b: Match) => {
-      return a.info.gameCreation < b.info.gameCreation ? 1 : -1;
-    });
-
-    setMatchStatistics(
-      matches.reduce((acc, match) => {
-        const newAcc: { [index: string]: MatchStatistic } = { ...acc };
-        if (newAcc[match.metadata.matchId]) return newAcc;
-
-        newAcc[match.metadata.matchId] = getMatchStatistic(match, summonerProfile?.puuid);
-        return newAcc;
-      }, {}),
-    );
-  }, [matches, summonerProfile]);
-
-  useEffect(() => {
-    if (matchStatistics) {
-      setTotalStatistics(getTotalMatchStatistics(matchStatistics));
-    }
-    setPollStart(null);
-    setFetching(false);
-  }, [matchStatistics]);
-
   // before loading router
   if (!summonerName) return <></>;
 
   // before fetching summoner info
-  if (!summonerProfile || !totalStatistics) return <p css={style.textAlignCenter}>...</p>;
-
-  const { winRate, kda, camp, gameContribution } = totalStatistics;
+  if (!summonerProfile) return <p css={style.textAlignCenter}>...</p>;
 
   const onUpdate = () => {
     setFetching(true);
@@ -380,22 +343,17 @@ function SummonerProfilePanel({ summonerName, setSummonerNotFound }: SummonerPro
           onClick={onUpdate}
           fetching={fetching}
         />
-        <SummonerStatCard
-          winRate={winRate}
-          kda={kda}
-          camp={camp}
-          gameContribution={gameContribution}
-        />
+        <SummonerStatCard />
       </div>
       <main css={style.main}>
-        {matches.map((match, idx) => (
+        {matchIds.map((matchId, idx) => (
           <GameSlot
-            key={`gameSlot-${match.info.gameId}-${idx}`}
-            matchData={match}
+            key={`gameSlot-${matchId}-${idx}`}
             puuid={summonerProfile.puuid}
+            matchId={matchId}
           />
         ))}
-        {matches.length !== 0 && (
+        {matchIds.length !== 0 && (
           <Button width={'100%'} enabled={!fetching} onClick={onLoadMore}>
             {fetching ? '...' : '더보기'}
           </Button>
