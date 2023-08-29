@@ -24,7 +24,7 @@ export default function GameSlot(props: GameSlotProps) {
 function Slot({ matchId, puuid }: GameSlotProps) {
   const { match, version, gameContribution, blueTeamWin } = useRecoilValue(
     matchStateFamily(matchId),
-  );
+  ) as MatchesSelector; // matchId가 undefined가 아니라면 무조건 null이 반환되지 않음
   const [, setMatchStatistics] = useRecoilState(matchStatisticState);
   const { info } = match;
   const { participants, gameDuration } = info;
@@ -32,7 +32,6 @@ function Slot({ matchId, puuid }: GameSlotProps) {
 
   const me = participants.find((e) => e.puuid == puuid);
   if (!me) throw Error("can't find summoner in match");
-
   const contribution = match.info.teams.find((team) => team.teamId === me.teamId)?.contribution;
   if (!contribution) throw new Error('contribution does not exist');
 

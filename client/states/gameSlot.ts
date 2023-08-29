@@ -4,13 +4,6 @@ import { getMajorVersion } from '../utils/ddragon';
 import { ddragonVersions } from './ddragon';
 import { MatchStatistic, TotalStatistic, getTotalMatchStatistics } from '../utils/matchStatistic';
 
-interface MatchesSelector {
-  match: Match;
-  version: string;
-  gameContribution: GameContribution;
-  blueTeamWin: boolean;
-}
-
 export const scoreMultipliersState = selector<Contribution>({
   key: 'scoreMultipliers',
   get: async ({}) => {
@@ -18,11 +11,12 @@ export const scoreMultipliersState = selector<Contribution>({
   },
 });
 
-export const matchStateFamily = selectorFamily<MatchesSelector, number>({
+export const matchStateFamily = selectorFamily<MatchesSelector | null, number>({
   key: 'matches',
   get:
-    (id: number) =>
+    (id?: number) =>
     async ({ get }) => {
+      if (!id) return null;
       const scoreMultipliers = get(scoreMultipliersState);
       const match = await getMatch(id);
       const { info } = match;
