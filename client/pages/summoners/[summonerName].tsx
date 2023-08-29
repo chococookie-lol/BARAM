@@ -13,8 +13,6 @@ import SearchBar from '../../components/SearchBar';
 import SummonerProfileCard from '../../components/SummonerProfileCard';
 import SummonerStatCard from '../../components/SummonerStatCard';
 import {
-  getMatch,
-  getScoreMultipliers,
   getSummonerMatchIds,
   getSummonerProfile,
   requestFetchSummonerMatches,
