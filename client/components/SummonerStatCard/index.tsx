@@ -1,14 +1,10 @@
+import { useRecoilValue } from 'recoil';
 import { useTheme } from '@emotion/react';
 import Doughnut from '../Doughnut';
 import PercentageStatistics from '../PercentageStatistics';
 import { style } from './style';
-
-interface SummonerStatCardProps {
-  winRate: WinRateProps;
-  kda: KDAProps;
-  camp: CampStatisticProps;
-  gameContribution: GameContributionProps;
-}
+import { totalStatisticsState } from '../../states/gameSlot';
+import { useEffect, useState } from 'react';
 
 interface WinRateProps {
   win: number;
@@ -39,13 +35,13 @@ interface GameContributionProps {
   deathAmount: number;
 }
 
-export default function SummonerStatCard({
-  winRate,
-  kda,
-  camp,
-  gameContribution,
-}: SummonerStatCardProps) {
-  const totalGameCount = camp.blue + camp.red;
+export default function SummonerStatCard() {
+  const { camp, winRate, kda, gameContribution } = useRecoilValue(totalStatisticsState);
+  const [totalGameCount, setTotalGameCount] = useState<number>(0);
+
+  useEffect(() => {
+    setTotalGameCount(camp.blue + camp.red);
+  }, [camp]);
 
   if (!totalGameCount)
     return <div css={[style.container, style.noMatchesText]}>해당하는 경기가 없습니다</div>;

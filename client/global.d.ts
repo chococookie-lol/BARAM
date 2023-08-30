@@ -497,3 +497,10 @@ interface SavedUser {
   userName: string;
   isStarred: boolean;
 }
+
+interface MatchesSelector {
+  match: Match;
+  version: string;
+  gameContribution: GameContribution;
+  blueTeamWin: boolean;
+}
