@@ -8,12 +8,18 @@ on:
       hash-path:
         type: string
         required: true
+      directory:
+        type: string
+        required: true
     outputs:
       dependency_cache_key:
         description: 'Dependency cache key'
         value: ${{ jobs.install_dependencies.outputs.dependency_cache_key }}
 jobs:
   install_dependencies:
+    defaults:
+      run:
+        working-directory: ${{ inputs.directory }}
     name: Install Dependencies
     runs-on: ubuntu-latest
     timeout-minutes: 15
