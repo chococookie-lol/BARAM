@@ -1,20 +1,29 @@
-name: Server CI
+name: Client CI
 
 on:
   pull_request:
     branches: [main, dev]
     types: [opened, synchronize, reopened]
     paths:
-      - server/**
+      - client/**
+  workflow_dispatch:
 
 jobs:
-  server-ci:
+  install_dependencies:
+    uses: ./.github/workflows/install-dependency.yml
+    with:
+      cache-dependency-path: client/node_modules
+      hash-path: client/yarn.lock
+
+  client-lint:
     defaults:
       run:
-        working-directory: server
+        working-directory: client
 
-    name: Server CI
+    name: Client Lint
     runs-on: ubuntu-latest
+    needs: install_dependencies
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v3
@@ -23,17 +32,43 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'yarn'
-          cache-dependency-path: server/yarn.lock
 
-      - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+      - name: Check dependency cache
+        uses: actions/cache@v3
+        with:
+          path: client/node_modules
+          key: ${{ needs.install_dependencies.outputs.dependency_cache_key }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Lint
         run: yarn lint
 
-      - name: Test
-        run: yarn test --passWithNoTests
+  client-build:
+    defaults:
+      run:
+        working-directory: client
+
+    name: Client Build
+    runs-on: ubuntu-latest
+    needs: install_dependencies
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Check dependency cache
+        uses: actions/cache@v3
+        with:
+          path: client/node_modules
+          key: ${{ needs.install_dependencies.outputs.dependency_cache_key }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Build
         run: yarn build
