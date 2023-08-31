@@ -6,15 +6,24 @@ on:
     types: [opened, synchronize, reopened]
     paths:
       - server/**
+  workflow_dispatch:
 
 jobs:
-  server-ci:
+  install_dependencies:
+    uses: ./.github/workflows/install-dependency.yml
+    with:
+      cache-dependency-path: server/node_modules
+      hash-path: server/yarn.lock
+
+  server-lint:
     defaults:
       run:
         working-directory: server
 
-    name: Server CI
+    name: Server Lint
     runs-on: ubuntu-latest
+    needs: install_dependencies
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v3
@@ -23,17 +32,72 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'yarn'
-          cache-dependency-path: server/yarn.lock
 
-      - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+      - name: Check dependency cache
+        uses: actions/cache@v3
+        with:
+          path: server/node_modules
+          key: ${{ needs.install_dependencies.outputs.dependency_cache_key }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Lint
         run: yarn lint
 
+  server-test:
+    defaults:
+      run:
+        working-directory: server
+
+    name: Server Test
+    runs-on: ubuntu-latest
+    needs: install_dependencies
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Check dependency cache
+        uses: actions/cache@v3
+        with:
+          path: server/node_modules
+          key: ${{ needs.install_dependencies.outputs.dependency_cache_key }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Test
         run: yarn test --passWithNoTests
+
+  server-build:
+    defaults:
+      run:
+        working-directory: server
+
+    name: Server Build
+    runs-on: ubuntu-latest
+    needs: install_dependencies
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Check dependency cache
+        uses: actions/cache@v3
+        with:
+          path: server/node_modules
+          key: ${{ needs.install_dependencies.outputs.dependency_cache_key }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Build
         run: yarn build
