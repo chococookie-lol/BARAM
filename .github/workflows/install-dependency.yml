@@ -1,0 +1,49 @@
+name: Install Dependency
+on:
+  workflow_call:
+    inputs:
+      cache-dependency-path:
+        type: string
+        required: true
+      hash-path:
+        type: string
+        required: true
+    outputs:
+      dependency_cache_key:
+        description: 'Dependency cache key'
+        value: ${{ jobs.install_dependencies.outputs.dependency_cache_key }}
+jobs:
+  install_dependencies:
+    defaults:
+      run:
+        working-directory: server
+
+    name: Install Dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Compute dependency cache key
+        id: compute_lockfile_hash
+        run: echo "hash=${{ runner.os }}-node-${{ hashFiles(inputs.hash-path) }}" >> $GITHUB_OUTPUT
+
+      - name: Check dependency cache
+        id: cache_dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ inputs.cache-dependency-path }}
+          key: ${{ steps.compute_lockfile_hash.outputs.hash }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+    outputs:
+      dependency_cache_key: ${{ steps.compute_lockfile_hash.outputs.hash }}
