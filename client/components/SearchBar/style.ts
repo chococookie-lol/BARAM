@@ -1,14 +1,14 @@
-import { css } from '@emotion/react';
+import { Theme, css } from '@emotion/react';
 
 export const style = {
   wrapper: css`
     position: relative;
   `,
-  container: (color: string = 'white') => css`
+  container: (theme: Theme) => css`
     width: 740px;
     height: 60px;
     border-radius: 40px;
-    border: 1px solid ${color};
+    border: 1px solid ${theme.accent1};
     position: relative;
   `,
   input: css`
@@ -28,10 +28,10 @@ export const style = {
     align-items: center;
     padding: 0 10px;
   `,
-  button: (color: string = 'black') => css`
+  button: (theme: Theme) => css`
     width: 40px;
     height: 40px;
-    background-color: ${color};
+    background-color: ${theme.accent1};
     border-radius: 50%;
 
     &:active {

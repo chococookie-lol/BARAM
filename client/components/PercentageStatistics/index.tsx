@@ -1,4 +1,4 @@
-import { useGlobalTheme } from '../../styles/GlobalThemeContext';
+import { useTheme } from '@emotion/react';
 import Percentage from '../Percentage';
 import { style } from './style';
 
@@ -34,7 +34,7 @@ export default function PercentageStatistics({
   padding = 1,
   color,
 }: PercentageStatisticsProps) {
-  const { theme } = useGlobalTheme();
+  const theme = useTheme();
   const foreground = color?.foreground ?? theme.foreground;
   const background = color?.background ?? theme.background;
 

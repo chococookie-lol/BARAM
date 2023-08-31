@@ -17,4 +17,14 @@ export const lightTheme = {
   neutral: GLOBAL_COLOR.neutral,
 };
 
+interface ThemeGroup {
+  light: Theme;
+  dark: Theme;
+}
+
+export const THEME: ThemeGroup = {
+  light: lightTheme,
+  dark: lightTheme,
+};
+
 export type Theme = typeof lightTheme;
