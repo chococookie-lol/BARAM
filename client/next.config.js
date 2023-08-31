@@ -23,6 +23,7 @@ module.exports = (phase, {}) => {
       });
       return config;
     },
+    output: 'standalone',
   };
 
   if (phase === PHASE_DEVELOPMENT_SERVER) {
