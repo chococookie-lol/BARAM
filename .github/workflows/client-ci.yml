@@ -14,6 +14,7 @@ jobs:
     with:
       cache-dependency-path: client/node_modules
       hash-path: client/yarn.lock
+      directory: client
 
   client-lint:
     defaults:
