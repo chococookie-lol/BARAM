@@ -34,7 +34,7 @@ module.exports = (phase, {}) => {
         return [
           {
             source: '/api/:slug*',
-            destination: 'http://localhost:4000/:slug*',
+            destination: 'http://baram-be:4000/:slug*',
           },
         ];
       },
