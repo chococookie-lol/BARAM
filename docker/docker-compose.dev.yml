@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  baram-fe:
+    container_name: baram-fe
+    build:
+      context: ../client
+      dockerfile: ./docker/dev.Dockerfile
+    volumes:
+      - ../client:/app
+    restart: always
+    ports:
+      - 3000:3000
+  baram-be:
+    container_name: baram-be
+    build:
+      context: ./server
+      dockerfile: ./docker/dev.Dockerfile
+    volumes:
+      - ../server:/app
+    restart: always
+    ports:
+      - 4000:4000
