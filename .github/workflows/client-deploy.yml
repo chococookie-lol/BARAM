@@ -1,4 +1,4 @@
-name: 'Client Deploy Docker'
+name: 'Client Deploy'
 
 on:
   push:
@@ -38,7 +38,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./client
-          file: ./client/docker/Dockerfile
+          file: ./client/docker/prod.Dockerfile
           push: true
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
